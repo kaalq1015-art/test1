@@ -798,6 +798,178 @@
                 display: inline;
             }
         }
+
+        /* إضافة: تنسيقات لمصفوفة المحاولات المرئية */
+        .attempt-matrix-container {
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background-color: rgba(var(--default-color), 0.05);
+        }
+
+        .matrix-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            color: var(--text-color);
+        }
+
+        .matrix-grid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .matrix-row {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .matrix-tile {
+            width: 50px;
+            height: 50px;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 640px) {
+            .matrix-tile {
+                width: 48px;
+                height: 48px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .matrix-tile {
+                width: 44px;
+                height: 44px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .matrix-tile {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        @media (max-width: 340px) {
+            .matrix-tile {
+                width: 36px;
+                height: 36px;
+            }
+        }
+
+        .matrix-tile.correct {
+            background-color: var(--correct-color);
+        }
+
+        .matrix-tile.present {
+            background-color: var(--present-color);
+        }
+
+        .matrix-tile.absent {
+            background-color: var(--absent-color);
+        }
+
+        .matrix-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .legend-color.correct {
+            background-color: var(--correct-color);
+        }
+
+        .legend-color.present {
+            background-color: var(--present-color);
+        }
+
+        .legend-color.absent {
+            background-color: var(--absent-color);
+        }
+
+        /* تنسيقات متجاوبة للنافذة المنبثقة */
+        @media (max-width: 480px) {
+            .attempt-matrix-container {
+                margin: 15px 0;
+                padding: 12px;
+            }
+            
+            .matrix-title {
+                font-size: 1.1rem;
+                margin-bottom: 12px;
+            }
+            
+            .matrix-grid {
+                gap: 6px;
+                margin-bottom: 12px;
+            }
+            
+            .matrix-row {
+                gap: 5px;
+            }
+        }
+
+        /* نافذة نتائج اللعبة الجديدة */
+        #gameResultModal .modal-content {
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .result-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .result-buttons button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        @media (max-width: 480px) {
+            .result-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .result-buttons button {
+                padding: 10px;
+                font-size: 0.95rem;
+            }
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -944,18 +1116,66 @@
         </div>
     </div>
 
+    <!-- نافذة نتائج اللعبة مع مصفوفة المحاولات المرئية -->
+    <div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
+            <div class="p-5">
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="text-xl font-bold" id="resultModalTitle">نتيجة اللعبة</h2>
+                    <button id="closeGameResult" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
+                </div>
+                
+                <div id="gameResultDetails" class="text-center mb-4"></div>
+                
+                <!-- مصفوفة المحاولات المرئية -->
+                <div id="attemptMatrixContainer" class="attempt-matrix-container">
+                    <h3 class="matrix-title">خريطة رحلتك في التفكير</h3>
+                    <div id="matrixGrid" class="matrix-grid"></div>
+                    <div class="matrix-legend">
+                        <div class="legend-item">
+                            <div class="legend-color correct"></div>
+                            <span>حرف صحيح ومكان صحيح</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color present"></div>
+                            <span>حرف صحيح ومكان خاطئ</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color absent"></div>
+                            <span>حرف غير موجود</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-buttons">
+                    <button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90">
+                        <i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى
+                    </button>
+                    <button id="viewStatsBtn" class="border border-[var(--border-color)] hover:bg-[var(--default-color)]">
+                        <i class="fas fa-chart-bar ml-2"></i>عرض الإحصائيات
+                    </button>
+                    <button id="shareResultBtn" class="bg-[var(--enter-color)] text-white hover:opacity-90">
+                        <i class="fas fa-share-alt ml-2"></i>مشاركة النتيجة
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // مفاتيح التخزين المحلي
         const HELP_SEEN_KEY = 'kalima_help_seen_v5';
         const STATS_KEY = 'kalima_stats_v5';
         const THEME_KEY = 'kalima_dark_v5';
         const ATTEMPTS_KEY = 'kalima_attempts_v5';
+        const ATTEMPT_MATRICES_KEY = 'kalima_attempt_matrices_v1';
 
-        // قائمة الكلمات العربية المحددة فقط
-      const WORD_LIST = ["ضضضضض", "صصصصص", "سسسسس", "ننننن"];
+        // قائمة الكلمات العربية (محدثة)
+         const WORD_LIST = ["ضضضضض", "صصصصص", "سسسسس", "ننننن"];
 
         // قاموس موسع للتحقق (نفس الكلمات)
         const DICTIONARY = ["ضضضضض", "صصصصص", "سسسسس", "ننننن"];
+
         // حالة اللعبة
         const gameState = {
             targetWord: "",
@@ -972,27 +1192,25 @@
                 maxStreak: 0,
                 guessDistribution: [0, 0, 0, 0, 0, 0, 0, 0]
             },
-            attemptsHistory: []
+            attemptsHistory: [],
+            attemptMatrices: [] // مصفوفات المحاولات المرئية
         };
 
         // التهيئة
         function init() {
-            // تنظيف البيانات القديمة
             cleanupOldData();
-            
             loadStats();
             loadAttemptsHistory();
+            loadAttemptMatrices();
             loadTheme();
             createGrid();
             createKeyboard();
             startNewGame();
             setupEventListeners();
-
-            // عرض التعليمات إذا كانت أول مرة
             showHelpIfFirstTime();
         }
 
-        // تنظيف البيانات القديمة لمنع التضارب
+        // تنظيف البيانات القديمة
         function cleanupOldData() {
             const oldKeys = [
                 'arwordle_help_seen',
@@ -1027,10 +1245,7 @@
             if (saved) {
                 try {
                     const parsed = JSON.parse(saved);
-                    if (parsed && typeof parsed === 'object' && 
-                        'played' in parsed && 'wins' in parsed && 
-                        'currentStreak' in parsed && 'maxStreak' in parsed &&
-                        'guessDistribution' in parsed) {
+                    if (parsed && typeof parsed === 'object') {
                         gameState.stats = parsed;
                     }
                 } catch (e) {
@@ -1039,6 +1254,28 @@
             } else {
                 resetStats();
             }
+        }
+
+        // تحميل مصفوفات المحاولات المرئية
+        function loadAttemptMatrices() {
+            const saved = localStorage.getItem(ATTEMPT_MATRICES_KEY);
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed)) {
+                        gameState.attemptMatrices = parsed;
+                    }
+                } catch (e) {
+                    gameState.attemptMatrices = [];
+                }
+            } else {
+                gameState.attemptMatrices = [];
+            }
+        }
+
+        // حفظ مصفوفات المحاولات المرئية
+        function saveAttemptMatrices() {
+            localStorage.setItem(ATTEMPT_MATRICES_KEY, JSON.stringify(gameState.attemptMatrices));
         }
 
         // إعادة تعيين الإحصائيات
@@ -1179,8 +1416,8 @@
 
         // بدء لعبة جديدة
         function startNewGame() {
-            // الكلمة العشوائية - دائمًا "ننننن"
-            gameState.targetWord = "ننننن";
+            // اختيار كلمة عشوائية
+            gameState.targetWord = WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
             
             gameState.currentRow = 0;
             gameState.currentGuess = '';
@@ -1358,10 +1595,51 @@
             }
         }
 
+        // جمع مصفوفة المحاولات المرئية
+        function collectAttemptMatrix() {
+            const matrix = [];
+            
+            for (let row = 0; row <= gameState.currentRow; row++) {
+                const rowData = [];
+                for (let col = 0; col < 5; col++) {
+                    const tile = document.getElementById(`tile-${row}-${col}`);
+                    if (tile.classList.contains('correct')) {
+                        rowData.push('correct');
+                    } else if (tile.classList.contains('present')) {
+                        rowData.push('present');
+                    } else if (tile.classList.contains('absent')) {
+                        rowData.push('absent');
+                    } else {
+                        rowData.push('empty');
+                    }
+                }
+                matrix.push(rowData);
+            }
+            
+            return matrix;
+        }
+
         // التعامل مع الفوز
         function handleWin() {
             gameState.gameDuration = Math.floor((new Date() - gameState.startTime) / 1000);
             showMessage('🎉 أحسنت! لقد فزت!');
+
+            // جمع مصفوفة المحاولات المرئية
+            const attemptMatrix = collectAttemptMatrix();
+            gameState.attemptMatrices.unshift({
+                matrix: attemptMatrix,
+                result: 'win',
+                attempts: gameState.currentRow + 1,
+                date: new Date().toISOString(),
+                word: gameState.targetWord
+            });
+            
+            // الحفاظ على آخر 50 مصفوفة فقط
+            if (gameState.attemptMatrices.length > 50) {
+                gameState.attemptMatrices = gameState.attemptMatrices.slice(0, 50);
+            }
+            
+            saveAttemptMatrices();
 
             const attemptRecord = {
                 attemptNumber: gameState.attemptsHistory.length + 1,
@@ -1396,7 +1674,7 @@
             }, 2000);
 
             setTimeout(() => {
-                showStats(true);
+                showGameResultModal(true, attemptMatrix);
             }, 2500);
         }
 
@@ -1404,6 +1682,23 @@
         function handleLoss() {
             gameState.gameDuration = Math.floor((new Date() - gameState.startTime) / 1000);
             showMessage(`💔 انتهت المحاولات! الكلمة الصحيحة: ${gameState.targetWord}`);
+
+            // جمع مصفوفة المحاولات المرئية
+            const attemptMatrix = collectAttemptMatrix();
+            gameState.attemptMatrices.unshift({
+                matrix: attemptMatrix,
+                result: 'loss',
+                attempts: 8,
+                date: new Date().toISOString(),
+                word: gameState.targetWord
+            });
+            
+            // الحفاظ على آخر 50 مصفوفة فقط
+            if (gameState.attemptMatrices.length > 50) {
+                gameState.attemptMatrices = gameState.attemptMatrices.slice(0, 50);
+            }
+            
+            saveAttemptMatrices();
 
             const attemptRecord = {
                 attemptNumber: gameState.attemptsHistory.length + 1,
@@ -1430,7 +1725,7 @@
             updateStatsDisplay();
 
             setTimeout(() => {
-                showStats(false);
+                showGameResultModal(false, attemptMatrix);
             }, 1500);
         }
 
@@ -1449,6 +1744,57 @@
                 row.classList.add('shake');
                 setTimeout(() => row.classList.remove('shake'), 500);
             }
+        }
+
+        // عرض نافذة نتائج اللعبة مع مصفوفة المحاولات
+        function showGameResultModal(isWin, attemptMatrix) {
+            const modal = document.getElementById('gameResultModal');
+            const title = document.getElementById('resultModalTitle');
+            const details = document.getElementById('gameResultDetails');
+            
+            if (isWin) {
+                title.textContent = '🎉 مبروك! فزت!';
+                details.innerHTML = `
+                    <div class="text-green-600 font-bold text-lg mb-2">لقد فزت في المحاولة ${gameState.currentRow + 1}!</div>
+                    <div class="text-gray-600 dark:text-gray-400 mb-3">الكلمة الصحيحة:</div>
+                    <div class="correct-word">${gameState.targetWord}</div>
+                `;
+            } else {
+                title.textContent = '💔 انتهت المحاولات!';
+                details.innerHTML = `
+                    <div class="text-red-600 font-bold text-lg mb-2">انتهت محاولاتك!</div>
+                    <div class="text-gray-600 dark:text-gray-400 mb-3">الكلمة الصحيحة:</div>
+                    <div class="correct-word">${gameState.targetWord}</div>
+                `;
+            }
+            
+            // عرض مصفوفة المحاولات المرئية
+            renderAttemptMatrix(attemptMatrix);
+            
+            modal.classList.remove('hidden');
+        }
+
+        // عرض مصفوفة المحاولات المرئية
+        function renderAttemptMatrix(matrix) {
+            const container = document.getElementById('matrixGrid');
+            container.innerHTML = '';
+            
+            matrix.forEach((row, rowIndex) => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'matrix-row';
+                
+                row.forEach((cell, cellIndex) => {
+                    const tile = document.createElement('div');
+                    tile.className = `matrix-tile ${cell}`;
+                    
+                    // لا نعرض أي نص داخل المربعات (إخفاء البيانات)
+                    // نتركها فارغة تماماً للحفاظ على الشكل النظيف
+                    
+                    rowDiv.appendChild(tile);
+                });
+                
+                container.appendChild(rowDiv);
+            });
         }
 
         // عرض الإحصائيات
@@ -1677,6 +2023,23 @@
             });
 
             document.getElementById('shareBtn').addEventListener('click', shareResult);
+
+            // أحداث نافذة نتائج اللعبة
+            document.getElementById('closeGameResult').addEventListener('click', () => {
+                document.getElementById('gameResultModal').classList.add('hidden');
+            });
+
+            document.getElementById('playAgainBtn').addEventListener('click', () => {
+                document.getElementById('gameResultModal').classList.add('hidden');
+                startNewGame();
+            });
+
+            document.getElementById('viewStatsBtn').addEventListener('click', () => {
+                document.getElementById('gameResultModal').classList.add('hidden');
+                showStats(gameState.gameWon);
+            });
+
+            document.getElementById('shareResultBtn').addEventListener('click', shareResult);
 
             document.querySelectorAll('.modal-overlay').forEach(modal => {
                 modal.addEventListener('click', (e) => {
