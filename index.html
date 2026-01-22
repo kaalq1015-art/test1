@@ -1109,9 +1109,6 @@
                     </div>
                 </div>
                 <div class="space-y-2">
-                    <button id="shareBtn" class="w-full bg-[var(--correct-color)] text-white py-2.5 rounded font-bold hover:opacity-90 text-sm">
-                        <i class="fas fa-share-alt ml-2"></i>مشاركة النتيجة
-                    </button>
                     <button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-2.5 rounded font-bold hover:bg-[var(--default-color)] text-sm">لعبة جديدة</button>
                 </div>
             </div>
@@ -1156,9 +1153,6 @@
                     <button id="viewStatsBtn" class="border border-[var(--border-color)] hover:bg-[var(--default-color)]">
                         <i class="fas fa-chart-bar ml-2"></i>عرض الإحصائيات
                     </button>
-                    <button id="shareResultBtn" class="bg-[var(--enter-color)] text-white hover:opacity-90">
-                        <i class="fas fa-share-alt ml-2"></i>مشاركة النتيجة
-                    </button>
                 </div>
             </div>
         </div>
@@ -1173,10 +1167,10 @@
         const ATTEMPT_MATRICES_KEY = 'kalima_attempt_matrices_v1';
 
         // قائمة الكلمات العربية (محدثة)
-          const WORD_LIST = ["ضضضضض", "صصصصص", "سسسسس", "ننننن"];
+        const WORD_LIST = ["كتاب", "قمر", "بحر", "شمس", "ورد", "نهر", "جبل", "عين", "ليل", "نهار", "صحر", "مدين", "سوق", "مسجد", "مدرسة", "طبيب", "مهندس", "مكتب", "كرسي", "نافذة", "باب", "سيارة", "طائرة", "قطار", "سفينة"];
 
         // قاموس موسع للتحقق (نفس الكلمات)
-        const DICTIONARY = ["ضضضضض", "صصصصص", "سسسسس", "ننننن"];
+        const DICTIONARY = ["كتاب", "قمر", "بحر", "شمس", "ورد", "نهر", "جبل", "عين", "ليل", "نهار", "صحر", "مدين", "سوق", "مسجد", "مدرسة", "طبيب", "مهندس", "مكتب", "كرسي", "نافذة", "باب", "سيارة", "طائرة", "قطار", "سفينة"];
 
         // حالة اللعبة
         const gameState = {
@@ -1366,11 +1360,11 @@
         function createKeyboard() {
             const keyboard = document.getElementById('keyboard');
 
-            // ترتيب لوحة مفاتيح الآيفون للغة العربية
+            // ترتيب لوحة المفاتيح حسب الطلب
             const layout = [
-                ["ض", "ص", "ث", "ق", "ف", "غ", "ع", "ه", "خ", "ح", "ج", "د"],
-                ["ش", "س", "ي", "ب", "ل", "ا", "ت", "ن", "م", "ك", "ط"],
-                ["ئ", "ء", "ؤ", "ر", "لا", "ى", "ة", "و", "ز", "ظ"]
+                ["ج", "ح", "خ", "ه", "ع", "غ", "ف", "ق", "ث", "ص", "ض"],
+                ["ة", "ك", "م", "ن", "ت", "ا", "ل", "ب", "ي", "س", "ش"],
+                ["ى", "و", "ر", "ز", "د", "ذ", "ط", "ظ", "ء", "أ"]
             ];
 
             keyboard.innerHTML = '';
@@ -1477,17 +1471,20 @@
 
         // تحديث الشبكة
         function updateGrid() {
-            // تحديث جميع المربعات في الصف الحالي فقط
-            const currentRow = gameState.currentRow;
-            
+            // تحديث جميع المربعات في الصف الحالي
             for (let i = 0; i < 5; i++) {
-                const tile = document.getElementById(`tile-${currentRow}-${i}`);
+                const tile = document.getElementById(`tile-${gameState.currentRow}-${i}`);
                 tile.textContent = gameState.currentGuess[i] || '';
             }
 
-            // تنظيف الصفوف السابقة التي تم إرسالها بالفعل (لها نتائج)
-            // ولكن لا تمسح الصفوف التي قبل الصف الحالي
-            // الصفوف السابقة التي تم تقييمها تبقى كما هي
+            // مسح أي مربعات في الصفوف التالية
+            for (let row = gameState.currentRow + 1; row < 8; row++) {
+                for (let col = 0; col < 5; col++) {
+                    const tile = document.getElementById(`tile-${row}-${col}`);
+                    tile.textContent = '';
+                    tile.className = 'tile';
+                }
+            }
         }
 
         // إرسال التخمين
@@ -1550,13 +1547,7 @@
                 } else {
                     gameState.currentRow++;
                     gameState.currentGuess = '';
-                    
-                    // تنظيف الصف الجديد فقط (للتأكد من نظافته)
-                    for (let i = 0; i < 5; i++) {
-                        const tile = document.getElementById(`tile-${gameState.currentRow}-${i}`);
-                        tile.className = 'tile';
-                        tile.textContent = '';
-                    }
+                    updateGrid();
                 }
             }, 1800);
         }
@@ -2016,63 +2007,6 @@
             }
         }
 
-        // مشاركة النتيجة
-        function shareResult() {
-            let shareText = `كَـلِمَة 🧩\n`;
-            shareText += `النتيجة: ${gameState.gameWon ? gameState.currentRow + 1 : 'X'}/8\n`;
-
-            if(gameState.gameDuration) {
-                const minutes = Math.floor(gameState.gameDuration / 60);
-                const seconds = gameState.gameDuration % 60;
-                shareText += `الوقت: ${minutes}:${seconds.toString().padStart(2, '0')}\n`;
-            }
-
-            shareText += '\n';
-
-            for (let row = 0; row <= gameState.currentRow; row++) {
-                for (let col = 0; col < 5; col++) {
-                    const tile = document.getElementById(`tile-${row}-${col}`);
-                    if (tile.classList.contains('correct')) {
-                        shareText += '🟩';
-                    } else if (tile.classList.contains('present')) {
-                        shareText += '🟨';
-                    } else if (tile.classList.contains('absent')) {
-                        shareText += '⬛';
-                    }
-                }
-                shareText += '\n';
-            }
-
-            if (!gameState.gameWon) {
-                shareText += `\nالكلمة كانت: ${gameState.targetWord}\n`;
-            }
-
-            shareText += '\nتم التطوير بواسطة عبدالله الخثلان';
-            shareText += '\n#كَـلِمَة #لعبة_الكلمة_العربية';
-
-            if (navigator.share) {
-                navigator.share({
-                    title: 'نتيجة لعبة كَـلِمَة',
-                    text: shareText
-                }).then(() => {
-                    showMessage('تم المشاركة بنجاح!');
-                }).catch(() => {
-                    copyToClipboard(shareText);
-                });
-            } else {
-                copyToClipboard(shareText);
-            }
-        }
-
-        // نسخ إلى الحافظة
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showMessage('تم نسخ النتيجة إلى الحافظة!');
-            }).catch(() => {
-                showMessage('حدث خطأ في المشاركة');
-            });
-        }
-
         // إعداد مستمعي الأحداث
         function setupEventListeners() {
             document.addEventListener('keydown', (e) => {
@@ -2133,8 +2067,6 @@
                 document.getElementById('statsModal').classList.add('hidden');
             });
 
-            document.getElementById('shareBtn').addEventListener('click', shareResult);
-
             // أحداث نافذة نتائج اللعبة
             document.getElementById('closeGameResult').addEventListener('click', () => {
                 document.getElementById('gameResultModal').classList.add('hidden');
@@ -2150,8 +2082,6 @@
                 showStats(gameState.gameWon);
             });
 
-            document.getElementById('shareResultBtn').addEventListener('click', shareResult);
-
             document.querySelectorAll('.modal-overlay').forEach(modal => {
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
@@ -2164,4 +2094,4 @@
         window.addEventListener('load', init);
     </script>
 </body>
-    </html>
+</html>
