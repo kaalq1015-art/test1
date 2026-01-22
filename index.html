@@ -519,9 +519,9 @@
 
         /* تحسينات للنوافذ المنبثقة */
         .modal-content {
-            width: 140%;
+            width: 120%;
             max-width: 500px;
-            max-height: 130vh;
+            max-height: 115vh;
             overflow-y: auto;
             margin: 10px;
         }
@@ -831,62 +831,66 @@
         }
 
         .matrix-tile {
-            width: 50px;
-            height: 50px;
-            border: 2px solid transparent;
-            border-radius: 4px;
+            width: 24px;
+            height: 24px;
+            border: 1px solid transparent;
+            border-radius: 3px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             user-select: none;
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         @media (max-width: 640px) {
             .matrix-tile {
-                width: 48px;
-                height: 48px;
+                width: 22px;
+                height: 22px;
             }
         }
 
         @media (max-width: 480px) {
             .matrix-tile {
-                width: 44px;
-                height: 44px;
+                width: 20px;
+                height: 20px;
             }
         }
 
         @media (max-width: 380px) {
             .matrix-tile {
-                width: 40px;
-                height: 40px;
+                width: 18px;
+                height: 18px;
             }
         }
 
         @media (max-width: 340px) {
             .matrix-tile {
-                width: 36px;
-                height: 36px;
+                width: 16px;
+                height: 16px;
             }
         }
 
         .matrix-tile.correct {
             background-color: var(--correct-color);
+            border-color: var(--correct-color);
         }
 
         .matrix-tile.present {
             background-color: var(--present-color);
+            border-color: var(--present-color);
         }
 
         .matrix-tile.absent {
             background-color: var(--absent-color);
+            border-color: var(--absent-color);
         }
 
         .matrix-legend {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
             margin-top: 10px;
             flex-wrap: wrap;
         }
@@ -894,14 +898,14 @@
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
+            gap: 6px;
+            font-size: 0.8rem;
         }
 
         .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
         }
 
         .legend-color.correct {
@@ -934,7 +938,7 @@
             }
             
             .matrix-row {
-                gap: 5px;
+                gap: 4px;
             }
         }
 
@@ -1104,8 +1108,6 @@
                         <div class="text-xs">أعلى تتابع</div>
                     </div>
                 </div>
-                <h3 class="font-bold mb-2 text-sm">توزيع التخمينات</h3>
-                <div id="guessDistribution" class="space-y-1 mb-5"></div>
                 <div class="space-y-2">
                     <button id="shareBtn" class="w-full bg-[var(--correct-color)] text-white py-2.5 rounded font-bold hover:opacity-90 text-sm">
                         <i class="fas fa-share-alt ml-2"></i>مشاركة النتيجة
@@ -1171,7 +1173,7 @@
         const ATTEMPT_MATRICES_KEY = 'kalima_attempt_matrices_v1';
 
         // قائمة الكلمات العربية (محدثة)
-         const WORD_LIST = ["ضضضضض", "صصصصص", "سسسسس", "ننننن"];
+           const WORD_LIST = ["ضضضضض", "صصصصص", "سسسسس", "ننننن"];
 
         // قاموس موسع للتحقق (نفس الكلمات)
         const DICTIONARY = ["ضضضضض", "صصصصص", "سسسسس", "ننننن"];
@@ -1185,12 +1187,12 @@
             gameWon: false,
             startTime: null,
             gameDuration: 0,
+            attemptResults: [], // مصفوفة نتائج المحاولات للعبة الحالية
             stats: {
                 played: 0,
                 wins: 0,
                 currentStreak: 0,
-                maxStreak: 0,
-                guessDistribution: [0, 0, 0, 0, 0, 0, 0, 0]
+                maxStreak: 0
             },
             attemptsHistory: [],
             attemptMatrices: [] // مصفوفات المحاولات المرئية
@@ -1208,35 +1210,6 @@
             startNewGame();
             setupEventListeners();
             showHelpIfFirstTime();
-        }
-
-        // تنظيف البيانات القديمة
-        function cleanupOldData() {
-            const oldKeys = [
-                'arwordle_help_seen',
-                'arwordle_first_game',
-                'arwordle_stats',
-                'arwordle_dark',
-                'arwordle_attempts_history',
-                'arwordle_device_id',
-                'arwordle_stats_v2',
-                'arwordle_attempts_history_v2',
-                'arwordle_attempts_v2',
-                'arwordle_stats_v2_',
-                'kalima_help_seen_v3',
-                'kalima_stats_v3',
-                'kalima_dark_v3',
-                'kalima_attempts_v3',
-                'kalima_user_id_v3',
-                'kalima_help_seen_v4',
-                'kalima_stats_v4',
-                'kalima_dark_v4',
-                'kalima_attempts_v4'
-            ];
-            
-            oldKeys.forEach(key => {
-                localStorage.removeItem(key);
-            });
         }
 
         // تحميل الإحصائيات
@@ -1284,8 +1257,7 @@
                 played: 0,
                 wins: 0,
                 currentStreak: 0,
-                maxStreak: 0,
-                guessDistribution: [0, 0, 0, 0, 0, 0, 0, 0]
+                maxStreak: 0
             };
             saveStats();
         }
@@ -1424,6 +1396,7 @@
             gameState.gameOver = false;
             gameState.gameWon = false;
             gameState.startTime = new Date();
+            gameState.attemptResults = []; // تفريغ نتائج المحاولات
 
             // إعادة تعيين الشبكة
             document.querySelectorAll('.tile').forEach(tile => {
@@ -1475,20 +1448,17 @@
 
         // تحديث الشبكة
         function updateGrid() {
-            // تحديث جميع المربعات في الصف الحالي
+            // تحديث جميع المربعات في الصف الحالي فقط
+            const currentRow = gameState.currentRow;
+            
             for (let i = 0; i < 5; i++) {
-                const tile = document.getElementById(`tile-${gameState.currentRow}-${i}`);
+                const tile = document.getElementById(`tile-${currentRow}-${i}`);
                 tile.textContent = gameState.currentGuess[i] || '';
             }
 
-            // مسح أي مربعات في الصفوف التالية
-            for (let row = gameState.currentRow + 1; row < 8; row++) {
-                for (let col = 0; col < 5; col++) {
-                    const tile = document.getElementById(`tile-${row}-${col}`);
-                    tile.textContent = '';
-                    tile.className = 'tile';
-                }
-            }
+            // تنظيف الصفوف السابقة التي تم إرسالها بالفعل (لها نتائج)
+            // ولكن لا تمسح الصفوف التي قبل الصف الحالي
+            // الصفوف السابقة التي تم تقييمها تبقى كما هي
         }
 
         // إرسال التخمين
@@ -1518,29 +1488,10 @@
             const guess = gameState.currentGuess;
             const target = gameState.targetWord;
 
-            const result = Array(5).fill('absent');
-            const targetLetters = {};
-
-            // عد تكرارات الحروف في الكلمة المستهدفة
-            for (const letter of target) {
-                targetLetters[letter] = (targetLetters[letter] || 0) + 1;
-            }
-
-            // أولاً: تحديد الحروف الصحيحة في المكان الصحيح
-            for (let i = 0; i < 5; i++) {
-                if (guess[i] === target[i]) {
-                    result[i] = 'correct';
-                    targetLetters[guess[i]]--;
-                }
-            }
-
-            // ثانياً: تحديد الحروف الموجودة ولكن في مكان خاطئ
-            for (let i = 0; i < 5; i++) {
-                if (result[i] !== 'correct' && targetLetters[guess[i]] > 0) {
-                    result[i] = 'present';
-                    targetLetters[guess[i]]--;
-                }
-            }
+            const result = calculateGuessResult(guess, target);
+            
+            // حفظ نتيجة المحاولة
+            gameState.attemptResults[gameState.currentRow] = result;
 
             // عرض النتيجة مع تأثير القلب
             for (let i = 0; i < 5; i++) {
@@ -1570,9 +1521,44 @@
                 } else {
                     gameState.currentRow++;
                     gameState.currentGuess = '';
-                    updateGrid();
+                    
+                    // تنظيف الصف الجديد فقط (للتأكد من نظافته)
+                    for (let i = 0; i < 5; i++) {
+                        const tile = document.getElementById(`tile-${gameState.currentRow}-${i}`);
+                        tile.className = 'tile';
+                        tile.textContent = '';
+                    }
                 }
             }, 1800);
+        }
+
+        // دالة حساب نتيجة التخمين
+        function calculateGuessResult(guess, target) {
+            const result = Array(5).fill('absent');
+            const targetLetters = {};
+
+            // عد تكرارات الحروف في الكلمة المستهدفة
+            for (const letter of target) {
+                targetLetters[letter] = (targetLetters[letter] || 0) + 1;
+            }
+
+            // أولاً: تحديد الحروف الصحيحة في المكان الصحيح
+            for (let i = 0; i < 5; i++) {
+                if (guess[i] === target[i]) {
+                    result[i] = 'correct';
+                    targetLetters[guess[i]]--;
+                }
+            }
+
+            // ثانياً: تحديد الحروف الموجودة ولكن في مكان خاطئ
+            for (let i = 0; i < 5; i++) {
+                if (result[i] !== 'correct' && targetLetters[guess[i]] > 0) {
+                    result[i] = 'present';
+                    targetLetters[guess[i]]--;
+                }
+            }
+
+            return result;
         }
 
         // تحديث لوحة المفاتيح
@@ -1595,28 +1581,131 @@
             }
         }
 
-        // جمع مصفوفة المحاولات المرئية
-        function collectAttemptMatrix() {
-            const matrix = [];
+        /**
+         * دالة renderAttemptMatrix - تعرض مصفوفة المحاولات المرئية
+         */
+        function renderAttemptMatrix() {
+            // 1. الحصول على عنصر الحاوية
+            const container = document.getElementById('matrixGrid');
             
-            for (let row = 0; row <= gameState.currentRow; row++) {
-                const rowData = [];
-                for (let col = 0; col < 5; col++) {
-                    const tile = document.getElementById(`tile-${row}-${col}`);
-                    if (tile.classList.contains('correct')) {
-                        rowData.push('correct');
-                    } else if (tile.classList.contains('present')) {
-                        rowData.push('present');
-                    } else if (tile.classList.contains('absent')) {
-                        rowData.push('absent');
-                    } else {
-                        rowData.push('empty');
-                    }
-                }
-                matrix.push(rowData);
+            // 2. تنظيف المحتوى القديم
+            container.innerHTML = '';
+            
+            // 3. التحقق من وجود محاولات
+            if (!gameState.attemptResults || gameState.attemptResults.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-500 py-4">لا توجد محاولات لعرضها</div>';
+                return;
             }
             
-            return matrix;
+            // 4. حساب عدد المحاولات المستخدمة فقط (ليس كل 8 صفوف)
+            const usedAttempts = gameState.attemptResults.filter(row => row && row.length > 0);
+            
+            // 5. المرور على كل محاولة (Loop على المحاولات)
+            usedAttempts.forEach((rowResults, rowIndex) => {
+                // 5.1 إنشاء صف جديد
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'matrix-row';
+                
+                // 5.2 إضافة خاصية للتحليل (اختياري)
+                rowDiv.dataset.attemptNumber = rowIndex + 1;
+                
+                // 6. المرور على كل حرف في المحاولة (Loop على الحروف)
+                rowResults.forEach((cellStatus, cellIndex) => {
+                    // 6.1 إنشاء مربع (Tile) جديد
+                    const tile = document.createElement('div');
+                    
+                    // 6.2 إضافة كلاسات CSS - نفس ألوان اللعبة الأصلية
+                    tile.className = 'matrix-tile'; // الكلاس الأساسي
+                    
+                    // 6.3 إضافة كلاس اللون بناءً على حالة الحرف
+                    if (cellStatus === 'correct') {
+                        tile.classList.add('correct'); // لون أخضر
+                    } else if (cellStatus === 'present') {
+                        tile.classList.add('present'); // لون أصفر
+                    } else if (cellStatus === 'absent') {
+                        tile.classList.add('absent'); // لون رمادي
+                    }
+                    
+                    // 6.4 إضافة خصائص للتحليل (اختياري)
+                    tile.dataset.position = `${rowIndex + 1}-${cellIndex + 1}`;
+                    tile.dataset.status = cellStatus;
+                    
+                    // 6.5 التأكد من أن المربع فارغ تماماً (لا يوجد نص)
+                    // هذه الخطوة مهمة: لا نضع أي نص داخل الـ div
+                    tile.textContent = ''; // فارغ تماماً
+                    tile.title = `مربع ${rowIndex + 1}-${cellIndex + 1}: ${getStatusText(cellStatus)}`;
+                    
+                    // 6.6 إضافة تأثير بسيط عند التمرير (اختياري)
+                    tile.style.transition = 'transform 0.2s ease';
+                    tile.addEventListener('mouseenter', () => {
+                        tile.style.transform = 'scale(1.1)';
+                    });
+                    tile.addEventListener('mouseleave', () => {
+                        tile.style.transform = 'scale(1)';
+                    });
+                    
+                    // 6.7 إضافة المربع إلى الصف
+                    rowDiv.appendChild(tile);
+                });
+                
+                // 7. إضافة الصف إلى الحاوية
+                container.appendChild(rowDiv);
+            });
+            
+            // 8. تسجيل معلومات للتحقق (للتطوير فقط)
+            console.log('تم عرض مصفوفة المحاولات:', {
+                totalAttempts: usedAttempts.length,
+                totalTiles: usedAttempts.length * 5,
+                matrixData: gameState.attemptResults
+            });
+            
+            // 9. تحديث معلومات إضافية (مثال: عدد المحاولات)
+            updateMatrixStats(usedAttempts.length);
+        }
+
+        /**
+         * دالة مساعدة: تحويل رمز الحالة إلى نص وصفي
+         */
+        function getStatusText(status) {
+            const statusMap = {
+                'correct': 'حرف صحيح في مكانه',
+                'present': 'حرف صحيح في مكان خاطئ',
+                'absent': 'حرف غير موجود في الكلمة'
+            };
+            return statusMap[status] || 'حالة غير معروفة';
+        }
+
+        /**
+         * دالة مساعدة: تحديث إحصائيات المصفوفة
+         */
+        function updateMatrixStats(totalAttempts) {
+            // حساب توزيع الألوان
+            const colorStats = {
+                correct: 0,
+                present: 0,
+                absent: 0
+            };
+            
+            gameState.attemptResults.forEach(row => {
+                row.forEach(cell => {
+                    if (colorStats[cell] !== undefined) {
+                        colorStats[cell]++;
+                    }
+                });
+            });
+            
+            // تحديث واجهة المستخدم (إذا كان هناك مكان لعرضها)
+            const statsElement = document.getElementById('matrixStats');
+            if (statsElement) {
+                statsElement.innerHTML = `
+                    <div class="text-sm text-gray-600 dark:text-gray-400">
+                        <div>عدد المحاولات: <strong>${totalAttempts}</strong></div>
+                        <div>المربعات الخضراء: <strong>${colorStats.correct}</strong></div>
+                        <div>المربعات الصفراء: <strong>${colorStats.present}</strong></div>
+                        <div>المربعات الرمادية: <strong>${colorStats.absent}</strong></div>
+                    </div>
+                `;
+            }
         }
 
         // التعامل مع الفوز
@@ -1663,7 +1752,6 @@
             gameState.stats.wins++;
             gameState.stats.currentStreak++;
             gameState.stats.maxStreak = Math.max(gameState.stats.maxStreak, gameState.stats.currentStreak);
-            gameState.stats.guessDistribution[gameState.currentRow]++;
 
             saveStats();
             updateStatsDisplay();
@@ -1674,7 +1762,7 @@
             }, 2000);
 
             setTimeout(() => {
-                showGameResultModal(true, attemptMatrix);
+                showGameResultModal(true);
             }, 2500);
         }
 
@@ -1725,8 +1813,32 @@
             updateStatsDisplay();
 
             setTimeout(() => {
-                showGameResultModal(false, attemptMatrix);
+                showGameResultModal(false);
             }, 1500);
+        }
+
+        // جمع مصفوفة المحاولات المرئية
+        function collectAttemptMatrix() {
+            const matrix = [];
+            
+            for (let row = 0; row <= gameState.currentRow; row++) {
+                const rowData = [];
+                for (let col = 0; col < 5; col++) {
+                    const tile = document.getElementById(`tile-${row}-${col}`);
+                    if (tile.classList.contains('correct')) {
+                        rowData.push('correct');
+                    } else if (tile.classList.contains('present')) {
+                        rowData.push('present');
+                    } else if (tile.classList.contains('absent')) {
+                        rowData.push('absent');
+                    } else {
+                        rowData.push('empty');
+                    }
+                }
+                matrix.push(rowData);
+            }
+            
+            return matrix;
         }
 
         // عرض رسالة
@@ -1747,7 +1859,7 @@
         }
 
         // عرض نافذة نتائج اللعبة مع مصفوفة المحاولات
-        function showGameResultModal(isWin, attemptMatrix) {
+        function showGameResultModal(isWin) {
             const modal = document.getElementById('gameResultModal');
             const title = document.getElementById('resultModalTitle');
             const details = document.getElementById('gameResultDetails');
@@ -1769,32 +1881,15 @@
             }
             
             // عرض مصفوفة المحاولات المرئية
-            renderAttemptMatrix(attemptMatrix);
+            renderAttemptMatrix();
             
             modal.classList.remove('hidden');
-        }
-
-        // عرض مصفوفة المحاولات المرئية
-        function renderAttemptMatrix(matrix) {
-            const container = document.getElementById('matrixGrid');
-            container.innerHTML = '';
             
-            matrix.forEach((row, rowIndex) => {
-                const rowDiv = document.createElement('div');
-                rowDiv.className = 'matrix-row';
-                
-                row.forEach((cell, cellIndex) => {
-                    const tile = document.createElement('div');
-                    tile.className = `matrix-tile ${cell}`;
-                    
-                    // لا نعرض أي نص داخل المربعات (إخفاء البيانات)
-                    // نتركها فارغة تماماً للحفاظ على الشكل النظيف
-                    
-                    rowDiv.appendChild(tile);
-                });
-                
-                container.appendChild(rowDiv);
-            });
+            // إضافة تأثير ظهور
+            setTimeout(() => {
+                modal.style.opacity = '1';
+                modal.style.transform = 'scale(1)';
+            }, 10);
         }
 
         // عرض الإحصائيات
@@ -1842,19 +1937,6 @@
 
                 resultInfo.appendChild(resultDiv);
             }
-
-            const distContainer = document.getElementById('guessDistribution');
-            distContainer.innerHTML = '';
-
-            const maxDist = Math.max(...gameState.stats.guessDistribution);
-
-            gameState.stats.guessDistribution.forEach((count, index) => {
-                const bar = document.createElement('div');
-                bar.className = 'stats-bar';
-                bar.style.width = maxDist > 0 ? `${(count / maxDist) * 100}%` : '0%';
-                bar.textContent = `${index + 1}: ${count}`;
-                distContainer.appendChild(bar);
-            });
 
             updateAttemptsTable();
         }
