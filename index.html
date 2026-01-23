@@ -26,8 +26,8 @@
                 --backspace-color: #ff6b6b;
                 --newgame-color: #3498db;
                 --newgame-hover: #2980b9;
-                --meaning-color: #3498db;
-                --meaning-bg: rgba(52, 152, 219, 0.1);
+                --easy-color: #4CAF50;
+                --hard-color: #f44336;
             }
 
             .dark-mode {
@@ -44,8 +44,8 @@
                 --backspace-color: #e74c3c;
                 --newgame-color: #2980b9;
                 --newgame-hover: #3498db;
-                --meaning-color: #4a8bc7;
-                --meaning-bg: rgba(74, 139, 199, 0.15);
+                --easy-color: #4CAF50;
+                --hard-color: #f44336;
             }
 
             body {
@@ -1020,158 +1020,60 @@
                 }
             }
 
-            /* تنسيقات خانة معنى الكلمة */
-            .word-meaning-container {
-                margin: 20px 0;
-                padding: 18px;
-                border: 2px solid var(--meaning-color);
-                border-radius: 12px;
-                background-color: var(--meaning-bg);
-                animation: fadeIn 0.8s ease;
-            }
-
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(10px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            .word-meaning-title {
-                font-size: 1.2rem;
-                font-weight: bold;
-                margin-bottom: 15px;
-                text-align: center;
-                color: var(--meaning-color);
+            /* أنماط لمستوى الصعوبة */
+            .difficulty-selector {
                 display: flex;
                 align-items: center;
-                justify-content: center;
-                gap: 10px;
+                gap: 8px;
+                margin-left: 10px;
             }
 
-            .word-meaning-title i {
-                font-size: 1.3rem;
-            }
-
-            .word-meaning-content {
-                font-size: 1rem;
-                line-height: 1.6;
-                color: var(--text-color);
-                text-align: center;
-                padding: 10px 5px;
-            }
-
-            .word-meaning-arabic {
-                font-size: 1.1rem;
+            .difficulty-btn {
+                padding: 6px 12px;
+                border-radius: 20px;
                 font-weight: bold;
-                color: var(--correct-color);
-                margin-bottom: 12px;
-                padding: 8px;
-                background-color: rgba(var(--correct-color), 0.1);
-                border-radius: 8px;
-                border-right: 4px solid var(--correct-color);
+                font-size: 0.8rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                border: 2px solid transparent;
             }
 
-            .word-meaning-english {
-                font-size: 0.95rem;
-                color: var(--present-color);
-                font-style: italic;
-                margin-top: 10px;
-                padding: 8px;
-                background-color: rgba(var(--present-color), 0.1);
-                border-radius: 8px;
-                border-right: 4px solid var(--present-color);
+            .difficulty-btn.easy {
+                background-color: var(--easy-color);
+                color: white;
             }
 
-            .word-example {
-                font-size: 0.9rem;
-                color: var(--text-color);
-                margin-top: 12px;
-                padding: 10px;
-                background-color: rgba(var(--default-color), 0.1);
-                border-radius: 8px;
-                border-right: 4px solid var(--default-color);
-                font-style: italic;
+            .difficulty-btn.hard {
+                background-color: var(--hard-color);
+                color: white;
             }
 
-            .word-example::before {
-                content: "مثال: ";
-                font-weight: bold;
-                color: var(--meaning-color);
+            .difficulty-btn.active {
+                border-color: var(--text-color);
+                transform: scale(1.05);
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
             }
 
-            .meaning-divider {
-                height: 1px;
-                background-color: var(--border-color);
-                margin: 15px 0;
-                opacity: 0.5;
-            }
-
-            @media (max-width: 640px) {
-                .word-meaning-container {
-                    margin: 15px 0;
-                    padding: 15px;
-                }
-
-                .word-meaning-title {
-                    font-size: 1.1rem;
-                    margin-bottom: 12px;
-                }
-
-                .word-meaning-content {
-                    font-size: 0.95rem;
-                    line-height: 1.5;
-                }
-
-                .word-meaning-arabic {
-                    font-size: 1rem;
-                    margin-bottom: 10px;
-                }
-
-                .word-meaning-english {
-                    font-size: 0.9rem;
-                    margin-top: 8px;
-                }
-
-                .word-example {
-                    font-size: 0.85rem;
-                    margin-top: 10px;
-                }
+            .difficulty-btn:not(.active):hover {
+                opacity: 0.8;
             }
 
             @media (max-width: 480px) {
-                .word-meaning-container {
-                    margin: 12px 0;
-                    padding: 12px;
+                .difficulty-btn {
+                    padding: 4px 8px;
+                    font-size: 0.7rem;
                 }
+            }
 
-                .word-meaning-title {
-                    font-size: 1rem;
-                    margin-bottom: 10px;
-                }
+            .difficulty-label {
+                font-size: 0.9rem;
+                font-weight: bold;
+                color: var(--text-color);
+            }
 
-                .word-meaning-content {
-                    font-size: 0.9rem;
-                    line-height: 1.4;
-                }
-
-                .word-meaning-arabic {
-                    font-size: 0.95rem;
-                    margin-bottom: 8px;
-                }
-
-                .word-meaning-english {
-                    font-size: 0.85rem;
-                    margin-top: 6px;
-                }
-
-                .word-example {
-                    font-size: 0.8rem;
-                    margin-top: 8px;
+            @media (max-width: 480px) {
+                .difficulty-label {
+                    display: none;
                 }
             }
         </style>
@@ -1189,6 +1091,17 @@
             </div>
             <h1 class="text-xl font-bold text-center flex-1 mx-2">كَـلِمَة</h1>
             <div class="flex items-center gap-2">
+                <div class="difficulty-selector">
+                    <span class="difficulty-label mobile-hidden">الصعوبة:</span>
+                    <button id="easyBtn" class="difficulty-btn easy active" title="8 محاولات">
+                        <span class="mobile-hidden">سهل</span>
+                        <span class="hidden mobile-hidden:inline"> (8)</span>
+                    </button>
+                    <button id="hardBtn" class="difficulty-btn hard" title="6 محاولات">
+                        <span class="mobile-hidden">صعب</span>
+                        <span class="hidden mobile-hidden:inline"> (6)</span>
+                    </button>
+                </div>
                 <button id="newGameHeaderBtn" class="p-2 rounded-full flex items-center justify-center" title="لعبة جديدة">
                     <i class="fas fa-redo-alt text-lg"></i>
                     <span class="mobile-hidden text-sm mr-1">جديد</span>
@@ -1215,8 +1128,7 @@
                         <button id="closeHelp" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
                     </div>
                     <div class="mb-6">
-                        <p class="text-base mb-5 text-center">خمّن الكلمة في 6 محاولات.
-                    </p>
+                        <p class="text-base mb-5 text-center" id="helpAttemptsText">خمّن الكلمة في 8 محاولات.</p>
                         <!-- اللون الأخضر -->
                         <div class="color-example">
                             <div class="color-box correct"></div>
@@ -1248,8 +1160,7 @@
                         </p>
                     </div>
                     <div class="text-center mt-5">
-                        <button id="startGameBtn" class="bg-[var(--correct-color)] text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 text-base">فهمت، ابدأ اللعب
-                    </button>
+                        <button id="startGameBtn" class="bg-[var(--correct-color)] text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 text-base">فهمت، ابدأ اللعب</button>
                     </div>
                 </div>
             </div>
@@ -1265,15 +1176,13 @@
                     <div id="gameResultInfo" class="mb-4"></div>
                     <div id="attemptsTableContainer" class="attempts-table-container">
                         <div class="attempts-title">سجل المحاولات</div>
-                        <div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة. ابدأ اللعب الآن!
-                    </div>
+                        <div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة. ابدأ اللعب الآن!</div>
                         <table class="attempts-table">
                             <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>المحاولة</th>
                                     <th>النتيجة</th>
-                                    <th>التاريخ</th>
                                 </tr>
                             </thead>
                             <tbody id="attemptsTableBody"></tbody>
@@ -1303,7 +1212,7 @@
                 </div>
             </div>
         </div>
-        <!-- نافذة نتائج اللعبة مع مصفوفة المحاولات المرئية ومعنى الكلمة -->
+        <!-- نافذة نتائج اللعبة مع مصفوفة المحاولات المرئية -->
         <div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
             <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
                 <div class="p-5">
@@ -1312,18 +1221,6 @@
                         <button id="closeGameResult" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
                     </div>
                     <div id="gameResultDetails" class="text-center mb-4"></div>
-                    
-                    <!-- خانة معنى الكلمة - تظهر فقط بعد الفوز أو الخسارة -->
-                    <div id="wordMeaningContainer" class="word-meaning-container hidden">
-                        <h3 class="word-meaning-title">
-                            <i class="fas fa-book-open"></i>
-                            معنى الكلمة
-                        </h3>
-                        <div id="wordMeaningContent" class="word-meaning-content">
-                            <!-- سيتم تعبئة محتوى المعنى هنا عبر JavaScript -->
-                        </div>
-                    </div>
-                    
                     <!-- مصفوفة المحاولات المرئية -->
                     <div id="attemptMatrixContainer" class="attempt-matrix-container">
                         <h3 class="matrix-title">خريطة رحلتك في التفكير</h3>
@@ -1331,15 +1228,15 @@
                         <div class="matrix-legend">
                             <div class="legend-item">
                                 <div class="legend-color correct"></div>
-                                <span>حرف صحيح في مكانه</span>
+                                <span></span>
                             </div>
                             <div class="legend-item">
                                 <div class="legend-color present"></div>
-                                <span>حرف صحيح في مكان خاطئ</span>
+                                <span></span>
                             </div>
                             <div class="legend-item">
                                 <div class="legend-color absent"></div>
-                                <span>حرف غير موجود</span>
+                                <span></span>
                             </div>
                         </div>
                     </div>
@@ -1358,22 +1255,22 @@
         </div>
         <script>
             // مفاتيح التخزين المحلي
-            const HELP_SEEN_KEY = 'kalima_help_seen_v8';
-            const STATS_KEY = 'kalima_stats_v8';
-            const THEME_KEY = 'kalima_dark_v8';
-            const ATTEMPTS_KEY = 'kalima_attempts_v8';
-            const ATTEMPT_MATRICES_KEY = 'kalima_attempt_matrices_v4';
+            const HELP_SEEN_KEY = 'kalima_help_seen_v7';
+            const STATS_KEY = 'kalima_stats_v7';
+            const THEME_KEY = 'kalima_dark_v7';
+            const ATTEMPTS_KEY = 'kalima_attempts_v7';
+            const ATTEMPT_MATRICES_KEY = 'kalima_attempt_matrices_v3';
+            const DIFFICULTY_KEY = 'kalima_difficulty_v1';
 
-            // قائمة الكلمات العربية مع معانيها
-       const WORD_LIST = ["ضضضضض", "صصصصص", "سسسسس", "ننننن"];
+            // قائمة الكلمات العربية (محدثة)
+            const WORD_LIST = ["ضضضضض", "صصصصص", "سسسسس", "ننننن"];
 
-        // قاموس موسع للتحقق (نفس الكلمات)
-        const DICTIONARY = ["ضضضضض", "صصصصص", "سسسسس", "ننننن"];
+            // قاموس موسع للتحقق (نفس الكلمات)
+            const DICTIONARY = ["ضضضضض", "صصصصص", "سسسسس", "ننننن"];
             
             // حالة اللعبة
             const gameState = {
                 targetWord: "",
-                targetMeaning: "",
                 currentRow: 0,
                 currentGuess: "",
                 gameOver: false,
@@ -1393,12 +1290,14 @@
                 // مصفوفات المحاولات المرئية
                 isProcessing: false,
                 // علامة لتجنب المعالجة المتزامنة
-                inputLock: false // قفل لإدخال الحروف أثناء المعالجة
+                inputLock: false, // قفل لإدخال الحروف أثناء المعالجة
+                difficulty: 'easy', // 'easy' أو 'hard'
+                maxRows: 8 // القيمة الافتراضية
             };
 
             // التهيئة
             function init() {
-                cleanupOldData();
+                loadDifficulty();
                 loadStats();
                 loadAttemptsHistory();
                 loadAttemptMatrices();
@@ -1408,14 +1307,55 @@
                 startNewGame();
                 setupEventListeners();
                 showHelpIfFirstTime();
+                updateDifficultyUI();
             }
 
-            // تنظيف البيانات القديمة
-            function cleanupOldData() {
-                const oldKeys = ['kalima_help_seen', 'kalima_stats', 'kalima_dark', 'kalima_attempts', 'kalima_attempt_matrices'];
-                oldKeys.forEach(key => {
-                    localStorage.removeItem(key);
-                });
+            // تحميل مستوى الصعوبة
+            function loadDifficulty() {
+                const saved = localStorage.getItem(DIFFICULTY_KEY);
+                if (saved && (saved === 'easy' || saved === 'hard')) {
+                    gameState.difficulty = saved;
+                } else {
+                    gameState.difficulty = 'easy';
+                }
+                gameState.maxRows = gameState.difficulty === 'easy' ? 8 : 6;
+            }
+
+            // حفظ مستوى الصعوبة
+            function saveDifficulty() {
+                localStorage.setItem(DIFFICULTY_KEY, gameState.difficulty);
+            }
+
+            // تحديث واجهة مستوى الصعوبة
+            function updateDifficultyUI() {
+                const easyBtn = document.getElementById('easyBtn');
+                const hardBtn = document.getElementById('hardBtn');
+                const helpText = document.getElementById('helpAttemptsText');
+                
+                if (gameState.difficulty === 'easy') {
+                    easyBtn.classList.add('active');
+                    hardBtn.classList.remove('active');
+                    helpText.textContent = 'خمّن الكلمة في 8 محاولات.';
+                } else {
+                    easyBtn.classList.remove('active');
+                    hardBtn.classList.add('active');
+                    helpText.textContent = 'خمّن الكلمة في 6 محاولات.';
+                }
+            }
+
+            // تغيير مستوى الصعوبة
+            function changeDifficulty(newDifficulty) {
+                if (newDifficulty !== 'easy' && newDifficulty !== 'hard') return;
+                if (gameState.difficulty === newDifficulty) return;
+                
+                gameState.difficulty = newDifficulty;
+                gameState.maxRows = newDifficulty === 'easy' ? 8 : 6;
+                saveDifficulty();
+                updateDifficultyUI();
+                
+                // إعادة إنشاء الشبكة بناءً على الصعوبة الجديدة
+                createGrid();
+                startNewGame();
             }
 
             // تحميل الإحصائيات
@@ -1512,19 +1452,21 @@
             function showHelpIfFirstTime() {
                 const hasSeenHelp = localStorage.getItem(HELP_SEEN_KEY);
                 if (!hasSeenHelp) {
-                    setTimeout(() => {
+                    setTimeout( () => {
                         document.getElementById('helpModal').classList.remove('hidden');
                     }, 500);
                     localStorage.setItem(HELP_SEEN_KEY, 'true');
                 }
             }
 
-            // إنشاء شبكة اللعبة - 6 صفوف
+            // إنشاء شبكة اللعبة بناءً على الصعوبة
             function createGrid() {
                 const grid = document.getElementById('grid');
                 grid.innerHTML = '';
 
-                for (let row = 0; row < 6; row++) {
+                const rows = gameState.maxRows;
+
+                for (let row = 0; row < rows; row++) {
                     const rowDiv = document.createElement('div');
                     rowDiv.className = 'grid-row';
                     rowDiv.id = `row-${row}`;
@@ -1547,16 +1489,12 @@
             function createKeyboard() {
                 const keyboard = document.getElementById('keyboard');
 
-                // ترتيب لوحة المفاتيح
-                const layout = [
-                    ["ج", "ح", "خ", "ه", "ع", "غ", "ف", "ق", "ث", "ص", "ض"],
-                    ["ة", "ك", "م", "ن", "ت", "ا", "ل", "ب", "ي", "س", "ش"],
-                    ["ى", "و", "ر", "ز", "د", "ذ", "ط", "ظ", "ء", "أ"]
-                ];
+                // ترتيب لوحة المفاتيح حسب الطلب
+                const layout = [["ج", "ح", "خ", "ه", "ع", "غ", "ف", "ق", "ث", "ص", "ض"], ["ة", "ك", "م", "ن", "ت", "ا", "ل", "ب", "ي", "س", "ش"], ["ى", "و", "ر", "ز", "د", "ذ", "ط", "ظ", "ء", "أ"]];
 
                 keyboard.innerHTML = '';
 
-                layout.forEach((row, index) => {
+                layout.forEach( (row, index) => {
                     const rowDiv = document.createElement('div');
                     rowDiv.className = 'keyboard-row';
 
@@ -1583,7 +1521,7 @@
             }
 
             // إنشاء زر في لوحة المفاتيح
-            function createKey(text, value, extraClass = '') {
+            function createKey(text, value, extraClass='') {
                 const key = document.createElement('button');
                 key.className = `key ${extraClass}`;
                 key.textContent = text;
@@ -1598,11 +1536,8 @@
 
             // بدء لعبة جديدة
             function startNewGame() {
-                // اختيار كلمة عشوائية مع معناها
-                const randomIndex = Math.floor(Math.random() * WORD_LIST.length);
-                const selectedWord = WORD_LIST[randomIndex];
-                gameState.targetWord = selectedWord.word;
-                gameState.targetMeaning = selectedWord.meaning;
+                // اختيار كلمة عشوائية
+                gameState.targetWord = WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
 
                 // إعادة تعيين حالة اللعبة الحالية بالكامل
                 gameState.currentRow = 0;
@@ -1653,9 +1588,6 @@
                 document.getElementById('gameResultModal').classList.add('hidden');
                 document.getElementById('statsModal').classList.add('hidden');
                 
-                // إخفاء خانة معنى الكلمة
-                document.getElementById('wordMeaningContainer').classList.add('hidden');
-                
                 // تحديث الصف الحالي
                 updateCurrentRow();
             }
@@ -1695,7 +1627,7 @@
                     const tile = document.getElementById(`tile-${gameState.currentRow}-${gameState.currentGuess.length - 1}`);
                     if (tile) {
                         tile.classList.add('filled');
-                        setTimeout(() => {
+                        setTimeout( () => {
                             tile.classList.remove('filled');
                             gameState.inputLock = false;
                             // فتح الإدخال بعد انتهاء التأثير
@@ -1730,6 +1662,20 @@
                     const tile = document.getElementById(`tile-${gameState.currentRow}-${i}`);
                     if (tile) {
                         tile.textContent = gameState.currentGuess[i];
+                    }
+                }
+            }
+
+            // تحديث جميع الصفوف (للاستخدام عند بدء لعبة جديدة)
+            function updateAllRows() {
+                const rows = gameState.maxRows;
+                for (let row = 0; row < rows; row++) {
+                    for (let col = 0; col < 5; col++) {
+                        const tile = document.getElementById(`tile-${row}-${col}`);
+                        if (tile) {
+                            tile.textContent = '';
+                            tile.className = 'tile';
+                        }
                     }
                 }
             }
@@ -1784,10 +1730,10 @@
 
                     const delay = i * 300;
 
-                    setTimeout(() => {
+                    setTimeout( () => {
                         tile.classList.add('flip');
 
-                        setTimeout(() => {
+                        setTimeout( () => {
                             tile.classList.add(result[i]);
                             updateKeyboard(guess[i], result[i]);
 
@@ -1795,7 +1741,7 @@
 
                             // بعد اكتمال جميع الحركات، نفحص النتيجة
                             if (completedAnimations === totalAnimations) {
-                                setTimeout(() => {
+                                setTimeout( () => {
                                     processGuessResult(guess, target);
                                     gameState.inputLock = false;
                                     // فتح الإدخال
@@ -1845,8 +1791,7 @@
                     gameState.gameOver = true;
                     gameState.isProcessing = false;
                     handleWin();
-                } else if (gameState.currentRow === 5) {
-                    // تغيير من 7 إلى 5 (الصف السادس)
+                } else if (gameState.currentRow === gameState.maxRows - 1) { // استخدام maxRows بدلاً من قيمة ثابتة
                     gameState.gameOver = true;
                     gameState.isProcessing = false;
                     handleLoss();
@@ -1879,67 +1824,6 @@
                 }
             }
 
-            // عرض معنى الكلمة
-            function displayWordMeaning() {
-                const container = document.getElementById('wordMeaningContainer');
-                const content = document.getElementById('wordMeaningContent');
-                
-                // تنظيف المحتوى القديم
-                content.innerHTML = '';
-                
-                // إضافة المعنى باللغة العربية
-                const arabicMeaning = document.createElement('div');
-                arabicMeaning.className = 'word-meaning-arabic';
-                arabicMeaning.textContent = gameState.targetMeaning;
-                content.appendChild(arabicMeaning);
-                
-                // إضافة خط فاصل
-                const divider = document.createElement('div');
-                divider.className = 'meaning-divider';
-                content.appendChild(divider);
-                
-                // إضافة معلومات إضافية
-                const additionalInfo = document.createElement('div');
-                additionalInfo.className = 'word-example';
-                
-                // إضافة مثال للكلمة
-                const examples = {
-                    "كتاب": "قرأت كتابًا مفيدًا عن تاريخ العرب",
-                    "قلم": "كتبت الواجب بقلم جديد",
-                    "بحر": "سبحنا في البحر الصافي",
-                    "شمس": "تشرق الشمس كل صباح",
-                    "قمر": "القمر بدرٌ في منتصف الشهر",
-                    "ورد": "قدمت لها باقة ورد حمراء",
-                    "بيت": "بيتي هو مكان راحتي وسعادتي",
-                    "حب": "الحب يجعل الحياة أجمل",
-                    "عسل": "العسل مفيد للصحة والمناعة",
-                    "ذهب": "اشترى خاتمًا من الذهب الخالص",
-                    "فكر": "التفكير السليم يقود إلى القرار الصحيح",
-                    "علم": "العلم نور والجهل ظلام",
-                    "نجم": "النجم اللامع يزين السماء",
-                    "نهر": "النهر العذب يروي الأرض",
-                    "صبر": "الصبر مفتاح الفرج",
-                    "ليل": "الليل يغطي الأرض بسواده",
-                    "نهار": "النهار وقت العمل والإنتاج",
-                    "خير": "افعل الخير تجده أمامك",
-                    "جبل": "الجبل الشاهق تحدي للمتسلقين",
-                    "وطن": "الوطن أغلى ما نملك"
-                };
-                
-                const example = examples[gameState.targetWord] || `الكلمة "${gameState.targetWord}" تستخدم في العديد من الجمل العربية`;
-                additionalInfo.textContent = example;
-                content.appendChild(additionalInfo);
-                
-                // إضافة معلومات عن عدد الأحرف
-                const wordInfo = document.createElement('div');
-                wordInfo.className = 'word-meaning-english';
-                wordInfo.textContent = `كلمة مكونة من 5 أحرف | عدد مرات الظهور في اللعبة: ${gameState.stats.played}`;
-                content.appendChild(wordInfo);
-                
-                // عرض الخانة
-                container.classList.remove('hidden');
-            }
-
             /**
              * دالة renderAttemptMatrix - تعرض مصفوفة المحاولات المرئية
              */
@@ -1956,11 +1840,11 @@
                     return;
                 }
 
-                // 4. حساب عدد المحاولات المستخدمة فقط (ليس كل 6 صفوف)
+                // 4. حساب عدد المحاولات المستخدمة فقط (ليس كل الصفوف)
                 const usedAttempts = gameState.attemptResults.filter(row => row && row.length > 0);
 
                 // 5. المرور على كل محاولة (Loop على المحاولات)
-                usedAttempts.forEach((rowResults, rowIndex) => {
+                usedAttempts.forEach( (rowResults, rowIndex) => {
                     // 5.1 إنشاء صف جديد
                     const rowDiv = document.createElement('div');
                     rowDiv.className = 'matrix-row';
@@ -1969,7 +1853,7 @@
                     rowDiv.dataset.attemptNumber = rowIndex + 1;
 
                     // 6. المرور على كل حرف في المحاولة (Loop على الحروف)
-                    rowResults.forEach((cellStatus, cellIndex) => {
+                    rowResults.forEach( (cellStatus, cellIndex) => {
                         // 6.1 إنشاء مربع (Tile) جديد
                         const tile = document.createElement('div');
 
@@ -2015,6 +1899,9 @@
                     // 7. إضافة الصف إلى الحاوية
                     container.appendChild(rowDiv);
                 });
+
+                // 8. تحديث معلومات إضافية (مثال: عدد المحاولات)
+                updateMatrixStats(usedAttempts.length);
             }
 
             /**
@@ -2029,6 +1916,39 @@
                 return statusMap[status] || 'حالة غير معروفة';
             }
 
+            /**
+             * دالة مساعدة: تحديث إحصائيات المصفوفة
+             */
+            function updateMatrixStats(totalAttempts) {
+                // حساب توزيع الألوان
+                const colorStats = {
+                    correct: 0,
+                    present: 0,
+                    absent: 0
+                };
+
+                gameState.attemptResults.forEach(row => {
+                    row.forEach(cell => {
+                        if (colorStats[cell] !== undefined) {
+                            colorStats[cell]++;
+                        }
+                    });
+                });
+
+                // تحديث واجهة المستخدم (إذا كان هناك مكان لعرضها)
+                const statsElement = document.getElementById('matrixStats');
+                if (statsElement) {
+                    statsElement.innerHTML = `
+                    <div class="text-sm text-gray-600 dark:text-gray-400">
+                        <div>عدد المحاولات: <strong>${totalAttempts}</strong></div>
+                        <div>المربعات الخضراء: <strong>${colorStats.correct}</strong></div>
+                        <div>المربعات الصفراء: <strong>${colorStats.present}</strong></div>
+                        <div>المربعات الرمادية: <strong>${colorStats.absent}</strong></div>
+                    </div>
+                `;
+                }
+            }
+
             // التعامل مع الفوز
             function handleWin() {
                 gameState.gameDuration = Math.floor((new Date() - gameState.startTime) / 1000);
@@ -2040,6 +1960,7 @@
                     matrix: attemptMatrix,
                     result: 'win',
                     attempts: gameState.currentRow + 1,
+                    difficulty: gameState.difficulty,
                     date: new Date().toISOString(),
                     word: gameState.targetWord
                 });
@@ -2055,11 +1976,7 @@
                     attemptNumber: gameState.attemptsHistory.length + 1,
                     attempts: gameState.currentRow + 1,
                     result: 'win',
-                    date: new Date().toLocaleDateString('ar-SA'),
-                    time: new Date().toLocaleTimeString('ar-SA', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    }),
+                    difficulty: gameState.difficulty,
                     word: gameState.targetWord,
                     duration: gameState.gameDuration
                 };
@@ -2080,12 +1997,12 @@
                 saveStats();
                 updateStatsDisplay();
 
-                setTimeout(() => {
+                setTimeout( () => {
                     const rows = document.querySelectorAll('.grid-row');
                     rows[gameState.currentRow].classList.add('win-celebration');
                 }, 2000);
 
-                setTimeout(() => {
+                setTimeout( () => {
                     showGameResultModal(true);
                 }, 2500);
             }
@@ -2100,7 +2017,8 @@
                 gameState.attemptMatrices.unshift({
                     matrix: attemptMatrix,
                     result: 'loss',
-                    attempts: 6, // تغيير من 8 إلى 6
+                    attempts: gameState.maxRows,
+                    difficulty: gameState.difficulty,
                     date: new Date().toISOString(),
                     word: gameState.targetWord
                 });
@@ -2114,13 +2032,9 @@
 
                 const attemptRecord = {
                     attemptNumber: gameState.attemptsHistory.length + 1,
-                    attempts: 6, // تغيير من 8 إلى 6
+                    attempts: gameState.maxRows,
                     result: 'loss',
-                    date: new Date().toLocaleDateString('ar-SA'),
-                    time: new Date().toLocaleTimeString('ar-SA', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    }),
+                    difficulty: gameState.difficulty,
                     word: gameState.targetWord,
                     duration: gameState.gameDuration
                 };
@@ -2139,7 +2053,7 @@
                 saveStats();
                 updateStatsDisplay();
 
-                setTimeout(() => {
+                setTimeout( () => {
                     showGameResultModal(false);
                 }, 1500);
             }
@@ -2173,7 +2087,7 @@
                 const messageEl = document.getElementById('message');
                 messageEl.textContent = text;
                 messageEl.classList.add('bounce');
-                setTimeout(() => messageEl.classList.remove('bounce'), 500);
+                setTimeout( () => messageEl.classList.remove('bounce'), 500);
             }
 
             // هز الصف
@@ -2181,11 +2095,11 @@
                 const row = document.getElementById(`row-${gameState.currentRow}`);
                 if (row) {
                     row.classList.add('shake');
-                    setTimeout(() => row.classList.remove('shake'), 500);
+                    setTimeout( () => row.classList.remove('shake'), 500);
                 }
             }
 
-            // عرض نافذة نتائج اللعبة مع مصفوفة المحاولات ومعنى الكلمة
+            // عرض نافذة نتائج اللعبة مع مصفوفة المحاولات
             function showGameResultModal(isWin) {
                 const modal = document.getElementById('gameResultModal');
                 const title = document.getElementById('resultModalTitle');
@@ -2207,29 +2121,26 @@
                 `;
                 }
 
-                // عرض معنى الكلمة
-                displayWordMeaning();
-
                 // عرض مصفوفة المحاولات المرئية
                 renderAttemptMatrix();
 
                 modal.classList.remove('hidden');
 
                 // إضافة تأثير ظهور
-                setTimeout(() => {
+                setTimeout( () => {
                     modal.style.opacity = '1';
                     modal.style.transform = 'scale(1)';
                 }, 10);
             }
 
             // عرض الإحصائيات
-            function showStats(isWin = false) {
+            function showStats(isWin=false) {
                 updateStatsDisplay(isWin);
                 document.getElementById('statsModal').classList.remove('hidden');
             }
 
             // تحديث عرض الإحصائيات
-            function updateStatsDisplay(isWin = false) {
+            function updateStatsDisplay(isWin=false) {
                 document.getElementById('playedCount').textContent = gameState.stats.played;
                 document.getElementById('winPercent').textContent = gameState.stats.played > 0 ? Math.round((gameState.stats.wins / gameState.stats.played) * 100) + '%' : '0%';
                 document.getElementById('currentStreak').textContent = gameState.stats.currentStreak;
@@ -2254,12 +2165,14 @@
                     if (isWin) {
                         resultDiv.innerHTML += `
                         <div class="text-green-600 font-bold text-base mb-2">🎉 مبروك! فزت في المحاولة ${gameState.currentRow + 1}!</div>
+                        <div class="text-gray-600 dark:text-gray-400 text-sm">الصعوبة: ${gameState.difficulty === 'easy' ? 'سهل (8 محاولات)' : 'صعب (6 محاولات)'}</div>
                         <div class="text-gray-600 dark:text-gray-400 text-sm">الكلمة الصحيحة كانت:</div>
                         <div class="correct-word">${gameState.targetWord}</div>
                     `;
                     } else {
                         resultDiv.innerHTML += `
                         <div class="text-red-600 font-bold text-base mb-2">💔 انتهت المحاولات!</div>
+                        <div class="text-gray-600 dark:text-gray-400 text-sm">الصعوبة: ${gameState.difficulty === 'easy' ? 'سهل (8 محاولات)' : 'صعب (6 محاولات)'}</div>
                         <div class="text-gray-600 dark:text-gray-400 text-sm">الكلمة الصحيحة كانت:</div>
                         <div class="correct-word">${gameState.targetWord}</div>
                     `;
@@ -2271,7 +2184,7 @@
                 updateAttemptsTable();
             }
 
-            // تحديث جدول المحاولات
+            // تحديث جدول المحاولات (بدون عمود التاريخ)
             function updateAttemptsTable() {
                 const tableBody = document.getElementById('attemptsTableBody');
                 const container = document.getElementById('attemptsTableContainer');
@@ -2301,13 +2214,9 @@
                         resultSpan.textContent = attempt.result === 'win' ? 'فوز ✓' : 'خسارة ✗';
                         resultCell.appendChild(resultSpan);
 
-                        const dateCell = document.createElement('td');
-                        dateCell.textContent = attempt.date;
-
                         row.appendChild(attemptNumberCell);
                         row.appendChild(attemptsCell);
                         row.appendChild(resultCell);
-                        row.appendChild(dateCell);
 
                         tableBody.appendChild(row);
                     });
@@ -2342,6 +2251,14 @@
 
                 document.getElementById('newGameHeaderBtn').addEventListener('click', () => {
                     startNewGame();
+                });
+
+                document.getElementById('easyBtn').addEventListener('click', () => {
+                    changeDifficulty('easy');
+                });
+
+                document.getElementById('hardBtn').addEventListener('click', () => {
+                    changeDifficulty('hard');
                 });
 
                 document.getElementById('themeToggle').addEventListener('click', () => {
