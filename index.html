@@ -26,6 +26,8 @@
                 --backspace-color: #ff6b6b;
                 --newgame-color: #3498db;
                 --newgame-hover: #2980b9;
+                --meaning-color: #3498db;
+                --meaning-bg: rgba(52, 152, 219, 0.1);
             }
 
             .dark-mode {
@@ -42,6 +44,8 @@
                 --backspace-color: #e74c3c;
                 --newgame-color: #2980b9;
                 --newgame-hover: #3498db;
+                --meaning-color: #4a8bc7;
+                --meaning-bg: rgba(74, 139, 199, 0.15);
             }
 
             body {
@@ -1015,6 +1019,161 @@
                     font-size: 0.95rem;
                 }
             }
+
+            /* تنسيقات خانة معنى الكلمة */
+            .word-meaning-container {
+                margin: 20px 0;
+                padding: 18px;
+                border: 2px solid var(--meaning-color);
+                border-radius: 12px;
+                background-color: var(--meaning-bg);
+                animation: fadeIn 0.8s ease;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .word-meaning-title {
+                font-size: 1.2rem;
+                font-weight: bold;
+                margin-bottom: 15px;
+                text-align: center;
+                color: var(--meaning-color);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .word-meaning-title i {
+                font-size: 1.3rem;
+            }
+
+            .word-meaning-content {
+                font-size: 1rem;
+                line-height: 1.6;
+                color: var(--text-color);
+                text-align: center;
+                padding: 10px 5px;
+            }
+
+            .word-meaning-arabic {
+                font-size: 1.1rem;
+                font-weight: bold;
+                color: var(--correct-color);
+                margin-bottom: 12px;
+                padding: 8px;
+                background-color: rgba(var(--correct-color), 0.1);
+                border-radius: 8px;
+                border-right: 4px solid var(--correct-color);
+            }
+
+            .word-meaning-english {
+                font-size: 0.95rem;
+                color: var(--present-color);
+                font-style: italic;
+                margin-top: 10px;
+                padding: 8px;
+                background-color: rgba(var(--present-color), 0.1);
+                border-radius: 8px;
+                border-right: 4px solid var(--present-color);
+            }
+
+            .word-example {
+                font-size: 0.9rem;
+                color: var(--text-color);
+                margin-top: 12px;
+                padding: 10px;
+                background-color: rgba(var(--default-color), 0.1);
+                border-radius: 8px;
+                border-right: 4px solid var(--default-color);
+                font-style: italic;
+            }
+
+            .word-example::before {
+                content: "مثال: ";
+                font-weight: bold;
+                color: var(--meaning-color);
+            }
+
+            .meaning-divider {
+                height: 1px;
+                background-color: var(--border-color);
+                margin: 15px 0;
+                opacity: 0.5;
+            }
+
+            @media (max-width: 640px) {
+                .word-meaning-container {
+                    margin: 15px 0;
+                    padding: 15px;
+                }
+
+                .word-meaning-title {
+                    font-size: 1.1rem;
+                    margin-bottom: 12px;
+                }
+
+                .word-meaning-content {
+                    font-size: 0.95rem;
+                    line-height: 1.5;
+                }
+
+                .word-meaning-arabic {
+                    font-size: 1rem;
+                    margin-bottom: 10px;
+                }
+
+                .word-meaning-english {
+                    font-size: 0.9rem;
+                    margin-top: 8px;
+                }
+
+                .word-example {
+                    font-size: 0.85rem;
+                    margin-top: 10px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .word-meaning-container {
+                    margin: 12px 0;
+                    padding: 12px;
+                }
+
+                .word-meaning-title {
+                    font-size: 1rem;
+                    margin-bottom: 10px;
+                }
+
+                .word-meaning-content {
+                    font-size: 0.9rem;
+                    line-height: 1.4;
+                }
+
+                .word-meaning-arabic {
+                    font-size: 0.95rem;
+                    margin-bottom: 8px;
+                }
+
+                .word-meaning-english {
+                    font-size: 0.85rem;
+                    margin-top: 6px;
+                }
+
+                .word-example {
+                    font-size: 0.8rem;
+                    margin-top: 8px;
+                }
+            }
         </style>
     </head>
     <body class="flex flex-col min-h-screen">
@@ -1056,7 +1215,7 @@
                         <button id="closeHelp" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
                     </div>
                     <div class="mb-6">
-                        <p class="text-base mb-5 text-center">خمّن الكلمة في 8 محاولات.
+                        <p class="text-base mb-5 text-center">خمّن الكلمة في 6 محاولات.
                     </p>
                         <!-- اللون الأخضر -->
                         <div class="color-example">
@@ -1144,7 +1303,7 @@
                 </div>
             </div>
         </div>
-        <!-- نافذة نتائج اللعبة مع مصفوفة المحاولات المرئية -->
+        <!-- نافذة نتائج اللعبة مع مصفوفة المحاولات المرئية ومعنى الكلمة -->
         <div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
             <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
                 <div class="p-5">
@@ -1153,6 +1312,18 @@
                         <button id="closeGameResult" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
                     </div>
                     <div id="gameResultDetails" class="text-center mb-4"></div>
+                    
+                    <!-- خانة معنى الكلمة - تظهر فقط بعد الفوز أو الخسارة -->
+                    <div id="wordMeaningContainer" class="word-meaning-container hidden">
+                        <h3 class="word-meaning-title">
+                            <i class="fas fa-book-open"></i>
+                            معنى الكلمة
+                        </h3>
+                        <div id="wordMeaningContent" class="word-meaning-content">
+                            <!-- سيتم تعبئة محتوى المعنى هنا عبر JavaScript -->
+                        </div>
+                    </div>
+                    
                     <!-- مصفوفة المحاولات المرئية -->
                     <div id="attemptMatrixContainer" class="attempt-matrix-container">
                         <h3 class="matrix-title">خريطة رحلتك في التفكير</h3>
@@ -1160,15 +1331,15 @@
                         <div class="matrix-legend">
                             <div class="legend-item">
                                 <div class="legend-color correct"></div>
-                                <span></span>
+                                <span>حرف صحيح في مكانه</span>
                             </div>
                             <div class="legend-item">
                                 <div class="legend-color present"></div>
-                                <span></span>
+                                <span>حرف صحيح في مكان خاطئ</span>
                             </div>
                             <div class="legend-item">
                                 <div class="legend-color absent"></div>
-                                <span></span>
+                                <span>حرف غير موجود</span>
                             </div>
                         </div>
                     </div>
@@ -1176,14 +1347,10 @@
                         <button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90">
                             <i class="fas fa-redo-alt ml-2"></i>
                             العب مرة أخرى
-                    
-                        
                         </button>
                         <button id="viewStatsBtn" class="border border-[var(--border-color)] hover:bg-[var(--default-color)]">
                             <i class="fas fa-chart-bar ml-2"></i>
                             عرض الإحصائيات
-                    
-                        
                         </button>
                     </div>
                 </div>
@@ -1191,14 +1358,14 @@
         </div>
         <script>
             // مفاتيح التخزين المحلي
-            const HELP_SEEN_KEY = 'kalima_help_seen_v6';
-            const STATS_KEY = 'kalima_stats_v6';
-            const THEME_KEY = 'kalima_dark_v6';
-            const ATTEMPTS_KEY = 'kalima_attempts_v6';
-            const ATTEMPT_MATRICES_KEY = 'kalima_attempt_matrices_v2';
+            const HELP_SEEN_KEY = 'kalima_help_seen_v8';
+            const STATS_KEY = 'kalima_stats_v8';
+            const THEME_KEY = 'kalima_dark_v8';
+            const ATTEMPTS_KEY = 'kalima_attempts_v8';
+            const ATTEMPT_MATRICES_KEY = 'kalima_attempt_matrices_v4';
 
-            // قائمة الكلمات العربية (محدثة)
-      const WORD_LIST = ["ضضضضض", "صصصصص", "سسسسس", "ننننن"];
+            // قائمة الكلمات العربية مع معانيها
+       const WORD_LIST = ["ضضضضض", "صصصصص", "سسسسس", "ننننن"];
 
         // قاموس موسع للتحقق (نفس الكلمات)
         const DICTIONARY = ["ضضضضض", "صصصصص", "سسسسس", "ننننن"];
@@ -1206,6 +1373,7 @@
             // حالة اللعبة
             const gameState = {
                 targetWord: "",
+                targetMeaning: "",
                 currentRow: 0,
                 currentGuess: "",
                 gameOver: false,
@@ -1242,14 +1410,9 @@
                 showHelpIfFirstTime();
             }
 
-            // تنظيف البيانات القديمة
-            function cleanupOldData() {
-                const oldKeys = ['arwordle_help_seen', 'arwordle_first_game', 'arwordle_stats', 'arwordle_dark', 'arwordle_attempts_history', 'arwordle_device_id', 'arwordle_stats_v2', 'arwordle_attempts_history_v2', 'arwordle_attempts_v2', 'arwordle_stats_v2_', 'kalima_help_seen_v3', 'kalima_stats_v3', 'kalima_dark_v3', 'kalima_attempts_v3', 'kalima_user_id_v3', 'kalima_help_seen_v4', 'kalima_stats_v4', 'kalima_dark_v4', 'kalima_attempts_v4', 'kalima_help_seen_v5', 'kalima_stats_v5', 'kalima_dark_v5', 'kalima_attempts_v5', 'kalima_attempt_matrices_v1'];
-
                 oldKeys.forEach(key => {
                     localStorage.removeItem(key);
-                }
-                );
+                });
             }
 
             // تحميل الإحصائيات
@@ -1346,20 +1509,19 @@
             function showHelpIfFirstTime() {
                 const hasSeenHelp = localStorage.getItem(HELP_SEEN_KEY);
                 if (!hasSeenHelp) {
-                    setTimeout( () => {
+                    setTimeout(() => {
                         document.getElementById('helpModal').classList.remove('hidden');
-                    }
-                    , 500);
+                    }, 500);
                     localStorage.setItem(HELP_SEEN_KEY, 'true');
                 }
             }
 
-            // إنشاء شبكة اللعبة
+            // إنشاء شبكة اللعبة - 6 صفوف
             function createGrid() {
                 const grid = document.getElementById('grid');
                 grid.innerHTML = '';
 
-                for (let row = 0; row < 8; row++) {
+                for (let row = 0; row < 6; row++) {
                     const rowDiv = document.createElement('div');
                     rowDiv.className = 'grid-row';
                     rowDiv.id = `row-${row}`;
@@ -1382,12 +1544,16 @@
             function createKeyboard() {
                 const keyboard = document.getElementById('keyboard');
 
-                // ترتيب لوحة المفاتيح حسب الطلب
-                const layout = [["ج", "ح", "خ", "ه", "ع", "غ", "ف", "ق", "ث", "ص", "ض"], ["ة", "ك", "م", "ن", "ت", "ا", "ل", "ب", "ي", "س", "ش"], ["ى", "و", "ر", "ز", "د", "ذ", "ط", "ظ", "ء", "أ"]];
+                // ترتيب لوحة المفاتيح
+                const layout = [
+                    ["ج", "ح", "خ", "ه", "ع", "غ", "ف", "ق", "ث", "ص", "ض"],
+                    ["ة", "ك", "م", "ن", "ت", "ا", "ل", "ب", "ي", "س", "ش"],
+                    ["ى", "و", "ر", "ز", "د", "ذ", "ط", "ظ", "ء", "أ"]
+                ];
 
                 keyboard.innerHTML = '';
 
-                layout.forEach( (row, index) => {
+                layout.forEach((row, index) => {
                     const rowDiv = document.createElement('div');
                     rowDiv.className = 'keyboard-row';
 
@@ -1410,12 +1576,11 @@
                     }
 
                     keyboard.appendChild(rowDiv);
-                }
-                );
+                });
             }
 
             // إنشاء زر في لوحة المفاتيح
-            function createKey(text, value, extraClass='') {
+            function createKey(text, value, extraClass = '') {
                 const key = document.createElement('button');
                 key.className = `key ${extraClass}`;
                 key.textContent = text;
@@ -1423,17 +1588,20 @@
 
                 key.addEventListener('click', () => {
                     handleInput(value);
-                }
-                );
+                });
 
                 return key;
             }
 
             // بدء لعبة جديدة
             function startNewGame() {
-                // اختيار كلمة عشوائية
-                gameState.targetWord = WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
+                // اختيار كلمة عشوائية مع معناها
+                const randomIndex = Math.floor(Math.random() * WORD_LIST.length);
+                const selectedWord = WORD_LIST[randomIndex];
+                gameState.targetWord = selectedWord.word;
+                gameState.targetMeaning = selectedWord.meaning;
 
+                // إعادة تعيين حالة اللعبة الحالية بالكامل
                 gameState.currentRow = 0;
                 gameState.currentGuess = '';
                 gameState.gameOver = false;
@@ -1441,33 +1609,52 @@
                 gameState.isProcessing = false;
                 gameState.inputLock = false;
                 gameState.startTime = new Date();
-                gameState.attemptResults = [];
-                // تفريغ نتائج المحاولات
+                gameState.gameDuration = 0;
+                gameState.attemptResults = []; // تفريغ نتائج المحاولات للعبة الحالية
 
-                // إعادة تعيين الشبكة
+                // إعادة تعيين الشبكة بالكامل - مسح كل المربعات
                 document.querySelectorAll('.tile').forEach(tile => {
                     tile.className = 'tile';
                     tile.textContent = '';
-                }
-                );
+                    // إزالة جميع الفئات الخاصة
+                    tile.classList.remove('filled', 'correct', 'present', 'absent', 'flip');
+                });
 
-                // إعادة تعيين لوحة المفاتيح
+                // إعادة تعيين الصفوف - إزالة التأثيرات
+                document.querySelectorAll('.grid-row').forEach(row => {
+                    row.classList.remove('shake', 'win-celebration');
+                });
+
+                // إعادة تعيين لوحة المفاتيح بالكامل
                 document.querySelectorAll('.key').forEach(key => {
                     if (key.dataset.key === 'Enter') {
                         key.className = 'key wide enter';
                     } else if (key.dataset.key === 'Backspace') {
                         key.className = 'key wide backspace';
                     } else {
-                        key.className = key.className.replace(/(correct|present|absent)/g, '').trim();
+                        // إزالة ألوان الحروف فقط (الاحتفاظ بالفئات الأخرى)
+                        key.className = 'key';
+                        // إزالة فئات الألوان فقط
+                        key.classList.remove('correct', 'present', 'absent');
+                        // إضافة الفئات الخاصة إذا كانت موجودة
                         if (key.classList.contains('wide')) {
                             key.classList.add('wide');
                         }
                     }
-                }
-                );
+                });
 
                 // إخفاء الرسالة
                 document.getElementById('message').textContent = '';
+                
+                // إخفاء النوافذ المنبثقة إذا كانت ظاهرة
+                document.getElementById('gameResultModal').classList.add('hidden');
+                document.getElementById('statsModal').classList.add('hidden');
+                
+                // إخفاء خانة معنى الكلمة
+                document.getElementById('wordMeaningContainer').classList.add('hidden');
+                
+                // تحديث الصف الحالي
+                updateCurrentRow();
             }
 
             // معالجة الإدخال
@@ -1505,12 +1692,11 @@
                     const tile = document.getElementById(`tile-${gameState.currentRow}-${gameState.currentGuess.length - 1}`);
                     if (tile) {
                         tile.classList.add('filled');
-                        setTimeout( () => {
+                        setTimeout(() => {
                             tile.classList.remove('filled');
                             gameState.inputLock = false;
                             // فتح الإدخال بعد انتهاء التأثير
-                        }
-                        , 100);
+                        }, 100);
                     } else {
                         gameState.inputLock = false;
                     }
@@ -1541,19 +1727,6 @@
                     const tile = document.getElementById(`tile-${gameState.currentRow}-${i}`);
                     if (tile) {
                         tile.textContent = gameState.currentGuess[i];
-                    }
-                }
-            }
-
-            // تحديث جميع الصفوف (للاستخدام عند بدء لعبة جديدة)
-            function updateAllRows() {
-                for (let row = 0; row < 8; row++) {
-                    for (let col = 0; col < 5; col++) {
-                        const tile = document.getElementById(`tile-${row}-${col}`);
-                        if (tile) {
-                            tile.textContent = '';
-                            tile.className = 'tile';
-                        }
                     }
                 }
             }
@@ -1608,10 +1781,10 @@
 
                     const delay = i * 300;
 
-                    setTimeout( () => {
+                    setTimeout(() => {
                         tile.classList.add('flip');
 
-                        setTimeout( () => {
+                        setTimeout(() => {
                             tile.classList.add(result[i]);
                             updateKeyboard(guess[i], result[i]);
 
@@ -1619,17 +1792,14 @@
 
                             // بعد اكتمال جميع الحركات، نفحص النتيجة
                             if (completedAnimations === totalAnimations) {
-                                setTimeout( () => {
+                                setTimeout(() => {
                                     processGuessResult(guess, target);
                                     gameState.inputLock = false;
                                     // فتح الإدخال
-                                }
-                                , 300);
+                                }, 300);
                             }
-                        }
-                        , 300);
-                    }
-                    , delay);
+                        }, 300);
+                    }, delay);
                 }
             }
 
@@ -1672,7 +1842,8 @@
                     gameState.gameOver = true;
                     gameState.isProcessing = false;
                     handleWin();
-                } else if (gameState.currentRow === 7) {
+                } else if (gameState.currentRow === 5) {
+                    // تغيير من 7 إلى 5 (الصف السادس)
                     gameState.gameOver = true;
                     gameState.isProcessing = false;
                     handleLoss();
@@ -1705,9 +1876,70 @@
                 }
             }
 
+            // عرض معنى الكلمة
+            function displayWordMeaning() {
+                const container = document.getElementById('wordMeaningContainer');
+                const content = document.getElementById('wordMeaningContent');
+                
+                // تنظيف المحتوى القديم
+                content.innerHTML = '';
+                
+                // إضافة المعنى باللغة العربية
+                const arabicMeaning = document.createElement('div');
+                arabicMeaning.className = 'word-meaning-arabic';
+                arabicMeaning.textContent = gameState.targetMeaning;
+                content.appendChild(arabicMeaning);
+                
+                // إضافة خط فاصل
+                const divider = document.createElement('div');
+                divider.className = 'meaning-divider';
+                content.appendChild(divider);
+                
+                // إضافة معلومات إضافية
+                const additionalInfo = document.createElement('div');
+                additionalInfo.className = 'word-example';
+                
+                // إضافة مثال للكلمة
+                const examples = {
+                    "كتاب": "قرأت كتابًا مفيدًا عن تاريخ العرب",
+                    "قلم": "كتبت الواجب بقلم جديد",
+                    "بحر": "سبحنا في البحر الصافي",
+                    "شمس": "تشرق الشمس كل صباح",
+                    "قمر": "القمر بدرٌ في منتصف الشهر",
+                    "ورد": "قدمت لها باقة ورد حمراء",
+                    "بيت": "بيتي هو مكان راحتي وسعادتي",
+                    "حب": "الحب يجعل الحياة أجمل",
+                    "عسل": "العسل مفيد للصحة والمناعة",
+                    "ذهب": "اشترى خاتمًا من الذهب الخالص",
+                    "فكر": "التفكير السليم يقود إلى القرار الصحيح",
+                    "علم": "العلم نور والجهل ظلام",
+                    "نجم": "النجم اللامع يزين السماء",
+                    "نهر": "النهر العذب يروي الأرض",
+                    "صبر": "الصبر مفتاح الفرج",
+                    "ليل": "الليل يغطي الأرض بسواده",
+                    "نهار": "النهار وقت العمل والإنتاج",
+                    "خير": "افعل الخير تجده أمامك",
+                    "جبل": "الجبل الشاهق تحدي للمتسلقين",
+                    "وطن": "الوطن أغلى ما نملك"
+                };
+                
+                const example = examples[gameState.targetWord] || `الكلمة "${gameState.targetWord}" تستخدم في العديد من الجمل العربية`;
+                additionalInfo.textContent = example;
+                content.appendChild(additionalInfo);
+                
+                // إضافة معلومات عن عدد الأحرف
+                const wordInfo = document.createElement('div');
+                wordInfo.className = 'word-meaning-english';
+                wordInfo.textContent = `كلمة مكونة من 5 أحرف | عدد مرات الظهور في اللعبة: ${gameState.stats.played}`;
+                content.appendChild(wordInfo);
+                
+                // عرض الخانة
+                container.classList.remove('hidden');
+            }
+
             /**
-         * دالة renderAttemptMatrix - تعرض مصفوفة المحاولات المرئية
-         */
+             * دالة renderAttemptMatrix - تعرض مصفوفة المحاولات المرئية
+             */
             function renderAttemptMatrix() {
                 // 1. الحصول على عنصر الحاوية
                 const container = document.getElementById('matrixGrid');
@@ -1721,11 +1953,11 @@
                     return;
                 }
 
-                // 4. حساب عدد المحاولات المستخدمة فقط (ليس كل 8 صفوف)
+                // 4. حساب عدد المحاولات المستخدمة فقط (ليس كل 6 صفوف)
                 const usedAttempts = gameState.attemptResults.filter(row => row && row.length > 0);
 
                 // 5. المرور على كل محاولة (Loop على المحاولات)
-                usedAttempts.forEach( (rowResults, rowIndex) => {
+                usedAttempts.forEach((rowResults, rowIndex) => {
                     // 5.1 إنشاء صف جديد
                     const rowDiv = document.createElement('div');
                     rowDiv.className = 'matrix-row';
@@ -1734,7 +1966,7 @@
                     rowDiv.dataset.attemptNumber = rowIndex + 1;
 
                     // 6. المرور على كل حرف في المحاولة (Loop على الحروف)
-                    rowResults.forEach( (cellStatus, cellIndex) => {
+                    rowResults.forEach((cellStatus, cellIndex) => {
                         // 6.1 إنشاء مربع (Tile) جديد
                         const tile = document.createElement('div');
 
@@ -1768,30 +2000,23 @@
                         tile.style.transition = 'transform 0.2s ease';
                         tile.addEventListener('mouseenter', () => {
                             tile.style.transform = 'scale(1.1)';
-                        }
-                        );
+                        });
                         tile.addEventListener('mouseleave', () => {
                             tile.style.transform = 'scale(1)';
-                        }
-                        );
+                        });
 
                         // 6.7 إضافة المربع إلى الصف
                         rowDiv.appendChild(tile);
-                    }
-                    );
+                    });
 
                     // 7. إضافة الصف إلى الحاوية
                     container.appendChild(rowDiv);
-                }
-                );
-
-                // 8. تحديث معلومات إضافية (مثال: عدد المحاولات)
-                updateMatrixStats(usedAttempts.length);
+                });
             }
 
             /**
-         * دالة مساعدة: تحويل رمز الحالة إلى نص وصفي
-         */
+             * دالة مساعدة: تحويل رمز الحالة إلى نص وصفي
+             */
             function getStatusText(status) {
                 const statusMap = {
                     'correct': 'حرف صحيح في مكانه',
@@ -1799,41 +2024,6 @@
                     'absent': 'حرف غير موجود في الكلمة'
                 };
                 return statusMap[status] || 'حالة غير معروفة';
-            }
-
-            /**
-         * دالة مساعدة: تحديث إحصائيات المصفوفة
-         */
-            function updateMatrixStats(totalAttempts) {
-                // حساب توزيع الألوان
-                const colorStats = {
-                    correct: 0,
-                    present: 0,
-                    absent: 0
-                };
-
-                gameState.attemptResults.forEach(row => {
-                    row.forEach(cell => {
-                        if (colorStats[cell] !== undefined) {
-                            colorStats[cell]++;
-                        }
-                    }
-                    );
-                }
-                );
-
-                // تحديث واجهة المستخدم (إذا كان هناك مكان لعرضها)
-                const statsElement = document.getElementById('matrixStats');
-                if (statsElement) {
-                    statsElement.innerHTML = `
-                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                        <div>عدد المحاولات: <strong>${totalAttempts}</strong></div>
-                        <div>المربعات الخضراء: <strong>${colorStats.correct}</strong></div>
-                        <div>المربعات الصفراء: <strong>${colorStats.present}</strong></div>
-                        <div>المربعات الرمادية: <strong>${colorStats.absent}</strong></div>
-                    </div>
-                `;
-                }
             }
 
             // التعامل مع الفوز
@@ -1887,16 +2077,14 @@
                 saveStats();
                 updateStatsDisplay();
 
-                setTimeout( () => {
+                setTimeout(() => {
                     const rows = document.querySelectorAll('.grid-row');
                     rows[gameState.currentRow].classList.add('win-celebration');
-                }
-                , 2000);
+                }, 2000);
 
-                setTimeout( () => {
+                setTimeout(() => {
                     showGameResultModal(true);
-                }
-                , 2500);
+                }, 2500);
             }
 
             // التعامل مع الخسارة
@@ -1909,7 +2097,7 @@
                 gameState.attemptMatrices.unshift({
                     matrix: attemptMatrix,
                     result: 'loss',
-                    attempts: 8,
+                    attempts: 6, // تغيير من 8 إلى 6
                     date: new Date().toISOString(),
                     word: gameState.targetWord
                 });
@@ -1923,7 +2111,7 @@
 
                 const attemptRecord = {
                     attemptNumber: gameState.attemptsHistory.length + 1,
-                    attempts: 8,
+                    attempts: 6, // تغيير من 8 إلى 6
                     result: 'loss',
                     date: new Date().toLocaleDateString('ar-SA'),
                     time: new Date().toLocaleTimeString('ar-SA', {
@@ -1948,10 +2136,9 @@
                 saveStats();
                 updateStatsDisplay();
 
-                setTimeout( () => {
+                setTimeout(() => {
                     showGameResultModal(false);
-                }
-                , 1500);
+                }, 1500);
             }
 
             // جمع مصفوفة المحاولات المرئية
@@ -1983,7 +2170,7 @@
                 const messageEl = document.getElementById('message');
                 messageEl.textContent = text;
                 messageEl.classList.add('bounce');
-                setTimeout( () => messageEl.classList.remove('bounce'), 500);
+                setTimeout(() => messageEl.classList.remove('bounce'), 500);
             }
 
             // هز الصف
@@ -1991,11 +2178,11 @@
                 const row = document.getElementById(`row-${gameState.currentRow}`);
                 if (row) {
                     row.classList.add('shake');
-                    setTimeout( () => row.classList.remove('shake'), 500);
+                    setTimeout(() => row.classList.remove('shake'), 500);
                 }
             }
 
-            // عرض نافذة نتائج اللعبة مع مصفوفة المحاولات
+            // عرض نافذة نتائج اللعبة مع مصفوفة المحاولات ومعنى الكلمة
             function showGameResultModal(isWin) {
                 const modal = document.getElementById('gameResultModal');
                 const title = document.getElementById('resultModalTitle');
@@ -2017,27 +2204,29 @@
                 `;
                 }
 
+                // عرض معنى الكلمة
+                displayWordMeaning();
+
                 // عرض مصفوفة المحاولات المرئية
                 renderAttemptMatrix();
 
                 modal.classList.remove('hidden');
 
                 // إضافة تأثير ظهور
-                setTimeout( () => {
+                setTimeout(() => {
                     modal.style.opacity = '1';
                     modal.style.transform = 'scale(1)';
-                }
-                , 10);
+                }, 10);
             }
 
             // عرض الإحصائيات
-            function showStats(isWin=false) {
+            function showStats(isWin = false) {
                 updateStatsDisplay(isWin);
                 document.getElementById('statsModal').classList.remove('hidden');
             }
 
             // تحديث عرض الإحصائيات
-            function updateStatsDisplay(isWin=false) {
+            function updateStatsDisplay(isWin = false) {
                 document.getElementById('playedCount').textContent = gameState.stats.played;
                 document.getElementById('winPercent').textContent = gameState.stats.played > 0 ? Math.round((gameState.stats.wins / gameState.stats.played) * 100) + '%' : '0%';
                 document.getElementById('currentStreak').textContent = gameState.stats.currentStreak;
@@ -2118,8 +2307,7 @@
                         row.appendChild(dateCell);
 
                         tableBody.appendChild(row);
-                    }
-                    );
+                    });
                 } else {
                     noAttemptsMessage.classList.remove('hidden');
                     tableElement.classList.add('hidden');
@@ -2139,23 +2327,19 @@
                     } else if (/^[\u0600-\u06FF]$/.test(e.key)) {
                         handleInput(e.key);
                     }
-                }
-                );
+                });
 
                 document.getElementById('helpBtn').addEventListener('click', () => {
                     document.getElementById('helpModal').classList.remove('hidden');
-                }
-                );
+                });
 
                 document.getElementById('statsBtn').addEventListener('click', () => {
                     showStats(gameState.gameWon);
-                }
-                );
+                });
 
                 document.getElementById('newGameHeaderBtn').addEventListener('click', () => {
                     startNewGame();
-                }
-                );
+                });
 
                 document.getElementById('themeToggle').addEventListener('click', () => {
                     document.body.classList.toggle('dark-mode');
@@ -2173,58 +2357,48 @@
                             text.textContent = 'ليلي';
                         localStorage.setItem(THEME_KEY, 'false');
                     }
-                }
-                );
+                });
 
                 document.getElementById('newGameFromStats').addEventListener('click', () => {
                     document.getElementById('statsModal').classList.add('hidden');
                     startNewGame();
-                }
-                );
+                });
 
                 document.getElementById('startGameBtn').addEventListener('click', () => {
                     document.getElementById('helpModal').classList.add('hidden');
                     startNewGame();
-                }
-                );
+                });
 
                 document.getElementById('closeHelp').addEventListener('click', () => {
                     document.getElementById('helpModal').classList.add('hidden');
-                }
-                );
+                });
 
                 document.getElementById('closeStats').addEventListener('click', () => {
                     document.getElementById('statsModal').classList.add('hidden');
-                }
-                );
+                });
 
                 // أحداث نافذة نتائج اللعبة
                 document.getElementById('closeGameResult').addEventListener('click', () => {
                     document.getElementById('gameResultModal').classList.add('hidden');
-                }
-                );
+                });
 
                 document.getElementById('playAgainBtn').addEventListener('click', () => {
                     document.getElementById('gameResultModal').classList.add('hidden');
                     startNewGame();
-                }
-                );
+                });
 
                 document.getElementById('viewStatsBtn').addEventListener('click', () => {
                     document.getElementById('gameResultModal').classList.add('hidden');
                     showStats(gameState.gameWon);
-                }
-                );
+                });
 
                 document.querySelectorAll('.modal-overlay').forEach(modal => {
                     modal.addEventListener('click', (e) => {
                         if (e.target === modal) {
                             modal.classList.add('hidden');
                         }
-                    }
-                    );
-                }
-                );
+                    });
+                });
             }
 
             window.addEventListener('load', init);
