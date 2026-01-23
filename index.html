@@ -1410,6 +1410,9 @@
                 showHelpIfFirstTime();
             }
 
+            // تنظيف البيانات القديمة
+            function cleanupOldData() {
+                const oldKeys = ['kalima_help_seen', 'kalima_stats', 'kalima_dark', 'kalima_attempts', 'kalima_attempt_matrices'];
                 oldKeys.forEach(key => {
                     localStorage.removeItem(key);
                 });
