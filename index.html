@@ -3,34 +3,19 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>كَـلِمَة - لعبة الكلمة العربية</title>
+        <title>كلمة - لعبة الكلمة العربية</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap'); * {
+            @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
+            
+            * {
                 font-family: 'Tajawal', sans-serif;
                 box-sizing: border-box;
             }
 
+            /* الوضع الليلي (الأساسي) */
             :root {
-                --correct-color: #6ca965;
-                --present-color: #c8b653;
-                --absent-color: #787c7e;
-                --default-color: #d3d6da;
-                --bg-color: #ffffff;
-                --text-color: #000000;
-                --border-color: #d3d6da;
-                --key-bg: #d3d6da;
-                --key-text: #000000;
-                --enter-color: #5b9bd5;
-                --backspace-color: #ff6b6b;
-                --newgame-color: #3498db;
-                --newgame-hover: #2980b9;
-                --easy-color: #4CAF50;
-                --hard-color: #f44336;
-            }
-
-            .dark-mode {
                 --correct-color: #538d4e;
                 --present-color: #b59f3b;
                 --absent-color: #3a3a3c;
@@ -44,6 +29,25 @@
                 --backspace-color: #e74c3c;
                 --newgame-color: #2980b9;
                 --newgame-hover: #3498db;
+                --easy-color: #4CAF50;
+                --hard-color: #f44336;
+            }
+
+            /* الوضع النهاري */
+            .light-mode {
+                --correct-color: #6ca965;
+                --present-color: #c8b653;
+                --absent-color: #787c7e;
+                --default-color: #d3d6da;
+                --bg-color: #ffffff;
+                --text-color: #000000;
+                --border-color: #d3d6da;
+                --key-bg: #d3d6da;
+                --key-text: #000000;
+                --enter-color: #5b9bd5;
+                --backspace-color: #ff6b6b;
+                --newgame-color: #3498db;
+                --newgame-hover: #2980b9;
                 --easy-color: #4CAF50;
                 --hard-color: #f44336;
             }
@@ -141,11 +145,9 @@
                 0% {
                     transform: scale(1);
                 }
-
                 50% {
                     transform: scale(1.1);
                 }
-
                 100% {
                     transform: scale(1);
                 }
@@ -177,11 +179,9 @@
                 0% {
                     transform: rotateX(0);
                 }
-
                 50% {
                     transform: rotateX(90deg);
                 }
-
                 100% {
                     transform: rotateX(0);
                 }
@@ -326,11 +326,9 @@
                 0%, 100% {
                     transform: translateX(0);
                 }
-
                 10%, 30%, 50%, 70%, 90% {
                     transform: translateX(-5px);
                 }
-
                 20%, 40%, 60%, 80% {
                     transform: translateX(5px);
                 }
@@ -344,7 +342,6 @@
                 0%, 100% {
                     transform: translateY(0);
                 }
-
                 50% {
                     transform: translateY(-10px);
                 }
@@ -381,6 +378,7 @@
 
             h1 {
                 font-size: 1.6rem;
+                text-align: center;
             }
 
             @media (max-width: 640px) {
@@ -599,11 +597,9 @@
                 0% {
                     transform: scale(1);
                 }
-
                 50% {
                     transform: scale(1.05);
                 }
-
                 100% {
                     transform: scale(1);
                 }
@@ -617,7 +613,7 @@
                 margin-bottom: 15px;
                 padding: 10px;
                 border-radius: 8px;
-                background-color: rgba(var(--default-color-rgb), 0.1);
+                background-color: rgba(129, 131, 132, 0.1);
             }
 
             @media (max-width: 640px) {
@@ -803,7 +799,6 @@
                 0%, 100% {
                     transform: scale(1);
                 }
-
                 50% {
                     transform: scale(1.05);
                 }
@@ -850,7 +845,7 @@
                 padding: 15px;
                 border: 2px solid var(--border-color);
                 border-radius: 10px;
-                background-color: rgba(var(--default-color), 0.05);
+                background-color: rgba(129, 131, 132, 0.05);
             }
 
             .matrix-title {
@@ -1020,98 +1015,146 @@
                 }
             }
 
-            /* أنماط لمستوى الصعوبة */
-            .difficulty-selector {
+            /* أنماط قائمة الصعوبة المنسدلة */
+            .difficulty-dropdown {
+                position: relative;
+                display: inline-block;
+            }
+
+            .difficulty-toggle {
+                padding: 8px 16px;
+                border-radius: 6px;
+                font-weight: bold;
+                font-size: 0.9rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                border: 2px solid var(--border-color);
+                background-color: var(--bg-color);
+                color: var(--text-color);
                 display: flex;
                 align-items: center;
                 gap: 8px;
-                margin-left: 10px;
+                min-width: 120px;
+                justify-content: center;
             }
 
-            .difficulty-btn {
-                padding: 6px 12px;
-                border-radius: 20px;
-                font-weight: bold;
-                font-size: 0.8rem;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                border: 2px solid transparent;
+            .difficulty-toggle:hover {
+                background-color: var(--default-color);
             }
 
-            .difficulty-btn.easy {
-                background-color: var(--easy-color);
-                color: white;
+            .difficulty-menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                margin-top: 5px;
+                background-color: var(--bg-color);
+                border: 2px solid var(--border-color);
+                border-radius: 6px;
+                z-index: 100;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                display: none;
             }
 
-            .difficulty-btn.hard {
-                background-color: var(--hard-color);
-                color: white;
+            .difficulty-menu.show {
+                display: block;
             }
 
-            .difficulty-btn.active {
-                border-color: var(--text-color);
-                transform: scale(1.05);
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            }
-
-            .difficulty-btn:not(.active):hover {
-                opacity: 0.8;
-            }
-
-            @media (max-width: 480px) {
-                .difficulty-btn {
-                    padding: 4px 8px;
-                    font-size: 0.7rem;
-                }
-            }
-
-            .difficulty-label {
-                font-size: 0.9rem;
-                font-weight: bold;
+            .difficulty-option {
+                width: 100%;
+                padding: 12px 16px;
+                text-align: center;
+                border: none;
+                background: none;
                 color: var(--text-color);
+                font-size: 0.9rem;
+                cursor: pointer;
+                display: block;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .difficulty-option:last-child {
+                border-bottom: none;
+            }
+
+            .difficulty-option:hover {
+                background-color: var(--default-color);
+            }
+
+            .difficulty-option.active {
+                color: var(--correct-color);
+                font-weight: bold;
+            }
+
+            .difficulty-icon {
+                font-size: 0.8rem;
+                transition: transform 0.3s ease;
+            }
+
+            .difficulty-dropdown.open .difficulty-icon {
+                transform: rotate(180deg);
             }
 
             @media (max-width: 480px) {
-                .difficulty-label {
-                    display: none;
+                .difficulty-toggle {
+                    padding: 6px 12px;
+                    font-size: 0.8rem;
+                    min-width: 100px;
                 }
+                
+                .difficulty-option {
+                    padding: 10px 12px;
+                    font-size: 0.8rem;
+                }
+            }
+
+            /* تعديلات للرأس */
+            .header-center {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
             }
         </style>
     </head>
     <body class="flex flex-col min-h-screen">
         <!-- الرأس -->
-        <header class="flex items-center justify-between px-3 py-2">
-            <div class="flex items-center gap-2">
-                <button id="helpBtn" class="p-2 hover:bg-[var(--default-color)] rounded-full">
-                    <i class="fas fa-question-circle text-lg"></i>
-                </button>
-                <button id="statsBtn" class="p-2 hover:bg-[var(--default-color)] rounded-full">
-                    <i class="fas fa-chart-bar text-lg"></i>
-                </button>
+        <header class="grid grid-cols-3 items-center px-2 py-3 border-b border-[var(--border-color)] min-h-[60px]">
+    
+    <div class="flex items-center gap-1">
+        <button id="helpBtn" class="p-1.5 hover:bg-[var(--default-color)] rounded-full">
+            <i class="fas fa-question-circle text-lg"></i>
+        </button>
+        <button id="statsBtn" class="p-1.5 hover:bg-[var(--default-color)] rounded-full">
+            <i class="fas fa-chart-bar text-lg"></i>
+        </button>
+    </div>
+
+    <div class="flex justify-center">
+        <h1 class="font-bold text-lg sm:text-xl whitespace-nowrap">كلمة</h1>
+    </div>
+
+    <div class="flex items-center justify-end gap-1 sm:gap-2">
+        <div class="difficulty-dropdown">
+            <button id="difficultyToggle" class="flex items-center gap-1 px-1.5 py-1 sm:px-2 sm:py-1.5 border-2 border-[var(--border-color)] rounded-lg bg-[var(--bg-color)]">
+                <span class="text-[10px] sm:text-sm font-bold">الصعوبة</span>
+                <i class="fas fa-chevron-down text-[8px] sm:text-[10px]"></i>
+            </button>
+            <div id="difficultyMenu" class="difficulty-menu text-xs sm:text-sm">
+                <button data-difficulty="easy" class="difficulty-option active">سهل</button>
+                <button data-difficulty="hard" class="difficulty-option">صعب</button>
             </div>
-            <h1 class="text-xl font-bold text-center flex-1 mx-2">كَـلِمَة</h1>
-            <div class="flex items-center gap-2">
-                <div class="difficulty-selector">
-                    <span class="difficulty-label mobile-hidden">الصعوبة:</span>
-                    <button id="easyBtn" class="difficulty-btn easy active" title="8 محاولات">
-                        <span class="mobile-hidden">سهل</span>
-                        <span class="hidden mobile-hidden:inline"> (8)</span>
-                    </button>
-                    <button id="hardBtn" class="difficulty-btn hard" title="6 محاولات">
-                        <span class="mobile-hidden">صعب</span>
-                        <span class="hidden mobile-hidden:inline"> (6)</span>
-                    </button>
-                </div>
-                <button id="newGameHeaderBtn" class="p-2 rounded-full flex items-center justify-center" title="لعبة جديدة">
-                    <i class="fas fa-redo-alt text-lg"></i>
-                    <span class="mobile-hidden text-sm mr-1">جديد</span>
-                </button>
-                <button id="themeToggle" class="p-2 hover:bg-[var(--default-color)] rounded-full flex items-center gap-1">
-                    <i class="fas fa-moon text-lg"></i>
-                    <span class="mobile-hidden text-sm">وضع</span>
-                </button>
-            </div>
-        </header>
+        </div>
+        
+        <button id="newGameHeaderBtn" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center bg-[var(--newgame-color)] text-white rounded-full shrink-0">
+            <i class="fas fa-redo-alt text-xs sm:text-sm"></i>
+        </button>
+
+        <button id="themeToggle" class="p-1.5 hover:bg-[var(--default-color)] rounded-full shrink-0">
+            <i class="fas fa-sun text-lg"></i>
+        </button>
+    </div>
+</header>
         <!-- شبكة اللعبة -->
         <main class="flex-grow flex flex-col items-center justify-center">
             <div id="message" class="text-center font-bold"></div>
@@ -1128,7 +1171,7 @@
                         <button id="closeHelp" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
                     </div>
                     <div class="mb-6">
-                        <p class="text-base mb-5 text-center" id="helpAttemptsText">خمّن الكلمة في 8 محاولات.</p>
+                        <p class="text-base mb-5 text-center" id="helpAttemptsText">خمّن الكلمة في 6 محاولات.</p>
                         <!-- اللون الأخضر -->
                         <div class="color-example">
                             <div class="color-box correct"></div>
@@ -1255,18 +1298,19 @@
         </div>
         <script>
             // مفاتيح التخزين المحلي
-            const HELP_SEEN_KEY = 'kalima_help_seen_v7';
-            const STATS_KEY = 'kalima_stats_v7';
-            const THEME_KEY = 'kalima_dark_v7';
-            const ATTEMPTS_KEY = 'kalima_attempts_v7';
-            const ATTEMPT_MATRICES_KEY = 'kalima_attempt_matrices_v3';
-            const DIFFICULTY_KEY = 'kalima_difficulty_v1';
+            const HELP_SEEN_KEY = 'kalima_help_seen_v10';
+            const STATS_KEY = 'kalima_stats_v10';
+            const THEME_KEY = 'kalima_dark_v10';
+            const ATTEMPTS_KEY = 'kalima_attempts_v10';
+            const ATTEMPT_MATRICES_KEY = 'kalima_attempt_matrices_v6';
+            const DIFFICULTY_KEY = 'kalima_difficulty_v4';
 
             // قائمة الكلمات العربية (محدثة)
-            const WORD_LIST = ["ضضضضض", "صصصصص", "سسسسس", "ننننن"];
+           const WORD_LIST = ["ضضضضض", "صصصصص", "سسسسس", "ننننن"];
             
             // قاموس موسع للتحقق
             const WORD_LIST = ["ضضضضض", "صصصصص", "سسسسس", "ننننن"];            
+            
             // حالة اللعبة
             const gameState = {
                 targetWord: "",
@@ -1277,7 +1321,6 @@
                 startTime: null,
                 gameDuration: 0,
                 attemptResults: [],
-                // مصفوفة نتائج المحاولات للعبة الحالية
                 stats: {
                     played: 0,
                     wins: 0,
@@ -1286,12 +1329,10 @@
                 },
                 attemptsHistory: [],
                 attemptMatrices: [],
-                // مصفوفات المحاولات المرئية
                 isProcessing: false,
-                // علامة لتجنب المعالجة المتزامنة
-                inputLock: false, // قفل لإدخال الحروف أثناء المعالجة
+                inputLock: false,
                 difficulty: 'easy', // 'easy' أو 'hard'
-                maxRows: 8 // القيمة الافتراضية
+                maxRows: 6 // القيمة الافتراضية: سهل = 6، صعب = 8
             };
 
             // التهيئة
@@ -1317,7 +1358,7 @@
                 } else {
                     gameState.difficulty = 'easy';
                 }
-                gameState.maxRows = gameState.difficulty === 'easy' ? 8 : 6;
+                gameState.maxRows = gameState.difficulty === 'easy' ? 6 : 8;
             }
 
             // حفظ مستوى الصعوبة
@@ -1327,18 +1368,18 @@
 
             // تحديث واجهة مستوى الصعوبة
             function updateDifficultyUI() {
-                const easyBtn = document.getElementById('easyBtn');
-                const hardBtn = document.getElementById('hardBtn');
+                const easyOption = document.querySelector('[data-difficulty="easy"]');
+                const hardOption = document.querySelector('[data-difficulty="hard"]');
                 const helpText = document.getElementById('helpAttemptsText');
                 
                 if (gameState.difficulty === 'easy') {
-                    easyBtn.classList.add('active');
-                    hardBtn.classList.remove('active');
-                    helpText.textContent = 'خمّن الكلمة في 8 محاولات.';
-                } else {
-                    easyBtn.classList.remove('active');
-                    hardBtn.classList.add('active');
+                    easyOption.classList.add('active');
+                    hardOption.classList.remove('active');
                     helpText.textContent = 'خمّن الكلمة في 6 محاولات.';
+                } else {
+                    easyOption.classList.remove('active');
+                    hardOption.classList.add('active');
+                    helpText.textContent = 'خمّن الكلمة في 8 محاولات.';
                 }
             }
 
@@ -1348,7 +1389,7 @@
                 if (gameState.difficulty === newDifficulty) return;
                 
                 gameState.difficulty = newDifficulty;
-                gameState.maxRows = newDifficulty === 'easy' ? 8 : 6;
+                gameState.maxRows = newDifficulty === 'easy' ? 6 : 8;
                 saveDifficulty();
                 updateDifficultyUI();
                 
@@ -1434,17 +1475,19 @@
                 localStorage.setItem(ATTEMPTS_KEY, JSON.stringify(gameState.attemptsHistory));
             }
 
-            // تحميل الوضع الليلي
+            // تحميل الوضع (الوضع الليلي هو الأساسي)
             function loadTheme() {
-                const isDark = localStorage.getItem(THEME_KEY) === 'true';
-                if (isDark) {
-                    document.body.classList.add('dark-mode');
-                    const icon = document.querySelector('#themeToggle i');
-                    const text = document.querySelector('#themeToggle span');
-                    icon.className = 'fas fa-sun text-lg';
-                    if (text)
-                        text.textContent = 'نهاري';
-                }
+                // الوضع الليلي هو الأساسي، لذلك لا نحتاج لتحميل أي شيء
+                // فقط نتأكد أن الوضع الليلي مفعل
+                document.body.classList.remove('light-mode');
+                const icon = document.querySelector('#themeToggle i');
+                const text = document.querySelector('#themeToggle span');
+                icon.className = 'fas fa-sun text-lg';
+                if (text)
+                    text.textContent = 'نهاري';
+                
+                // تخزين أن الوضع الحالي هو الليلي (الأساسي)
+                localStorage.setItem(THEME_KEY, 'true');
             }
 
             // عرض التعليمات إذا كانت أول مرة
@@ -1547,33 +1590,29 @@
                 gameState.inputLock = false;
                 gameState.startTime = new Date();
                 gameState.gameDuration = 0;
-                gameState.attemptResults = []; // تفريغ نتائج المحاولات للعبة الحالية
+                gameState.attemptResults = [];
 
-                // إعادة تعيين الشبكة بالكامل - مسح كل المربعات
+                // إعادة تعيين الشبكة بالكامل
                 document.querySelectorAll('.tile').forEach(tile => {
                     tile.className = 'tile';
                     tile.textContent = '';
-                    // إزالة جميع الفئات الخاصة
                     tile.classList.remove('filled', 'correct', 'present', 'absent', 'flip');
                 });
 
-                // إعادة تعيين الصفوف - إزالة التأثيرات
+                // إعادة تعيين الصفوف
                 document.querySelectorAll('.grid-row').forEach(row => {
                     row.classList.remove('shake', 'win-celebration');
                 });
 
-                // إعادة تعيين لوحة المفاتيح بالكامل
+                // إعادة تعيين لوحة المفاتيح
                 document.querySelectorAll('.key').forEach(key => {
                     if (key.dataset.key === 'Enter') {
                         key.className = 'key wide enter';
                     } else if (key.dataset.key === 'Backspace') {
                         key.className = 'key wide backspace';
                     } else {
-                        // إزالة ألوان الحروف فقط (الاحتفاظ بالفئات الأخرى)
                         key.className = 'key';
-                        // إزالة فئات الألوان فقط
                         key.classList.remove('correct', 'present', 'absent');
-                        // إضافة الفئات الخاصة إذا كانت موجودة
                         if (key.classList.contains('wide')) {
                             key.classList.add('wide');
                         }
@@ -1583,7 +1622,7 @@
                 // إخفاء الرسالة
                 document.getElementById('message').textContent = '';
                 
-                // إخفاء النوافذ المنبثقة إذا كانت ظاهرة
+                // إخفاء النوافذ المنبثقة
                 document.getElementById('gameResultModal').classList.add('hidden');
                 document.getElementById('statsModal').classList.add('hidden');
                 
@@ -1593,15 +1632,9 @@
 
             // معالجة الإدخال
             function handleInput(key) {
-                // منع المعالجة المتزامنة
-                if (gameState.inputLock)
-                    return;
-
-                if (gameState.gameOver)
-                    return;
-
-                if (gameState.isProcessing)
-                    return;
+                if (gameState.inputLock) return;
+                if (gameState.gameOver) return;
+                if (gameState.isProcessing) return;
 
                 if (key === 'Enter') {
                     submitGuess();
@@ -1614,22 +1647,17 @@
 
             // معالجة إدخال الحرف
             function handleLetterInput(letter) {
-                // التحقق من أننا في الصف الحالي وأن هناك مساحة
                 if (gameState.currentGuess.length < 5) {
-                    // تأمين الإدخال
                     gameState.inputLock = true;
-
                     gameState.currentGuess += letter;
                     updateCurrentRow();
 
-                    // تأثير ظهور الحرف في المربع الصحيح
                     const tile = document.getElementById(`tile-${gameState.currentRow}-${gameState.currentGuess.length - 1}`);
                     if (tile) {
                         tile.classList.add('filled');
                         setTimeout( () => {
                             tile.classList.remove('filled');
                             gameState.inputLock = false;
-                            // فتح الإدخال بعد انتهاء التأثير
                         }, 100);
                     } else {
                         gameState.inputLock = false;
@@ -1665,24 +1693,9 @@
                 }
             }
 
-            // تحديث جميع الصفوف (للاستخدام عند بدء لعبة جديدة)
-            function updateAllRows() {
-                const rows = gameState.maxRows;
-                for (let row = 0; row < rows; row++) {
-                    for (let col = 0; col < 5; col++) {
-                        const tile = document.getElementById(`tile-${row}-${col}`);
-                        if (tile) {
-                            tile.textContent = '';
-                            tile.className = 'tile';
-                        }
-                    }
-                }
-            }
-
             // إرسال التخمين
             function submitGuess() {
-                if (gameState.isProcessing)
-                    return;
+                if (gameState.isProcessing) return;
 
                 if (gameState.currentGuess.length !== 5) {
                     showMessage('الكلمة يجب أن تكون 5 أحرف');
@@ -1711,21 +1724,15 @@
                 const target = gameState.targetWord;
 
                 const result = calculateGuessResult(guess, target);
-
-                // حفظ نتيجة المحاولة
                 gameState.attemptResults[gameState.currentRow] = result;
-
-                // تعيين قفل للإدخال أثناء العرض
                 gameState.inputLock = true;
 
-                // عرض النتيجة مع تأثير القلب
                 let completedAnimations = 0;
                 const totalAnimations = 5;
 
                 for (let i = 0; i < 5; i++) {
                     const tile = document.getElementById(`tile-${gameState.currentRow}-${i}`);
-                    if (!tile)
-                        continue;
+                    if (!tile) continue;
 
                     const delay = i * 300;
 
@@ -1738,12 +1745,10 @@
 
                             completedAnimations++;
 
-                            // بعد اكتمال جميع الحركات، نفحص النتيجة
                             if (completedAnimations === totalAnimations) {
                                 setTimeout( () => {
                                     processGuessResult(guess, target);
                                     gameState.inputLock = false;
-                                    // فتح الإدخال
                                 }, 300);
                             }
                         }, 300);
@@ -1756,12 +1761,10 @@
                 const result = Array(5).fill('absent');
                 const targetLetters = {};
 
-                // عد تكرارات الحروف في الكلمة المستهدفة
                 for (const letter of target) {
                     targetLetters[letter] = (targetLetters[letter] || 0) + 1;
                 }
 
-                // أولاً: تحديد الحروف الصحيحة في المكان الصحيح
                 for (let i = 0; i < 5; i++) {
                     if (guess[i] === target[i]) {
                         result[i] = 'correct';
@@ -1769,7 +1772,6 @@
                     }
                 }
 
-                // ثانياً: تحديد الحروف الموجودة ولكن في مكان خاطئ
                 for (let i = 0; i < 5; i++) {
                     if (result[i] !== 'correct' && targetLetters[guess[i]] > 0) {
                         result[i] = 'present';
@@ -1782,7 +1784,6 @@
 
             // معالجة نتيجة التخمين بعد اكتمال الحركات
             function processGuessResult(guess, target) {
-                // التحقق إذا فاز
                 const won = guess === target;
 
                 if (won) {
@@ -1790,7 +1791,7 @@
                     gameState.gameOver = true;
                     gameState.isProcessing = false;
                     handleWin();
-                } else if (gameState.currentRow === gameState.maxRows - 1) { // استخدام maxRows بدلاً من قيمة ثابتة
+                } else if (gameState.currentRow === gameState.maxRows - 1) {
                     gameState.gameOver = true;
                     gameState.isProcessing = false;
                     handleLoss();
@@ -1805,8 +1806,7 @@
             // تحديث لوحة المفاتيح
             function updateKeyboard(letter, status) {
                 const key = document.querySelector(`.key[data-key="${letter}"]`);
-                if (!key)
-                    return;
+                if (!key) return;
 
                 if (key.classList.contains('enter') || key.classList.contains('backspace')) {
                     return;
@@ -1827,62 +1827,38 @@
              * دالة renderAttemptMatrix - تعرض مصفوفة المحاولات المرئية
              */
             function renderAttemptMatrix() {
-                // 1. الحصول على عنصر الحاوية
                 const container = document.getElementById('matrixGrid');
-
-                // 2. تنظيف المحتوى القديم
                 container.innerHTML = '';
 
-                // 3. التحقق من وجود محاولات
                 if (!gameState.attemptResults || gameState.attemptResults.length === 0) {
                     container.innerHTML = '<div class="text-center text-gray-500 py-4">لا توجد محاولات لعرضها</div>';
                     return;
                 }
 
-                // 4. حساب عدد المحاولات المستخدمة فقط (ليس كل الصفوف)
                 const usedAttempts = gameState.attemptResults.filter(row => row && row.length > 0);
 
-                // 5. المرور على كل محاولة (Loop على المحاولات)
                 usedAttempts.forEach( (rowResults, rowIndex) => {
-                    // 5.1 إنشاء صف جديد
                     const rowDiv = document.createElement('div');
                     rowDiv.className = 'matrix-row';
-
-                    // 5.2 إضافة خاصية للتحليل (اختياري)
                     rowDiv.dataset.attemptNumber = rowIndex + 1;
 
-                    // 6. المرور على كل حرف في المحاولة (Loop على الحروف)
                     rowResults.forEach( (cellStatus, cellIndex) => {
-                        // 6.1 إنشاء مربع (Tile) جديد
                         const tile = document.createElement('div');
-
-                        // 6.2 إضافة كلاسات CSS - نفس ألوان اللعبة الأصلية
                         tile.className = 'matrix-tile';
-                        // الكلاس الأساسي
-
-                        // 6.3 إضافة كلاس اللون بناءً على حالة الحرف
+                        
                         if (cellStatus === 'correct') {
                             tile.classList.add('correct');
-                            // لون أخضر
                         } else if (cellStatus === 'present') {
                             tile.classList.add('present');
-                            // لون أصفر
                         } else if (cellStatus === 'absent') {
                             tile.classList.add('absent');
-                            // لون رمادي
                         }
 
-                        // 6.4 إضافة خصائص للتحليل (اختياري)
                         tile.dataset.position = `${rowIndex + 1}-${cellIndex + 1}`;
                         tile.dataset.status = cellStatus;
-
-                        // 6.5 التأكد من أن المربع فارغ تماماً (لا يوجد نص)
-                        // هذه الخطوة مهمة: لا نضع أي نص داخل الـ div
                         tile.textContent = '';
-                        // فارغ تماماً
                         tile.title = `مربع ${rowIndex + 1}-${cellIndex + 1}: ${getStatusText(cellStatus)}`;
 
-                        // 6.6 إضافة تأثير بسيط عند التمرير (اختياري)
                         tile.style.transition = 'transform 0.2s ease';
                         tile.addEventListener('mouseenter', () => {
                             tile.style.transform = 'scale(1.1)';
@@ -1891,15 +1867,12 @@
                             tile.style.transform = 'scale(1)';
                         });
 
-                        // 6.7 إضافة المربع إلى الصف
                         rowDiv.appendChild(tile);
                     });
 
-                    // 7. إضافة الصف إلى الحاوية
                     container.appendChild(rowDiv);
                 });
 
-                // 8. تحديث معلومات إضافية (مثال: عدد المحاولات)
                 updateMatrixStats(usedAttempts.length);
             }
 
@@ -1919,7 +1892,6 @@
              * دالة مساعدة: تحديث إحصائيات المصفوفة
              */
             function updateMatrixStats(totalAttempts) {
-                // حساب توزيع الألوان
                 const colorStats = {
                     correct: 0,
                     present: 0,
@@ -1934,7 +1906,6 @@
                     });
                 });
 
-                // تحديث واجهة المستخدم (إذا كان هناك مكان لعرضها)
                 const statsElement = document.getElementById('matrixStats');
                 if (statsElement) {
                     statsElement.innerHTML = `
@@ -1953,7 +1924,6 @@
                 gameState.gameDuration = Math.floor((new Date() - gameState.startTime) / 1000);
                 showMessage('🎉 أحسنت! لقد فزت!');
 
-                // جمع مصفوفة المحاولات المرئية
                 const attemptMatrix = collectAttemptMatrix();
                 gameState.attemptMatrices.unshift({
                     matrix: attemptMatrix,
@@ -1964,7 +1934,6 @@
                     word: gameState.targetWord
                 });
 
-                // الحفاظ على آخر 50 مصفوفة فقط
                 if (gameState.attemptMatrices.length > 50) {
                     gameState.attemptMatrices = gameState.attemptMatrices.slice(0, 50);
                 }
@@ -2011,7 +1980,6 @@
                 gameState.gameDuration = Math.floor((new Date() - gameState.startTime) / 1000);
                 showMessage(`💔 انتهت المحاولات! الكلمة الصحيحة: ${gameState.targetWord}`);
 
-                // جمع مصفوفة المحاولات المرئية
                 const attemptMatrix = collectAttemptMatrix();
                 gameState.attemptMatrices.unshift({
                     matrix: attemptMatrix,
@@ -2022,7 +1990,6 @@
                     word: gameState.targetWord
                 });
 
-                // الحفاظ على آخر 50 مصفوفة فقط
                 if (gameState.attemptMatrices.length > 50) {
                     gameState.attemptMatrices = gameState.attemptMatrices.slice(0, 50);
                 }
@@ -2120,12 +2087,9 @@
                 `;
                 }
 
-                // عرض مصفوفة المحاولات المرئية
                 renderAttemptMatrix();
-
                 modal.classList.remove('hidden');
 
-                // إضافة تأثير ظهور
                 setTimeout( () => {
                     modal.style.opacity = '1';
                     modal.style.transform = 'scale(1)';
@@ -2164,14 +2128,14 @@
                     if (isWin) {
                         resultDiv.innerHTML += `
                         <div class="text-green-600 font-bold text-base mb-2">🎉 مبروك! فزت في المحاولة ${gameState.currentRow + 1}!</div>
-                        <div class="text-gray-600 dark:text-gray-400 text-sm">الصعوبة: ${gameState.difficulty === 'easy' ? 'سهل (8 محاولات)' : 'صعب (6 محاولات)'}</div>
+                        <div class="text-gray-600 dark:text-gray-400 text-sm">الصعوبة: ${gameState.difficulty === 'easy' ? 'سهل (6 محاولات)' : 'صعب (8 محاولات)'}</div>
                         <div class="text-gray-600 dark:text-gray-400 text-sm">الكلمة الصحيحة كانت:</div>
                         <div class="correct-word">${gameState.targetWord}</div>
                     `;
                     } else {
                         resultDiv.innerHTML += `
                         <div class="text-red-600 font-bold text-base mb-2">💔 انتهت المحاولات!</div>
-                        <div class="text-gray-600 dark:text-gray-400 text-sm">الصعوبة: ${gameState.difficulty === 'easy' ? 'سهل (8 محاولات)' : 'صعب (6 محاولات)'}</div>
+                        <div class="text-gray-600 dark:text-gray-400 text-sm">الصعوبة: ${gameState.difficulty === 'easy' ? 'سهل (6 محاولات)' : 'صعب (8 محاولات)'}</div>
                         <div class="text-gray-600 dark:text-gray-400 text-sm">الكلمة الصحيحة كانت:</div>
                         <div class="correct-word">${gameState.targetWord}</div>
                     `;
@@ -2183,7 +2147,7 @@
                 updateAttemptsTable();
             }
 
-            // تحديث جدول المحاولات (بدون عمود التاريخ)
+            // تحديث جدول المحاولات
             function updateAttemptsTable() {
                 const tableBody = document.getElementById('attemptsTableBody');
                 const container = document.getElementById('attemptsTableContainer');
@@ -2228,8 +2192,7 @@
             // إعداد مستمعي الأحداث
             function setupEventListeners() {
                 document.addEventListener('keydown', (e) => {
-                    if (e.ctrlKey || e.metaKey || e.altKey)
-                        return;
+                    if (e.ctrlKey || e.metaKey || e.altKey) return;
 
                     if (e.key === 'Enter') {
                         handleInput('Enter');
@@ -2238,6 +2201,34 @@
                     } else if (/^[\u0600-\u06FF]$/.test(e.key)) {
                         handleInput(e.key);
                     }
+                });
+
+                // قائمة الصعوبة المنسدلة
+                const difficultyToggle = document.getElementById('difficultyToggle');
+                const difficultyMenu = document.getElementById('difficultyMenu');
+                const difficultyDropdown = document.querySelector('.difficulty-dropdown');
+
+                difficultyToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    difficultyMenu.classList.toggle('show');
+                    difficultyDropdown.classList.toggle('open');
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!difficultyDropdown.contains(e.target)) {
+                        difficultyMenu.classList.remove('show');
+                        difficultyDropdown.classList.remove('open');
+                    }
+                });
+
+                // اختيار مستوى الصعوبة
+                document.querySelectorAll('.difficulty-option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        const difficulty = this.dataset.difficulty;
+                        changeDifficulty(difficulty);
+                        difficultyMenu.classList.remove('show');
+                        difficultyDropdown.classList.remove('open');
+                    });
                 });
 
                 document.getElementById('helpBtn').addEventListener('click', () => {
@@ -2252,29 +2243,26 @@
                     startNewGame();
                 });
 
-                document.getElementById('easyBtn').addEventListener('click', () => {
-                    changeDifficulty('easy');
-                });
-
-                document.getElementById('hardBtn').addEventListener('click', () => {
-                    changeDifficulty('hard');
-                });
-
                 document.getElementById('themeToggle').addEventListener('click', () => {
-                    document.body.classList.toggle('dark-mode');
-                    const icon = document.querySelector('#themeToggle i');
-                    const text = document.querySelector('#themeToggle span');
-
-                    if (document.body.classList.contains('dark-mode')) {
+                    // تبديل بين الوضع الليلي (الأساسي) والوضع النهاري
+                    if (document.body.classList.contains('light-mode')) {
+                        // الانتقال إلى الوضع الليلي (الأساسي)
+                        document.body.classList.remove('light-mode');
+                        const icon = document.querySelector('#themeToggle i');
+                        const text = document.querySelector('#themeToggle span');
                         icon.className = 'fas fa-sun text-lg';
                         if (text)
                             text.textContent = 'نهاري';
-                        localStorage.setItem(THEME_KEY, 'true');
+                        localStorage.setItem(THEME_KEY, 'true'); // الليلي هو الأساسي
                     } else {
+                        // الانتقال إلى الوضع النهاري
+                        document.body.classList.add('light-mode');
+                        const icon = document.querySelector('#themeToggle i');
+                        const text = document.querySelector('#themeToggle span');
                         icon.className = 'fas fa-moon text-lg';
                         if (text)
                             text.textContent = 'ليلي';
-                        localStorage.setItem(THEME_KEY, 'false');
+                        localStorage.setItem(THEME_KEY, 'false'); // النهاري
                     }
                 });
 
