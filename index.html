@@ -42,10 +42,12 @@ javascript:(function() {
 
     function setV(el, v) {
         if (!el) return;
+        el.focus(); // أهم خطوة لـ React
         const s = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
         s.call(el, v);
         el.dispatchEvent(new Event('input', { bubbles: true }));
         el.dispatchEvent(new Event('change', { bubbles: true }));
+        el.dispatchEvent(new Event('blur', { bubbles: true }));
     }
 
     const h = document.createElement('div');
@@ -61,7 +63,7 @@ javascript:(function() {
             </div>
         </div>
         <div id="list-h" style="display:flex;overflow-x:auto;padding:10px;gap:12px;background:#f8f9fa;flex:1;align-items:center;white-space:nowrap;"></div>
-        <div id="add-m" style="display:none;position:absolute;top:100%;right:20px;background:#fff;border:2px solid #2c3e50;padding:15px;width:300px;box-shadow:0 10px 20px rgba(0,0,0,0.2);border-radius:0 0 8px 8px;z-index:999999;">
+        <div id="add-m" style="display:none;position:absolute;top:100%;right:20px;background:#fff;border:2px solid #2c3e50;padding:15px;width:300px;box-shadow:0 10px 20px rgba(0,0,0,0.2);border-radius:0 0 8px 8px;">
             <input id="i-en" placeholder="الشركة" style="width:90%;margin-bottom:5px;padding:5px;">
             <input id="i-eid" placeholder="رقم 700" style="width:90%;margin-bottom:5px;padding:5px;">
             <input id="i-ag" placeholder="الوكيل" style="width:90%;margin-bottom:5px;padding:5px;">
@@ -75,7 +77,6 @@ javascript:(function() {
     document.body.appendChild(h);
 
     const listH = h.querySelector('#list-h');
-
     function render(f = "") {
         listH.innerHTML = '';
         agents.filter(a => a.en.includes(f) || a.ag.includes(f)).forEach((it, idx) => {
@@ -95,6 +96,8 @@ javascript:(function() {
                     if (p) { it.poa = p; localStorage.setItem(STORAGE_KEY, JSON.stringify(agents)); render(h.querySelector('#s-bar').value); }
                     return;
                 }
+                
+                // تعبئة البيانات
                 setV(document.querySelector('[name="entityIdentity"]'), it.eid);
                 setV(document.querySelector('[name="entityemail"]'), FIXED_EMAIL);
                 setV(document.querySelector('[name="attorneyIdentity"]'), it.aid);
@@ -102,10 +105,14 @@ javascript:(function() {
                 setV(document.querySelector('[name="attorneyemail"]'), FIXED_EMAIL);
                 setV(document.querySelector('[name="attorneyPowerOfAttorney"]'), it.poa);
 
-                // --- هذا التعديل اللي يحل مشكلة الجوال في موقعك ---
+                // --- تصليح الجوال للـ React ---
+                // نأخذ الرقم الصافي (مثلاً 566404024) ونضيف له +966
+                const cleanMob = it.ph.toString().trim().replace(/^(00966|966|0|\+966)/, '');
+                const finalMob = "+966" + cleanMob;
+
                 document.querySelectorAll('input[type="tel"]').forEach(t => {
-                    const mobVal = "+966" + it.ph.toString().trim().replace(/^(00966|966|0|\+966)/, '');
-                    setV(t, mobVal);
+                    // نضع الرقم كاملاً +9665xxxxxxxx
+                    setV(t, finalMob);
                 });
 
                 card.style.background = "#d1e7dd";
@@ -119,12 +126,10 @@ javascript:(function() {
         const m = h.querySelector('#add-m'); 
         m.style.display = m.style.display === 'none' ? 'block' : 'none'; 
     };
-
     h.querySelector('#i-save').onclick = () => {
         const n = { en: h.querySelector('#i-en').value, eid: h.querySelector('#i-eid').value, ag: h.querySelector('#i-ag').value, aid: h.querySelector('#i-aid').value, dob: h.querySelector('#i-dob').value, ph: h.querySelector('#i-ph').value, poa: h.querySelector('#i-poa').value };
         if (n.en && n.ag) { agents.push(n); localStorage.setItem(STORAGE_KEY, JSON.stringify(agents)); render(); h.querySelector('#add-m').style.display = 'none'; }
     };
-
     h.querySelector('#s-bar').oninput = (e) => render(e.target.value);
     render();
 })();
