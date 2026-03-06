@@ -1,4 +1,4 @@
-Javascript:(function() {
+javascript:(function() {
     const FIXED_EMAIL = "aaaaaaaaaaaaaaa@aaaoooslo.sa";
     const STORAGE_KEY = "AGENT_TOPBAR_SYSTEM_V6";
     const DATA = [
@@ -39,6 +39,7 @@ Javascript:(function() {
         { ag: "منصور القرني", aid: "1050705357", ph: "505987249", en: "شركة سابك", poa: "464094328", eid: "7000876867", dob: "1402-01-27" }
     ];
     let agents = JSON.parse(localStorage.getItem(STORAGE_KEY)) || DATA;
+
     function setV(el, v) {
         if (!el) return;
         const s = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
@@ -46,6 +47,7 @@ Javascript:(function() {
         el.dispatchEvent(new Event('input', { bubbles: true }));
         el.dispatchEvent(new Event('change', { bubbles: true }));
     }
+
     const h = document.createElement('div');
     h.id = "top-agent-bar";
     h.style = "position:fixed;top:0;left:0;width:100%;height:18vh;background:#fff;z-index:999999;border-bottom:3px solid #2c3e50;display:flex;flex-direction:column;direction:rtl;font-family:tahoma;box-shadow:0 4px 10px rgba(0,0,0,0.1);color:#000;";
@@ -59,59 +61,51 @@ Javascript:(function() {
             </div>
         </div>
         <div id="list-h" style="display:flex;overflow-x:auto;padding:10px;gap:12px;background:#f8f9fa;flex:1;align-items:center;white-space:nowrap;"></div>
-        <div id="add-m" style="display:none;position:absolute;top:100%;right:20px;background:#fff;border:2px solid #2c3e50;padding:15px;width:300px;box-shadow:0 10px 20px rgba(0,0,0,0.2);border-radius:0 0 8px 8px;">
-            <input id="i-en" placeholder="الشركة" style="width:90%;margin-bottom:5px;padding:5px;">
-            <input id="i-eid" placeholder="رقم 700" style="width:90%;margin-bottom:5px;padding:5px;">
-            <input id="i-ag" placeholder="الوكيل" style="width:90%;margin-bottom:5px;padding:5px;">
-            <input id="i-aid" placeholder="الهوية" style="width:90%;margin-bottom:5px;padding:5px;">
-            <input id="i-dob" placeholder="الميلاد" style="width:90%;margin-bottom:5px;padding:5px;">
-            <input id="i-ph" placeholder="الجوال" style="width:90%;margin-bottom:5px;padding:5px;">
-            <input id="i-poa" placeholder="الوكالة" style="width:90%;margin-bottom:5px;padding:5px;">
-            <button id="i-save" style="width:100%;background:#27ae60;color:#fff;border:none;padding:8px;cursor:pointer;">حفظ</button>
-        </div>
     `;
     document.body.appendChild(h);
+
     const listH = h.querySelector('#list-h');
+
     function render(f = "") {
         listH.innerHTML = '';
         agents.filter(a => a.en.includes(f) || a.ag.includes(f)).forEach((it, idx) => {
             const card = document.createElement('div');
             card.style = "min-width:180px;background:#fff;border:1px solid #ddd;padding:8px 12px;border-radius:6px;cursor:pointer;flex-shrink:0;box-shadow:0 2px 4px rgba(0,0,0,0.05);border-top:3px solid #4A6BA3;";
             card.innerHTML = `
-                <div style="font-weight:bold;font-size:13px;color:#2c3e50;overflow:hidden;text-overflow:ellipsis;">${it.en}</div>
+                <div style="font-weight:bold;font-size:13px;color:#2c3e50;">${it.en}</div>
                 <div style="font-size:12px;color:#555;">${it.ag}</div>
-                <div style="font-size:11px;color:#e74c3c;display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
-                    <span>${it.poa}</span>
-                    <span class="e-pen" style="background:#eee;padding:1px 4px;border-radius:3px;color:#000;">📝</span>
-                </div>
+                <div style="font-size:11px;color:#e74c3c;margin-top:4px;">${it.poa}</div>
             `;
             card.onclick = (e) => {
-                if (e.target.className === 'e-pen') {
-                    const p = prompt("عدل رقم الوكالة لـ " + it.ag, it.poa);
-                    if (p) { it.poa = p; localStorage.setItem(STORAGE_KEY, JSON.stringify(agents)); render(h.querySelector('#s-bar').value); }
-                    return;
-                }
+                // تعبئة البيانات العادية
                 setV(document.querySelector('[name="entityIdentity"]'), it.eid);
                 setV(document.querySelector('[name="entityemail"]'), FIXED_EMAIL);
                 setV(document.querySelector('[name="attorneyIdentity"]'), it.aid);
                 setV(document.querySelector('[name="attorneyDateOfBirth"]'), it.dob);
                 setV(document.querySelector('[name="attorneyemail"]'), FIXED_EMAIL);
                 setV(document.querySelector('[name="attorneyPowerOfAttorney"]'), it.poa);
+
+                // --- الحل القوي لخانات الجوال (react-tel-input) ---
+                const mob = "+966" + it.ph.toString().trim().replace(/^(00966|966|0|\+966)/, '');
+                
                 document.querySelectorAll('input[type="tel"]').forEach(t => {
-                    setV(t, "");
-                    setTimeout(() => setV(t, "5" + it.ph.replace(/^966|^0/, "")), 50);
+                    t.focus();
+                    // مسح أي قيمة موجودة أولاً بشكل عميق
+                    setV(t, ""); 
+                    // كتابة الرقم بالصيغة الدولية بعد تأخير بسيط ليتقبلها React
+                    setTimeout(() => {
+                        setV(t, mob);
+                        t.blur();
+                    }, 100);
                 });
+
                 card.style.background = "#d1e7dd";
                 setTimeout(() => card.style.background = "#fff", 500);
             };
             listH.appendChild(card);
         });
     }
-    h.querySelector('#btn-add-ui').onclick = () => { const m = h.querySelector('#add-m'); m.style.display = m.style.display === 'none' ? 'block' : 'none'; };
-    h.querySelector('#i-save').onclick = () => {
-        const n = { en: h.querySelector('#i-en').value, eid: h.querySelector('#i-eid').value, ag: h.querySelector('#i-ag').value, aid: h.querySelector('#i-aid').value, dob: h.querySelector('#i-dob').value, ph: h.querySelector('#i-ph').value, poa: h.querySelector('#i-poa').value };
-        if (n.en && n.ag) { agents.push(n); localStorage.setItem(STORAGE_KEY, JSON.stringify(agents)); render(); h.querySelector('#add-m').style.display = 'none'; }
-    };
+
     h.querySelector('#s-bar').oninput = (e) => render(e.target.value);
     render();
 })();
