@@ -40,12 +40,15 @@ Javascript:(function() {
     ];
     let agents = JSON.parse(localStorage.getItem(STORAGE_KEY)) || DATA;
 
+    // دالة تعبئة متطورة لضمان قبول المتصفح للبيانات
     function setV(el, v) {
         if (!el) return;
+        el.focus();
         const s = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
         s.call(el, v);
         el.dispatchEvent(new Event('input', { bubbles: true }));
         el.dispatchEvent(new Event('change', { bubbles: true }));
+        el.dispatchEvent(new Event('blur', { bubbles: true }));
     }
 
     const h = document.createElement('div');
@@ -95,6 +98,8 @@ Javascript:(function() {
                     if (p) { it.poa = p; localStorage.setItem(STORAGE_KEY, JSON.stringify(agents)); render(h.querySelector('#s-bar').value); }
                     return;
                 }
+
+                // تعبئة البيانات الأساسية
                 setV(document.querySelector('[name="entityIdentity"]'), it.eid);
                 setV(document.querySelector('[name="entityemail"]'), FIXED_EMAIL);
                 setV(document.querySelector('[name="attorneyIdentity"]'), it.aid);
@@ -102,16 +107,25 @@ Javascript:(function() {
                 setV(document.querySelector('[name="attorneyemail"]'), FIXED_EMAIL);
                 setV(document.querySelector('[name="attorneyPowerOfAttorney"]'), it.poa);
 
-                // --- التعديل هنا لضبط إدخال الجوال ---
-                document.querySelectorAll('input[type="tel"]').forEach(t => {
-                    setV(t, ""); // مسح الخانة أولاً
-                    // منطق التنظيف والإضافة:
-                    const cleanPh = it.ph.toString().trim().replace(/^(00966|966|0|\+966)/, '');
-                    const finalMob = "+966" + cleanPh;
-                    
-                    setTimeout(() => setV(t, finalMob), 50);
+                // --- منطق معالجة الجوال الجديد ---
+                const rawPhone = it.ph.toString();
+                // تنظيف الرقم من أي بدايات قديمة وإضافة +966
+                const cleanMob = "+966" + rawPhone.trim().replace(/^(00966|966|0|\+966)/, '');
+
+                // محاولة تعبئة أي حقل جوال في الصفحة أو حقل اسمه mVal
+                const phoneFields = [
+                    ...document.querySelectorAll('input[type="tel"]'),
+                    document.getElementById('mVal'), // البحث عن mVal الذي ذكرته
+                    document.querySelector('[name*="phone"]'),
+                    document.querySelector('[name*="mobile"]')
+                ];
+
+                phoneFields.forEach(field => {
+                    if (field) {
+                        setV(field, ""); // مسح
+                        setTimeout(() => setV(field, cleanMob), 50); // تعبئة الصيغة الجديدة
+                    }
                 });
-                // ------------------------------------
 
                 card.style.background = "#d1e7dd";
                 setTimeout(() => card.style.background = "#fff", 500);
