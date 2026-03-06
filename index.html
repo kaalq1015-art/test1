@@ -1,125 +1,152 @@
 javascript:(function() {
     const FIXED_EMAIL = "aaaaaaaaaaaaaaa@aaaoooslo.sa";
-    const STORAGE_KEY = "AGENT_ELITE_BAR_V14";
-    
+    const STORAGE_KEY = "AGENT_ELITE_SYSTEM_V7";
     const INITIAL_DATA = [
-        { en: "شركة الراجحي للتطوير المحدودة شركة شخص واحد", ag: "عبدالله الجريوي", eid: "7010997174", aid: "1025158781", ph: "535588832", dob: "1395-04-02", poa: "461065673" },
-        { en: "شركة الراجحي المصرفية للاستثمار", ag: "فارس العودة", eid: "7000102744", aid: "1081406603", ph: "563800669", dob: "1413-07-11", poa: "452371956" },
-        { en: "بنك الجزيرة", ag: "إبراهيم عسل", eid: "7000120712", aid: "1070308232", ph: "566404024", dob: "1407-11-26", poa: "464483278" },
-        { en: "بنك الأهلي", ag: "أحمد حنبوك", eid: "7000025887", aid: "1082819309", ph: "550636001", dob: "1414-02-27", poa: "46582320" },
-        { en: "البنك السعودي الأول", ag: "عمر السبيعي العنزي", eid: "7000018668", aid: "1000919983", ph: "544474441", dob: "1402-08-14", poa: "453178121" },
-        { en: "البنك السعودي الفرنسي", ag: "أبو عيش", eid: "7000025333", aid: "1000191765", ph: "506402412", dob: "1393-06-26", poa: "464182296" }
+        { ag: "إبراهيم عسل", aid: "1070308232", ph: "566404024", en: "بنك الجزيرة", poa: "464483278", eid: "7000120712", dob: "1407-11-26" },
+        { ag: "إبراهيم عسل", aid: "1070308232", ph: "566404024", en: "شركة أمان للتطوير والاستثمار العقاري", poa: "442190189", eid: "7010472897", dob: "1407-11-26" },
+        { ag: "عبدالله الجريوي", aid: "1025158781", ph: "535588832", en: "شركة الراجحي للتطوير المحدودة شركة شخص واحد", poa: "461065673", eid: "7010997174", dob: "1395-04-02" },
+        { ag: "فارس العودة", aid: "1081406603", ph: "563800669", en: "شركة الراجحي المصرفية للاستثمار", poa: "452371956", eid: "7000102744", dob: "1413-07-11" },
+        { ag: "عمر السبيعي العنزي", aid: "1000919983", ph: "544474441", en: "شركة عقارات العربية المحدودة", poa: "453042497", eid: "7001750764", dob: "1402-08-14" }
     ];
 
     let agents = JSON.parse(localStorage.getItem(STORAGE_KEY)) || INITIAL_DATA;
 
-    /* دالة الإدخال العميقة لضمان قبول البيانات في React */
-    const forceFill = (sel, val) => {
-        const el = typeof sel === 'string' ? document.querySelector(sel) : sel;
+    function setNativeValue(el, v) {
         if (!el) return;
         el.focus();
-        const prototype = Object.getPrototypeOf(el);
-        const setter = Object.getOwnPropertyDescriptor(prototype, "value")?.set || Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
-        setter.call(el, val);
-        ['input', 'change', 'blur'].forEach(t => el.dispatchEvent(new Event(t, { bubbles: true })));
+        const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+        setter.call(el, v);
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        el.dispatchEvent(new Event('change', { bubbles: true }));
         el.blur();
-    };
+    }
 
-    /* إنشاء الشريط العلوي */
     const bar = document.createElement('div');
     bar.id = "elite-top-bar";
-    bar.style = "position:fixed;top:0;left:0;width:100%;height:140px;background:#fff;z-index:999999;border-bottom:4px solid #2c3e50;display:flex;flex-direction:column;direction:rtl;font-family:tahoma,arial;box-shadow:0 4px 15px rgba(0,0,0,0.2);color:#000;";
+    bar.style = "position:fixed;top:0;left:0;width:100%;height:140px;background:#fff;z-index:999999;border-bottom:4px solid #2c3e50;display:flex;flex-direction:column;direction:rtl;font-family:tahoma;box-shadow:0 4px 15px rgba(0,0,0,0.2);color:#000;";
     
     bar.innerHTML = `
-        <div style="background:#2c3e50;padding:8px 20px;display:flex;justify-content:space-between;color:#fff;align-items:center;">
+        <div style="display:flex;align-items:center;background:#2c3e50;padding:8px 20px;justify-content:space-between;color:#fff;">
             <div style="display:flex;gap:20px;align-items:center;">
                 <b style="font-size:16px;">نظام الوكلاء ⚖️</b>
-                <input id="t-search" placeholder="🔍 بحث سريع..." style="padding:6px 15px;border-radius:20px;border:none;width:300px;font-size:14px;color:#000;outline:none;">
+                <input id="top-search" placeholder="🔍 بحث سريع..." style="padding:6px 15px;border-radius:20px;border:none;width:300px;font-size:14px;outline:none;">
             </div>
             <div style="display:flex;gap:10px;">
-                <button id="t-add-btn" style="background:#27ae60;color:#fff;border:none;padding:6px 15px;border-radius:5px;cursor:pointer;font-weight:bold;">+ إضافة وكيل</button>
+                <button id="top-add-btn" style="background:#27ae60;color:#fff;border:none;padding:6px 15px;border-radius:5px;cursor:pointer;font-weight:bold;">+ إضافة وكيل جديد</button>
                 <button onclick="document.getElementById('elite-top-bar').remove()" style="background:#c0392b;color:#fff;border:none;padding:6px 15px;border-radius:5px;cursor:pointer;">إغلاق</button>
             </div>
         </div>
-        <div id="cards-container" style="display:flex;overflow-x:auto;padding:15px;gap:15px;background:#f4f7f6;flex:1;align-items:center;white-space:nowrap;"></div>
+        <div id="cards-container" style="display:flex;overflow-x:auto;padding:15px;gap:15px;background:#f4f7f6;flex:1;align-items:center;"></div>
         
-        <div id="edit-modal" style="display:none;position:fixed;top:150px;right:20px;background:#fff;border:2px solid #2c3e50;padding:20px;width:380px;box-shadow:0 10px 30px rgba(0,0,0,0.3);border-radius:10px;z-index:1000000;color:#000;">
-            <h3 id="modal-title" style="margin:0 0 15px;color:#2c3e50;border-bottom:1px solid #eee;">تعديل البيانات</h3>
-            <div style="display:grid;gap:8px;">
-                <input id="f-en" placeholder="اسم الشركة" style="padding:8px;border:1px solid #ccc;color:#000;"><input id="f-eid" placeholder="رقم 700" style="padding:8px;border:1px solid #ccc;color:#000;">
-                <input id="f-ag" placeholder="اسم الوكيل" style="padding:8px;border:1px solid #ccc;color:#000;"><input id="f-aid" placeholder="هوية الوكيل" style="padding:8px;border:1px solid #ccc;color:#000;">
-                <input id="f-dob" placeholder="الميلاد (هجري)" style="padding:8px;border:1px solid #ccc;color:#000;"><input id="f-ph" placeholder="الجوال (5xxx)" style="padding:8px;border:1px solid #ccc;color:#000;">
-                <input id="f-poa" placeholder="رقم الوكالة" style="padding:8px;border:1px solid #ccc;color:#000;">
+        <div id="modal-form" style="display:none;position:fixed;top:150px;right:20px;background:#fff;border:2px solid #2c3e50;padding:20px;width:380px;box-shadow:0 10px 30px rgba(0,0,0,0.3);border-radius:10px;z-index:1000000;">
+            <h3 id="modal-title" style="margin-top:0;color:#2c3e50;border-bottom:2px solid #eee;padding-bottom:10px;">إضافة/تعديل وكيل</h3>
+            <div style="display:grid;gap:8px;margin-top:10px;">
+                <input id="m-en" placeholder="اسم الشركة (الجهة)" style="padding:8px;border:1px solid #ccc;border-radius:4px;">
+                <input id="m-eid" placeholder="رقم 700 للمنشأة" style="padding:8px;border:1px solid #ccc;border-radius:4px;">
+                <input id="m-ag" placeholder="اسم الوكيل" style="padding:8px;border:1px solid #ccc;border-radius:4px;">
+                <input id="m-aid" placeholder="رقم هوية الوكيل" style="padding:8px;border:1px solid #ccc;border-radius:4px;">
+                <input id="m-dob" placeholder="تاريخ الميلاد (1400-01-01)" style="padding:8px;border:1px solid #ccc;border-radius:4px;">
+                <input id="m-ph" placeholder="الجوال (بدون صفر: 5xxxxxxxx)" style="padding:8px;border:1px solid #ccc;border-radius:4px;">
+                <input id="m-poa" placeholder="رقم الوكالة" style="padding:8px;border:1px solid #ccc;border-radius:4px;">
                 <div style="display:flex;gap:10px;margin-top:10px;">
-                    <button id="f-save" style="flex:1;background:#27ae60;color:#fff;padding:10px;border:none;border-radius:5px;cursor:pointer;font-weight:bold;">حفظ ✅</button>
-                    <button id="f-cancel" style="flex:1;background:#95a5a6;color:#fff;padding:10px;border:none;border-radius:5px;cursor:pointer;">إلغاء</button>
+                    <button id="m-save" style="flex:1;background:#27ae60;color:#fff;border:none;padding:10px;border-radius:5px;cursor:pointer;font-weight:bold;">حفظ ✅</button>
+                    <button id="m-close" style="flex:1;background:#95a5a6;color:#fff;border:none;padding:10px;border-radius:5px;cursor:pointer;">إلغاء</button>
                 </div>
             </div>
         </div>
     `;
 
     document.body.appendChild(bar);
-    const container = bar.querySelector('#cards-container');
-    const modal = bar.querySelector('#edit-modal');
-    let editIndex = -1;
+
+    const cardsCont = bar.querySelector('#cards-container');
+    const modal = bar.querySelector('#modal-form');
+    let editingIndex = -1;
 
     function render(filter = "") {
-        container.innerHTML = '';
+        cardsCont.innerHTML = '';
         agents.filter(a => a.en.includes(filter) || a.ag.includes(filter)).forEach((it, idx) => {
             const card = document.createElement('div');
-            card.style = "min-width:240px;background:#fff;border:1px solid #ddd;padding:12px;border-radius:8px;cursor:pointer;flex-shrink:0;box-shadow:0 2px 5px rgba(0,0,0,0.1);border-top:4px solid #4A6BA3;position:relative;color:#000;";
+            card.style = "min-width:220px;max-width:220px;background:#fff;border:1px solid #ddd;padding:12px;border-radius:8px;cursor:pointer;flex-shrink:0;box-shadow:0 2px 5px rgba(0,0,0,0.1);border-top:4px solid #4A6BA3;position:relative;transition:0.2s;";
             card.innerHTML = `
-                <div style="font-weight:bold;font-size:13px;color:#2c3e50;height:32px;overflow:hidden;">${it.en}</div>
-                <div style="font-size:13px;margin-top:5px;color:#000;">الوكيل: <b>${it.ag}</b></div>
+                <div style="font-weight:bold;font-size:13px;color:#2c3e50;white-space:normal;line-height:1.2;height:32px;overflow:hidden;">${it.en}</div>
+                <div style="font-size:13px;color:#555;margin-top:5px;">الوكيل: <b>${it.ag}</b></div>
                 <div style="font-size:11px;color:#e74c3c;margin-top:5px;font-weight:bold;">📄 ${it.poa}</div>
-                <button class="edit-btn" style="position:absolute;left:8px;bottom:8px;background:#f8f9fa;border:1px solid #ccc;padding:2px 6px;font-size:11px;cursor:pointer;color:#000;">تعديل البيانات 📝</button>
+                <button class="edit-icon" style="position:absolute;left:8px;bottom:8px;background:#f8f9fa;border:1px solid #ccc;border-radius:4px;padding:2px 6px;font-size:12px;cursor:pointer;">📝 تعديل</button>
             `;
 
             card.onclick = (e) => {
-                if (e.target.className === 'edit-btn') {
-                    editIndex = idx;
-                    modal.style.display = 'block';
-                    bar.querySelector('#f-en').value = it.en;
-                    bar.querySelector('#f-eid').value = it.eid;
-                    bar.querySelector('#f-ag').value = it.ag;
-                    bar.querySelector('#f-aid').value = it.aid;
-                    bar.querySelector('#f-dob').value = it.dob;
-                    bar.querySelector('#f-ph').value = it.ph;
-                    bar.querySelector('#f-poa').value = it.poa;
+                if (e.target.classList.contains('edit-icon')) {
+                    openModal(idx);
                     return;
                 }
-                
-                /* عملية التعبئة التلقائية */
-                forceFill('[name="entityIdentity"]', it.eid);
-                forceFill('[name="entityemail"]', FIXED_EMAIL);
-                forceFill('[name="attorneyIdentity"]', it.aid);
-                forceFill('[name="attorneyDateOfBirth"]', it.dob);
-                forceFill('[name="attorneyemail"]', FIXED_EMAIL);
-                forceFill('[name="attorneyPowerOfAttorney"]', it.poa);
-
-                /* تعبئة الجوال بطريقة الإدخال العميقة لضمان القبول */
-                document.querySelectorAll('input[type="tel"]').forEach(t => {
-                    forceFill(t, ""); // تصفير الحقل
-                    setTimeout(() => forceFill(t, "5" + it.ph.toString().replace(/^966|^0/, "")), 100);
-                });
-
+                fillForm(it);
                 card.style.background = "#d1e7dd";
                 setTimeout(() => card.style.background = "#fff", 600);
             };
-            container.appendChild(card);
+            cardsCont.appendChild(card);
         });
     }
 
-    bar.querySelector('#f-save').onclick = () => {
-        const newData = { en: bar.querySelector('#f-en').value, eid: bar.querySelector('#f-eid').value, ag: bar.querySelector('#f-ag').value, aid: bar.querySelector('#f-aid').value, dob: bar.querySelector('#f-dob').value, ph: bar.querySelector('#f-ph').value, poa: bar.querySelector('#f-poa').value };
-        if (editIndex > -1) agents[editIndex] = newData; else agents.push(newData);
+    function fillForm(it) {
+        setNativeValue(document.querySelector('[name="entityIdentity"]'), it.eid);
+        setNativeValue(document.querySelector('[name="entityemail"]'), FIXED_EMAIL);
+        setNativeValue(document.querySelector('[name="attorneyIdentity"]'), it.aid);
+        setNativeValue(document.querySelector('[name="attorneyDateOfBirth"]'), it.dob);
+        setNativeValue(document.querySelector('[name="attorneyemail"]'), FIXED_EMAIL);
+        setNativeValue(document.querySelector('[name="attorneyPowerOfAttorney"]'), it.poa);
+        
+        /* حل مشكلة الجوال الجذري */
+        const tels = document.querySelectorAll('input[type="tel"]');
+        tels.forEach(t => {
+            setNativeValue(t, ""); 
+            setTimeout(() => {
+                t.focus();
+                setNativeValue(t, "5" + it.ph.replace(/^966|^0/, ""));
+                t.dispatchEvent(new Event('blur'));
+            }, 50);
+        });
+    }
+
+    function openModal(idx = -1) {
+        editingIndex = idx;
+        modal.style.display = 'block';
+        if (idx > -1) {
+            const a = agents[idx];
+            bar.querySelector('#m-en').value = a.en;
+            bar.querySelector('#m-eid').value = a.eid;
+            bar.querySelector('#m-ag').value = a.ag;
+            bar.querySelector('#m-aid').value = a.aid;
+            bar.querySelector('#m-dob').value = a.dob;
+            bar.querySelector('#m-ph').value = a.ph;
+            bar.querySelector('#m-poa').value = a.poa;
+            bar.querySelector('#modal-title').innerText = "تعديل بيانات: " + a.ag;
+        } else {
+            bar.querySelectorAll('#modal-form input').forEach(i => i.value = "");
+            bar.querySelector('#modal-title').innerText = "إضافة وكيل جديد";
+        }
+    }
+
+    bar.querySelector('#m-save').onclick = () => {
+        const newData = {
+            en: bar.querySelector('#m-en').value,
+            eid: bar.querySelector('#m-eid').value,
+            ag: bar.querySelector('#m-ag').value,
+            aid: bar.querySelector('#m-aid').value,
+            dob: bar.querySelector('#m-dob').value,
+            ph: bar.querySelector('#m-ph').value,
+            poa: bar.querySelector('#m-poa').value
+        };
+        if (editingIndex > -1) agents[editingIndex] = newData;
+        else agents.push(newData);
+        
         localStorage.setItem(STORAGE_KEY, JSON.stringify(agents));
         modal.style.display = 'none';
         render();
     };
 
-    bar.querySelector('#f-cancel').onclick = () => modal.style.display = 'none';
-    bar.querySelector('#t-add-btn').onclick = () => { editIndex = -1; modal.style.display = 'block'; bar.querySelectorAll('#edit-modal input').forEach(i => i.value = ""); };
-    bar.querySelector('#t-search').oninput = (e) => render(e.target.value);
+    bar.querySelector('#m-close').onclick = () => modal.style.display = 'none';
+    bar.querySelector('#top-add-btn').onclick = () => openModal(-1);
+    bar.querySelector('#top-search').oninput = (e) => render(e.target.value);
+
     render();
 })();
