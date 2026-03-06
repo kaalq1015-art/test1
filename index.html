@@ -1,6 +1,6 @@
 javascript:(function() {
     const FIXED_EMAIL = "aaaaaaaaaaaaaaa@aaaoooslo.sa";
-    const STORAGE_KEY = "AGENT_TOPBAR_V8";
+    const STORAGE_KEY = "AGENT_TOPBAR_V9";
     const DATA = [
         { ag: "إبراهيم عسل", aid: "1070308232", ph: "566404024", en: "بنك الجزيرة", poa: "464483278", eid: "7000120712", dob: "1407-11-26" },
         { ag: "إبراهيم عسل", aid: "1070308232", ph: "566404024", en: "شركة أمان للتطوير والاستثمار العقاري", poa: "442190189", eid: "7010472897", dob: "1407-11-26" },
@@ -17,76 +17,67 @@ javascript:(function() {
         { ag: "سعود العنزي", aid: "1127487724", ph: "552028788", en: "شركة دار التمليك", poa: "471828043", eid: "7001562953", dob: "1415-07-01" },
         { ag: "سعود المهيني", aid: "1018066710", ph: "555050597", en: "البنك السعودي الأول", poa: "453178700", eid: "7000018668", dob: "1399-03-25" },
         { ag: "سعود معيض العنزي", aid: "1088849730", ph: "503250916", en: "بنك الجزيرة", poa: "451151904", eid: "7000120712", dob: "1406-05-19" },
-        { ag: "سعود معيض العنزي", aid: "1088849730", ph: "503250916", en: "شركة أمان للتطوير والاستثمار العقاري", poa: "442696912", eid: "7010472897", dob: "1406-05-19" },
-        { ag: "سلطان الشمري", aid: "1116066257", ph: "507033378", en: "البنك السعودي الفرنسي", poa: "46367115", eid: "7000025333", dob: "1418-02-27" },
-        { ag: "شاكر الرويس", aid: "1014950099", ph: "500040016", en: "البنك السعودي للاستثمار", poa: "475087015", eid: "7000029889", dob: "1404-10-21" },
-        { ag: "صالح آل فلان", aid: "1011798558", ph: "555175781", en: "شركة الزيت العربية السعودية أرامكو السعودية شركة مساهمة سعودية", poa: "441554335", eid: "7012382193", dob: "1390-09-04" },
+        { ag: "صالح آل فلان", aid: "1011798558", ph: "555175781", en: "شركة أرامكو السعودية", poa: "441554335", eid: "7012382193", dob: "1390-09-04" },
         { ag: "صالح الخضير", aid: "1008470989", ph: "504250172", en: "مصرف الإنماء", poa: "451530542", eid: "7001514442", dob: "1391-12-08" },
         { ag: "ضاوي اليامي", aid: "1082532605", ph: "556077117", en: "بنك الأهلي", poa: "465825321", eid: "7000025887", dob: "1414-02-17" },
-        { ag: "عبدالله الجريوي", aid: "1025158781", ph: "535588832", en: "شركة الراجحي المصرفية للاستثمار", poa: "452370185", eid: "7000102744", dob: "1395-04-02" },
-        { ag: "عمر السبيعي العنزي", aid: "1000919983", ph: "544474441", en: "البنك السعودي الأول", poa: "453178121", eid: "7000018668", dob: "1402-08-14" },
-        { ag: "فارس العودة", aid: "1081406603", ph: "563800669", en: "شركة الراجحي المصرفية للاستثمار", poa: "452371956", eid: "7000102744", dob: "1413-07-11" },
-        { ag: "فهد آل مسيعد", aid: "1083195683", ph: "560876000", en: "بنك الأهلي", poa: "444934078", eid: "7000025887", dob: "1414-06-29" },
+        { ag: "عبدالله الجريوي", aid: "1025158781", ph: "535588832", en: "شركة الراجحي للاستثمار", poa: "452370185", eid: "7000102744", dob: "1395-04-02" },
         { ag: "مشعل الداود", aid: "1036498606", ph: "554276664", en: "بنك الرياض", poa: "463623612", eid: "7000022868", dob: "1401-03-08" },
         { ag: "منصور القرني", aid: "1050705357", ph: "505987249", en: "شركة سابك", poa: "464094328", eid: "7000876867", dob: "1402-01-27" }
     ];
 
     let agents = JSON.parse(localStorage.getItem(STORAGE_KEY)) || DATA;
 
+    // دالة التعبئة الأقوى لتجاوز حماية المواقع
     function setV(el, v) {
         if (!el) return;
         el.focus();
-        const s = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-        s.call(el, v);
+        const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+        nativeSetter.call(el, v);
         el.dispatchEvent(new Event('input', { bubbles: true }));
         el.dispatchEvent(new Event('change', { bubbles: true }));
         el.blur();
     }
 
     const h = document.createElement('div');
-    h.id = "top-agent-bar";
-    h.style = "position:fixed;top:0;left:0;width:100%;height:18vh;background:#1e293b;z-index:999999;border-bottom:4px solid #3b82f6;display:flex;flex-direction:column;direction:rtl;font-family:Segoe UI,tahoma;box-shadow:0 10px 30px rgba(0,0,0,0.5);color:#f1f5f9;";
+    h.id = "agent-bar";
+    h.style = "position:fixed;top:0;left:0;width:100%;height:140px;background:#0f172a;z-index:2147483647;border-bottom:3px solid #3b82f6;display:flex;flex-direction:column;direction:rtl;font-family:sans-serif;box-shadow:0 8px 32px rgba(0,0,0,0.5);color:#fff;padding:10px;";
     h.innerHTML = `
-        <div style="display:flex;align-items:center;background:#0f172a;padding:8px 20px;justify-content:space-between;border-bottom:1px solid #334155;">
-            <span style="font-weight:bold;font-size:14px;color:#3b82f6;">نظام الوكلاء الفاخر ⚖️</span>
-            <div style="display:flex;gap:15px;">
-                <input id="sb" placeholder="بحث ذكي..." style="padding:6px 15px;border-radius:20px;border:1px solid #334155;width:250px;background:#1e293b;color:#fff;outline:none;">
-                <button onclick="document.getElementById('top-agent-bar').remove()" style="background:#ef4444;color:#fff;border:none;padding:5px 15px;border-radius:6px;cursor:pointer;font-weight:bold;">إغلاق</button>
-            </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-weight:bold;color:#3b82f6;">⚖️ نظام الوكلاء المطور</span>
+            <input id="q" placeholder="بحث سريع..." style="background:#1e293b;border:1px solid #334155;color:#fff;padding:5px 15px;border-radius:20px;width:300px;">
+            <button onclick="document.getElementById('agent-bar').remove()" style="background:#ef4444;border:none;color:#fff;padding:4px 12px;border-radius:5px;cursor:pointer;">إغلاق</button>
         </div>
-        <div id="lh" style="display:flex;overflow-x:auto;padding:15px;gap:15px;flex:1;align-items:center;"></div>
+        <div id="list" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:10px;"></div>
     `;
     document.body.appendChild(h);
 
     const render = (f = "") => {
-        const list = h.querySelector('#lh');
+        const list = h.querySelector('#list');
         list.innerHTML = '';
         agents.filter(a => a.en.includes(f) || a.ag.includes(f)).forEach((it, idx) => {
-            const c = document.createElement('div');
-            c.className = "agent-card";
-            c.style = "min-width:220px;background:#334155;padding:12px;border-radius:10px;cursor:pointer;border:1px solid #475569;box-shadow:0 4px 6px rgba(0,0,0,0.1);position:relative;";
-            c.innerHTML = `
-                <div style="font-weight:bold;font-size:13px;color:#60a5fa;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:20px;">${it.en}</div>
-                <div style="font-size:12px;color:#cbd5e1;">${it.ag}</div>
-                <div style="font-size:11px;color:#94a3b8;margin-top:6px;display:flex;justify-content:space-between;align-items:center;">
-                    <span>${it.poa}</span>
-                    <span class="edit-btn" style="background:#475569;padding:2px 6px;border-radius:4px;color:#fff;font-size:10px;">📝 تعديل</span>
+            const card = document.createElement('div');
+            card.style = "min-width:200px;background:#1e293b;border:1px solid #334155;padding:10px;border-radius:8px;cursor:pointer;position:relative;transition:0.2s;";
+            card.innerHTML = `
+                <div style="font-weight:bold;font-size:12px;color:#60a5fa;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${it.en}</div>
+                <div style="font-size:11px;color:#94a3b8;">${it.ag}</div>
+                <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:10px;color:#10b981;">${it.poa}</span>
+                    <span class="edit" style="color:#fbbf24;font-size:12px;padding:2px 5px;">📝</span>
                 </div>
             `;
-
-            // عند الضغط على الكرت (تعبئة البيانات)
-            c.onclick = (e) => {
-                if (e.target.classList.contains('edit-btn')) {
-                    const newPoa = prompt("تعديل رقم الوكالة لـ " + it.ag, it.poa);
-                    if (newPoa !== null) {
-                        it.poa = newPoa;
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(agents));
-                        render(h.querySelector('#sb').value);
+            
+            card.onclick = (e) => {
+                if (e.target.classList.contains('edit')) {
+                    const nP = prompt("تعديل رقم الوكالة لـ " + it.ag, it.poa);
+                    if (nP !== null) { 
+                        it.poa = nP; 
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(agents)); 
+                        render(h.querySelector('#q').value); 
                     }
                     return;
                 }
 
-                // تعبئة البيانات العادية
+                // تعبئة البيانات
                 setV(document.querySelector('[name="entityIdentity"]'), it.eid);
                 setV(document.querySelector('[name="entityemail"]'), FIXED_EMAIL);
                 setV(document.querySelector('[name="attorneyIdentity"]'), it.aid);
@@ -94,20 +85,19 @@ javascript:(function() {
                 setV(document.querySelector('[name="attorneyemail"]'), FIXED_EMAIL);
                 setV(document.querySelector('[name="attorneyPowerOfAttorney"]'), it.poa);
 
-                // --- منطق الجوال الجديد (الذي طلبته) ---
+                // --- الحل النهائي للجوال ---
                 const mob = "+966" + it.ph.toString().trim().replace(/^(00966|966|0|\+966)/, '');
                 document.querySelectorAll('input[type="tel"]').forEach(t => {
-                    setV(t, "");
-                    setTimeout(() => setV(t, mob), 100);
+                    setV(t, mob); // نرسل الرقم كاملاً بالصيغة الدولية
                 });
 
-                c.style.borderColor = "#10b981";
-                setTimeout(() => c.style.borderColor = "#475569", 800);
+                card.style.borderColor = "#3b82f6";
+                setTimeout(() => card.style.borderColor = "#334155", 500);
             };
-            list.appendChild(c);
+            list.appendChild(card);
         });
     };
 
-    h.querySelector('#sb').oninput = (e) => render(e.target.value);
+    h.querySelector('#q').oninput = (e) => render(e.target.value);
     render();
 })();
