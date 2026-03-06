@@ -1,7 +1,7 @@
 javascript:(function() {
     const FIXED_EMAIL = "aaaaaaaaaaaaaaa@aaaoooslo.sa";
-    const STORAGE_KEY = "AGENT_MASTER_FINAL_DATA";
-    const INITIAL_AGENTS = [
+    const STORAGE_KEY = "AGENT_TOPBAR_SYSTEM_V6";
+    const DATA = [
         { ag: "إبراهيم عسل", aid: "1070308232", ph: "566404024", en: "بنك الجزيرة", poa: "464483278", eid: "7000120712", dob: "1407-11-26" },
         { ag: "إبراهيم عسل", aid: "1070308232", ph: "566404024", en: "شركة أمان للتطوير والاستثمار العقاري", poa: "442190189", eid: "7010472897", dob: "1407-11-26" },
         { ag: "أبو عيش", aid: "1000191765", ph: "506402412", en: "البنك السعودي الفرنسي", poa: "464182296", eid: "7000025333", dob: "1393-06-26" },
@@ -38,103 +38,80 @@ javascript:(function() {
         { ag: "مشعل الداود", aid: "1036498606", ph: "554276664", en: "شركة إثراء الرياض العقارية شركة شخص واحد", poa: "455416173", eid: "7001793285", dob: "1401-03-08" },
         { ag: "منصور القرني", aid: "1050705357", ph: "505987249", en: "شركة سابك", poa: "464094328", eid: "7000876867", dob: "1402-01-27" }
     ];
-    let agents = JSON.parse(localStorage.getItem(STORAGE_KEY)) || INITIAL_AGENTS;
-    function setVal(el, v) {
+    let agents = JSON.parse(localStorage.getItem(STORAGE_KEY)) || DATA;
+    function setV(el, v) {
         if (!el) return;
         const s = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
         s.call(el, v);
         el.dispatchEvent(new Event('input', { bubbles: true }));
         el.dispatchEvent(new Event('change', { bubbles: true }));
     }
-    const ui = document.createElement('div');
-    ui.id = "agent-sidebar-main";
-    ui.style = "position:fixed;top:0;right:0;width:520px;height:100vh;background:#fff;z-index:999999;border-left:12px solid #2c3e50;box-shadow:-10px 0 40px rgba(0,0,0,0.5);direction:rtl;font-family:tahoma,arial;display:flex;flex-direction:column;color:#000;";
-    ui.innerHTML = `
-        <div style="background:#2c3e50;color:#fff;padding:20px;text-align:center;border-bottom:4px solid #4A6BA3;">
-            <h2 style="margin:0;font-size:24px;color:#fff">إدارة الوكلاء والجهات ⚖️</h2>
-            <div style="display:flex;gap:10px;margin-top:15px;">
-                <button id="b-list" style="flex:1;padding:10px;cursor:pointer;background:#4A6BA3;color:#fff;border:none;border-radius:6px;font-weight:bold;font-size:16px;">القائمة</button>
-                <button id="b-add" style="flex:1;padding:10px;cursor:pointer;background:#27ae60;color:#fff;border:none;border-radius:6px;font-weight:bold;font-size:16px;">+ جديد</button>
+    const h = document.createElement('div');
+    h.id = "top-agent-bar";
+    h.style = "position:fixed;top:0;left:0;width:100%;height:18vh;background:#fff;z-index:999999;border-bottom:3px solid #2c3e50;display:flex;flex-direction:column;direction:rtl;font-family:tahoma;box-shadow:0 4px 10px rgba(0,0,0,0.1);color:#000;";
+    h.innerHTML = `
+        <div style="display:flex;align-items:center;background:#2c3e50;padding:5px 20px;justify-content:space-between;color:#fff;">
+            <span style="font-weight:bold;font-size:14px;">نظام الوكلاء السريع ⚖️</span>
+            <div style="display:flex;gap:15px;">
+                <input id="s-bar" placeholder="بحث سريع..." style="padding:4px 10px;border-radius:4px;border:none;width:250px;font-size:13px;">
+                <button id="btn-add-ui" style="background:#27ae60;color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:12px;">+ إضافة جديد</button>
+                <button onclick="document.getElementById('top-agent-bar').remove()" style="background:#c0392b;color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:12px;">إغلاق</button>
             </div>
         </div>
-        <div id="s-cont" style="padding:15px;background:#f8f9fa;"><input id="s-inp" placeholder="🔎 بحث..." style="width:100%;padding:12px;border:2px solid #ccc;border-radius:8px;font-size:16px;color:#000;box-sizing:border-box;"></div>
-        <div id="v-list" style="flex:1;overflow-y:auto;padding:15px;background:#fff;"></div>
-        <div id="v-add" style="display:none;flex:1;overflow-y:auto;padding:25px;background:#f9f9f9;color:#000;">
-            <h3 style="border-bottom:2px solid #2c3e50;padding-bottom:10px;">إضافة وكيل جديد</h3>
-            <div style="display:grid;gap:10px;margin-top:15px;">
-                <input id="i-en" placeholder="اسم الجهة (مثل الجدول)" style="padding:10px;border:1px solid #aaa;">
-                <input id="i-eid" placeholder="رقم 700" style="padding:10px;border:1px solid #aaa;">
-                <input id="i-ag" placeholder="اسم الوكيل" style="padding:10px;border:1px solid #aaa;">
-                <input id="i-aid" placeholder="هوية الوكيل" style="padding:10px;border:1px solid #aaa;">
-                <input id="i-dob" placeholder="الميلاد (هجري)" style="padding:10px;border:1px solid #aaa;">
-                <input id="i-ph" placeholder="الجوال (5xxx)" style="padding:10px;border:1px solid #aaa;">
-                <input id="i-poa" placeholder="رقم الوكالة" style="padding:10px;border:1px solid #aaa;">
-                <button id="i-save" style="background:#27ae60;color:#fff;padding:15px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;font-size:18px;">حفظ ✅</button>
-            </div>
+        <div id="list-h" style="display:flex;overflow-x:auto;padding:10px;gap:12px;background:#f8f9fa;flex:1;align-items:center;white-space:nowrap;"></div>
+        <div id="add-m" style="display:none;position:absolute;top:100%;right:20px;background:#fff;border:2px solid #2c3e50;padding:15px;width:300px;box-shadow:0 10px 20px rgba(0,0,0,0.2);border-radius:0 0 8px 8px;">
+            <input id="i-en" placeholder="الشركة" style="width:90%;margin-bottom:5px;padding:5px;">
+            <input id="i-eid" placeholder="رقم 700" style="width:90%;margin-bottom:5px;padding:5px;">
+            <input id="i-ag" placeholder="الوكيل" style="width:90%;margin-bottom:5px;padding:5px;">
+            <input id="i-aid" placeholder="الهوية" style="width:90%;margin-bottom:5px;padding:5px;">
+            <input id="i-dob" placeholder="الميلاد" style="width:90%;margin-bottom:5px;padding:5px;">
+            <input id="i-ph" placeholder="الجوال" style="width:90%;margin-bottom:5px;padding:5px;">
+            <input id="i-poa" placeholder="الوكالة" style="width:90%;margin-bottom:5px;padding:5px;">
+            <button id="i-save" style="width:100%;background:#27ae60;color:#fff;border:none;padding:8px;cursor:pointer;">حفظ</button>
         </div>
-        <div id="q-ed" style="display:none;padding:15px;background:#fff3cd;border-top:3px solid #f1c40f;">
-            <b id="ed-label" style="color:#856404;font-size:14px;display:block;margin-bottom:10px;"></b>
-            <input id="ed-inp" style="width:100%;padding:10px;border:1px solid #856404;color:#000;font-size:18px;">
-            <button id="ed-save" style="width:100%;background:#856404;color:#fff;padding:10px;margin-top:10px;border:none;border-radius:4px;cursor:pointer;font-weight:bold;">حفظ</button>
-        </div>
-        <button onclick="document.getElementById('agent-sidebar-main').remove()" style="padding:15px;background:#c0392b;color:#fff;border:none;font-weight:bold;cursor:pointer;font-size:18px;">إغلاق</button>
     `;
-    document.body.appendChild(ui);
-    const vL = ui.querySelector('#v-list');
-    const vA = ui.querySelector('#v-add');
-    const sC = ui.querySelector('#s-cont');
-    ui.querySelector('#b-list').onclick = () => { vL.style.display='block'; sC.style.display='block'; vA.style.display='none'; };
-    ui.querySelector('#b-add').onclick = () => { vL.style.display='none'; sC.style.display='none'; vA.style.display='block'; };
+    document.body.appendChild(h);
+    const listH = h.querySelector('#list-h');
     function render(f = "") {
-        vL.innerHTML = '';
+        listH.innerHTML = '';
         agents.filter(a => a.en.includes(f) || a.ag.includes(f)).forEach((it, idx) => {
-            const c = document.createElement('div');
-            c.style = "background:#fff;border:2px solid #eee;padding:18px;margin-bottom:15px;border-radius:12px;cursor:pointer;position:relative;box-shadow:0 5px 10px rgba(0,0,0,0.05);color:#000;";
-            c.innerHTML = `
-                <div style="font-weight:bold;font-size:18px;color:#2c3e50;margin-bottom:8px;">${it.en}</div>
-                <div style="font-size:16px;color:#333;">الوكيل: <b>${it.ag}</b></div>
-                <div style="font-size:14px;color:#555;margin-top:5px;">📄 الوكالة: <b style="color:#e74c3c;">${it.poa}</b></div>
-                <button class="ed-btn" style="position:absolute;left:10px;top:10px;background:#f1f2f6;border:1px solid #ccc;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:12px;color:#000;">تعديل</button>
+            const card = document.createElement('div');
+            card.style = "min-width:180px;background:#fff;border:1px solid #ddd;padding:8px 12px;border-radius:6px;cursor:pointer;flex-shrink:0;box-shadow:0 2px 4px rgba(0,0,0,0.05);border-top:3px solid #4A6BA3;";
+            card.innerHTML = `
+                <div style="font-weight:bold;font-size:13px;color:#2c3e50;overflow:hidden;text-overflow:ellipsis;">${it.en}</div>
+                <div style="font-size:12px;color:#555;">${it.ag}</div>
+                <div style="font-size:11px;color:#e74c3c;display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+                    <span>${it.poa}</span>
+                    <span class="e-pen" style="background:#eee;padding:1px 4px;border-radius:3px;color:#000;">📝</span>
+                </div>
             `;
-            c.onclick = (e) => {
-                if (e.target.classList.contains('ed-btn')) {
-                    const qe = ui.querySelector('#q-ed');
-                    qe.style.display = 'block';
-                    ui.querySelector('#ed-label').innerText = "تعديل وكالة: " + it.ag;
-                    ui.querySelector('#ed-inp').value = it.poa;
-                    ui.querySelector('#ed-save').onclick = () => {
-                        agents[idx].poa = ui.querySelector('#ed-inp').value;
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(agents));
-                        qe.style.display = 'none';
-                        render(ui.querySelector('#s-inp').value);
-                    };
+            card.onclick = (e) => {
+                if (e.target.className === 'e-pen') {
+                    const p = prompt("عدل رقم الوكالة لـ " + it.ag, it.poa);
+                    if (p) { it.poa = p; localStorage.setItem(STORAGE_KEY, JSON.stringify(agents)); render(h.querySelector('#s-bar').value); }
                     return;
                 }
-                setVal(document.querySelector('[name="entityIdentity"]'), it.eid);
-                setVal(document.querySelector('[name="entityemail"]'), FIXED_EMAIL);
-                setVal(document.querySelector('[name="attorneyIdentity"]'), it.aid);
-                setVal(document.querySelector('[name="attorneyDateOfBirth"]'), it.dob);
-                setVal(document.querySelector('[name="attorneyemail"]'), FIXED_EMAIL);
-                setVal(document.querySelector('[name="attorneyPowerOfAttorney"]'), it.poa);
+                setV(document.querySelector('[name="entityIdentity"]'), it.eid);
+                setV(document.querySelector('[name="entityemail"]'), FIXED_EMAIL);
+                setV(document.querySelector('[name="attorneyIdentity"]'), it.aid);
+                setV(document.querySelector('[name="attorneyDateOfBirth"]'), it.dob);
+                setV(document.querySelector('[name="attorneyemail"]'), FIXED_EMAIL);
+                setV(document.querySelector('[name="attorneyPowerOfAttorney"]'), it.poa);
                 document.querySelectorAll('input[type="tel"]').forEach(t => {
-                    setVal(t, "");
-                    setTimeout(() => setVal(t, "5" + it.ph.replace(/^966|^0/, "")), 60);
+                    setV(t, "");
+                    setTimeout(() => setV(t, "5" + it.ph.replace(/^966|^0/, "")), 50);
                 });
-                c.style.background = "#d1e7dd";
-                setTimeout(() => c.style.background = "#fff", 500);
+                card.style.background = "#d1e7dd";
+                setTimeout(() => card.style.background = "#fff", 500);
             };
-            vL.appendChild(c);
+            listH.appendChild(card);
         });
     }
-    ui.querySelector('#i-save').onclick = () => {
-        const n = { en: ui.querySelector('#i-en').value, eid: ui.querySelector('#i-eid').value, ag: ui.querySelector('#i-ag').value, aid: ui.querySelector('#i-aid').value, dob: ui.querySelector('#i-dob').value, ph: ui.querySelector('#i-ph').value, poa: ui.querySelector('#i-poa').value };
-        if(!n.en || !n.ag) return;
-        agents.push(n);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(agents));
-        ui.querySelector('#b-list').click();
-        render();
-        ui.querySelectorAll('#v-add input').forEach(i => i.value="");
+    h.querySelector('#btn-add-ui').onclick = () => { const m = h.querySelector('#add-m'); m.style.display = m.style.display === 'none' ? 'block' : 'none'; };
+    h.querySelector('#i-save').onclick = () => {
+        const n = { en: h.querySelector('#i-en').value, eid: h.querySelector('#i-eid').value, ag: h.querySelector('#i-ag').value, aid: h.querySelector('#i-aid').value, dob: h.querySelector('#i-dob').value, ph: h.querySelector('#i-ph').value, poa: h.querySelector('#i-poa').value };
+        if (n.en && n.ag) { agents.push(n); localStorage.setItem(STORAGE_KEY, JSON.stringify(agents)); render(); h.querySelector('#add-m').style.display = 'none'; }
     };
-    ui.querySelector('#s-inp').oninput = (e) => render(e.target.value);
+    h.querySelector('#s-bar').oninput = (e) => render(e.target.value);
     render();
 })();
