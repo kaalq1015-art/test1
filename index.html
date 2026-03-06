@@ -85,7 +85,7 @@ javascript:(function(){
         if(heirs.length === 0) return alert("لم يتم العثور على بيانات.");
 
         const mainContent = doc.getElementById('pro-main-content');
-        mainContent.innerHTML = `<div style="text-align:center; padding:30px 0;"><span class="spinner"></span><h3 id="progress_status">جاري المعالجة...</h3></div>`;
+        mainContent.innerHTML = `<div style="text-align:center; padding:30px 0;"><span class="spinner"></span><h3 id="progress_status">جاري التهيئة...</h3></div>`;
 
         async function setReactSelect(labelText, optionText) {
             const labels = Array.from(doc.querySelectorAll('p, label, span, div'));
@@ -95,7 +95,7 @@ javascript:(function(){
             if (!selectContainer) return;
             const control = selectContainer.querySelector('[class*="-control"]');
             control.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-            await new Promise(r => setTimeout(r, 500));
+            await new Promise(r => setTimeout(r, 600));
             const menu = doc.querySelector('[class*="-menu"]');
             if (!menu) return;
             const options = Array.from(menu.querySelectorAll('[id*="-option"]'));
@@ -114,30 +114,52 @@ javascript:(function(){
 
         const sleep = (ms) => new Promise(res => setTimeout(res, ms));
 
+        const waitForSuccess = async () => {
+            return new Promise((resolve) => {
+                let attempts = 0;
+                const interval = setInterval(() => {
+                    if (doc.body.innerText.includes("تم إضافة مالك جديد (فرد) بنجاح")) {
+                        clearInterval(interval);
+                        resolve(true);
+                    }
+                    if (++attempts > 60) { clearInterval(interval); resolve(false); }
+                }, 500);
+            });
+        };
+
         for (let k = 0; k < heirs.length; k++) {
             const h = heirs[k];
             const statusEl = doc.getElementById('progress_status');
             if(statusEl) statusEl.innerText = `تعبئة الوارث ${k+1} من ${heirs.length}`;
 
             await setReactSelect("نوع المالك", "فرد");
-            await sleep(600);
+            await sleep(800);
             await setReactSelect("نوع الهوية", "هوية وطنية");
-            await sleep(600);
+            await sleep(800);
 
             triggerInput('input[name="Identity"]', h.id);
             triggerInput('input[name="DateOfBirth"]', h.dob);
             triggerInput('input[name="email"]', email);
             triggerInput('input[type="tel"]', mobileFormatted);
-            await sleep(800);
+            
+            await sleep(selDelay);
 
             const verifyBtn = Array.from(doc.querySelectorAll('button')).find(b => b.innerText.includes('التحقق') || b.classList.contains('bg-bluerega'));
-            if (verifyBtn) verifyBtn.click();
-
-            await sleep(selDelay);
+            if (verifyBtn) {
+                verifyBtn.click();
+                
+                const success = await waitForSuccess();
+                if (!success) {
+                    if (!confirm(`لم يتم رصد نجاح للوارث رقم ${k+1}. هل تريد المتابعة يدوياً؟`)) break;
+                }
+            }
 
             if (k < heirs.length - 1) {
                 const addBtn = Array.from(doc.querySelectorAll('button')).find(b => b.innerText.includes('إضافة مالك جديد'));
-                if (addBtn) { addBtn.click(); await sleep(1500); }
+                if (addBtn) { 
+                    addBtn.click(); 
+                    await sleep(2000); 
+                }
             }
         }
 
