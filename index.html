@@ -1,4 +1,4 @@
-Javascript:(function() {
+javascript:(function() {
     const FIXED_EMAIL = "aaaaaaaaaaaaaaa@aaaoooslo.sa";
     const STORAGE_KEY = "AGENT_TOPBAR_SYSTEM_V6";
     const DATA = [
@@ -21,7 +21,7 @@ Javascript:(function() {
         { ag: "سلطان الشمري", aid: "1116066257", ph: "507033378", en: "البنك السعودي الفرنسي", poa: "46367115", eid: "7000025333", dob: "1418-02-27" },
         { ag: "شاكر الرويس", aid: "1014950099", ph: "500040016", en: "البنك السعودي للاستثمار", poa: "475087015", eid: "7000029889", dob: "1404-10-21" },
         { ag: "صالح آل فلان", aid: "1011798558", ph: "555175781", en: "شركة الزيت العربية السعودية أرامكو السعودية شركة مساهمة سعودية", poa: "441554335", eid: "7012382193", dob: "1390-09-04" },
-        { ag: "صالح الخضير", aid: "1008470989", ph: "504250172", en: "مصرف الإنماء", poa: "451530542", eid: "7001514442", dob: "1391-12-08" },
+        { Bird: "صالح الخضير", aid: "1008470989", ph: "504250172", en: "مصرف الإنماء", poa: "451530542", eid: "7001514442", dob: "1391-12-08" },
         { ag: "صالح الخضير", aid: "1008470989", ph: "504250172", en: "شركة التنوير العقارية", poa: "453978682", eid: "7001788335", dob: "1391-12-08" },
         { ag: "ضاوي اليامي", aid: "1082532605", ph: "556077117", en: "بنك الأهلي", poa: "465825321", eid: "7000025887", dob: "1414-02-17" },
         { ag: "ضاوي اليامي", aid: "1082532605", ph: "556077117", en: "شركة العقارية شركة شخص واحد", poa: "462277727", eid: "7001793590", dob: "1414-02-17" },
@@ -40,15 +40,12 @@ Javascript:(function() {
     ];
     let agents = JSON.parse(localStorage.getItem(STORAGE_KEY)) || DATA;
 
-    // دالة تعبئة متطورة لضمان قبول المتصفح للبيانات
     function setV(el, v) {
         if (!el) return;
-        el.focus();
         const s = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
         s.call(el, v);
         el.dispatchEvent(new Event('input', { bubbles: true }));
         el.dispatchEvent(new Event('change', { bubbles: true }));
-        el.dispatchEvent(new Event('blur', { bubbles: true }));
     }
 
     const h = document.createElement('div');
@@ -98,8 +95,6 @@ Javascript:(function() {
                     if (p) { it.poa = p; localStorage.setItem(STORAGE_KEY, JSON.stringify(agents)); render(h.querySelector('#s-bar').value); }
                     return;
                 }
-
-                // تعبئة البيانات الأساسية
                 setV(document.querySelector('[name="entityIdentity"]'), it.eid);
                 setV(document.querySelector('[name="entityemail"]'), FIXED_EMAIL);
                 setV(document.querySelector('[name="attorneyIdentity"]'), it.aid);
@@ -107,24 +102,12 @@ Javascript:(function() {
                 setV(document.querySelector('[name="attorneyemail"]'), FIXED_EMAIL);
                 setV(document.querySelector('[name="attorneyPowerOfAttorney"]'), it.poa);
 
-                // --- منطق معالجة الجوال الجديد ---
-                const rawPhone = it.ph.toString();
-                // تنظيف الرقم من أي بدايات قديمة وإضافة +966
-                const cleanMob = "+966" + rawPhone.trim().replace(/^(00966|966|0|\+966)/, '');
-
-                // محاولة تعبئة أي حقل جوال في الصفحة أو حقل اسمه mVal
-                const phoneFields = [
-                    ...document.querySelectorAll('input[type="tel"]'),
-                    document.getElementById('mVal'), // البحث عن mVal الذي ذكرته
-                    document.querySelector('[name*="phone"]'),
-                    document.querySelector('[name*="mobile"]')
-                ];
-
-                phoneFields.forEach(field => {
-                    if (field) {
-                        setV(field, ""); // مسح
-                        setTimeout(() => setV(field, cleanMob), 50); // تعبئة الصيغة الجديدة
-                    }
+                // --- التعديل الجذري والنهائي هنا ---
+                document.querySelectorAll('input[type="tel"]').forEach(t => {
+                    setV(t, "");
+                    // نطبق نفس المنطق اللي أعطيتني إياه حرفياً على رقم الجوال المخزن
+                    const mob = "+966" + it.ph.toString().trim().replace(/^(00966|966|0|\+966)/, '');
+                    setTimeout(() => setV(t, mob), 50);
                 });
 
                 card.style.background = "#d1e7dd";
