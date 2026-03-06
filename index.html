@@ -1,4 +1,4 @@
-javascript:(function() {
+Javascript:(function() {
     const FIXED_EMAIL = "aaaaaaaaaaaaaaa@aaaoooslo.sa";
     const STORAGE_KEY = "AGENT_TOPBAR_SYSTEM_V6";
     const DATA = [
@@ -21,7 +21,7 @@ javascript:(function() {
         { ag: "سلطان الشمري", aid: "1116066257", ph: "507033378", en: "البنك السعودي الفرنسي", poa: "46367115", eid: "7000025333", dob: "1418-02-27" },
         { ag: "شاكر الرويس", aid: "1014950099", ph: "500040016", en: "البنك السعودي للاستثمار", poa: "475087015", eid: "7000029889", dob: "1404-10-21" },
         { ag: "صالح آل فلان", aid: "1011798558", ph: "555175781", en: "شركة الزيت العربية السعودية أرامكو السعودية شركة مساهمة سعودية", poa: "441554335", eid: "7012382193", dob: "1390-09-04" },
-        { Bird: "صالح الخضير", aid: "1008470989", ph: "504250172", en: "مصرف الإنماء", poa: "451530542", eid: "7001514442", dob: "1391-12-08" },
+        { ag: "صالح الخضير", aid: "1008470989", ph: "504250172", en: "مصرف الإنماء", poa: "451530542", eid: "7001514442", dob: "1391-12-08" },
         { ag: "صالح الخضير", aid: "1008470989", ph: "504250172", en: "شركة التنوير العقارية", poa: "453978682", eid: "7001788335", dob: "1391-12-08" },
         { ag: "ضاوي اليامي", aid: "1082532605", ph: "556077117", en: "بنك الأهلي", poa: "465825321", eid: "7000025887", dob: "1414-02-17" },
         { ag: "ضاوي اليامي", aid: "1082532605", ph: "556077117", en: "شركة العقارية شركة شخص واحد", poa: "462277727", eid: "7001793590", dob: "1414-02-17" },
@@ -39,7 +39,6 @@ javascript:(function() {
         { ag: "منصور القرني", aid: "1050705357", ph: "505987249", en: "شركة سابك", poa: "464094328", eid: "7000876867", dob: "1402-01-27" }
     ];
     let agents = JSON.parse(localStorage.getItem(STORAGE_KEY)) || DATA;
-
     function setV(el, v) {
         if (!el) return;
         const s = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
@@ -47,7 +46,6 @@ javascript:(function() {
         el.dispatchEvent(new Event('input', { bubbles: true }));
         el.dispatchEvent(new Event('change', { bubbles: true }));
     }
-
     const h = document.createElement('div');
     h.id = "top-agent-bar";
     h.style = "position:fixed;top:0;left:0;width:100%;height:18vh;background:#fff;z-index:999999;border-bottom:3px solid #2c3e50;display:flex;flex-direction:column;direction:rtl;font-family:tahoma;box-shadow:0 4px 10px rgba(0,0,0,0.1);color:#000;";
@@ -73,9 +71,7 @@ javascript:(function() {
         </div>
     `;
     document.body.appendChild(h);
-
     const listH = h.querySelector('#list-h');
-
     function render(f = "") {
         listH.innerHTML = '';
         agents.filter(a => a.en.includes(f) || a.ag.includes(f)).forEach((it, idx) => {
@@ -101,22 +97,16 @@ javascript:(function() {
                 setV(document.querySelector('[name="attorneyDateOfBirth"]'), it.dob);
                 setV(document.querySelector('[name="attorneyemail"]'), FIXED_EMAIL);
                 setV(document.querySelector('[name="attorneyPowerOfAttorney"]'), it.poa);
-
-                // --- التعديل الجذري والنهائي هنا ---
                 document.querySelectorAll('input[type="tel"]').forEach(t => {
                     setV(t, "");
-                    // نطبق نفس المنطق اللي أعطيتني إياه حرفياً على رقم الجوال المخزن
-                    const mob = "+966" + it.ph.toString().trim().replace(/^(00966|966|0|\+966)/, '');
-                    setTimeout(() => setV(t, mob), 50);
+                    setTimeout(() => setV(t, "5" + it.ph.replace(/^966|^0/, "")), 50);
                 });
-
                 card.style.background = "#d1e7dd";
                 setTimeout(() => card.style.background = "#fff", 500);
             };
             listH.appendChild(card);
         });
     }
-
     h.querySelector('#btn-add-ui').onclick = () => { const m = h.querySelector('#add-m'); m.style.display = m.style.display === 'none' ? 'block' : 'none'; };
     h.querySelector('#i-save').onclick = () => {
         const n = { en: h.querySelector('#i-en').value, eid: h.querySelector('#i-eid').value, ag: h.querySelector('#i-ag').value, aid: h.querySelector('#i-aid').value, dob: h.querySelector('#i-dob').value, ph: h.querySelector('#i-ph').value, poa: h.querySelector('#i-poa').value };
