@@ -1,41 +1,44 @@
 javascript:(function() {
-    var E = "aaaaaaaaaaaaaaa@aaaoooslo.sa", K = "AG_ELITE_FINAL_BAR";
+    var E = "aaaaaaaaaaaaaaa@aaaoooslo.sa", K = "AG_ELITE_V13";
     var DATA = [
         {en: "شركة الراجحي للتطوير المحدودة شركة شخص واحد", ag: "عبدالله الجريوي", eid: "7010997174", aid: "1025158781", ph: "535588832", dob: "1395-04-02", poa: "461065673"},
         {en: "شركة الراجحي المصرفية للاستثمار", ag: "فارس العودة", eid: "7000102744", aid: "1081406603", ph: "563800669", dob: "1413-07-11", poa: "452371956"},
-        {en: "بنك الجزيرة", ag: "إبراهيم عسل", eid: "7000120712", aid: "1070308232", ph: "566404024", dob: "1407-11-26", poa: "464483278"},
-        {en: "شركة أمان للتطوير والاستثمار العقاري", ag: "إبراهيم عسل", eid: "7010472897", aid: "1070308232", ph: "566404024", dob: "1407-11-26", poa: "442190189"},
-        {en: "بنك الأهلي", ag: "أحمد حنبوك", eid: "7000025887", aid: "1082819309", ph: "550636001", dob: "1414-02-27", poa: "46582320"},
         {en: "البنك السعودي الأول", ag: "عمر السبيعي العنزي", eid: "7000018668", aid: "1000919983", ph: "544474441", dob: "1402-08-14", poa: "453178121"},
-        {en: "شركة الأول العقارية", ag: "عطالله العنزي", eid: "7001711535", aid: "1129928683", ph: "554057160", dob: "1402-07-01", poa: "433574040"}
+        {en: "بنك الأهلي", ag: "فهد آل مسيعد", eid: "7000025887", aid: "1083195683", ph: "560876000", dob: "1414-06-29", poa: "444934078"},
+        {en: "مصرف الإنماء", ag: "صالح الخضير", eid: "7001514442", aid: "1008470989", ph: "504250172", dob: "1391-12-08", poa: "451530542"},
+        {en: "شركة أرامكو السعودية", ag: "صالح آل فلان", eid: "7012382193", aid: "1011798558", ph: "555175781", dob: "1390-09-04", poa: "441554335"},
+        {en: "بنك الرياض", ag: "مشعل الداود", eid: "7000022868", aid: "1036498606", ph: "554276664", dob: "1401-03-08", poa: "463623612"}
     ];
     var agents = JSON.parse(localStorage.getItem(K)) || DATA;
 
-    var setV = function(sel, val) {
-        var e = document.querySelector(sel);
+    var sV = function(sel, val) {
+        var e = typeof sel === 'string' ? document.querySelector(sel) : sel;
         if (!e) return;
-        var s = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-        s.call(e, val);
+        e.focus();
+        var p = Object.getPrototypeOf(e);
+        var st = Object.getOwnPropertyDescriptor(p, "value")?.set;
+        if (st) st.call(e, val); else e.value = val;
         ['input', 'change', 'blur'].forEach(t => e.dispatchEvent(new Event(t, { bubbles: true })));
+        e.blur();
     };
 
     var h = document.createElement('div');
-    h.id = "elite-bar-v12";
-    h.style = "position:fixed;top:0;left:0;width:100%;height:145px;background:#fff;z-index:999999;border-bottom:5px solid #2c3e50;display:flex;flex-direction:column;direction:rtl;font-family:tahoma;box-shadow:0 4px 15px rgba(0,0,0,0.3);color:#000;";
+    h.id = "elite-bar-v13";
+    h.style = "position:fixed;top:0;left:0;width:100%;height:140px;background:#fff;z-index:999999;border-bottom:5px solid #2c3e50;display:flex;flex-direction:column;direction:rtl;font-family:tahoma;box-shadow:0 4px 15px rgba(0,0,0,0.3);color:#000;";
     h.innerHTML = `
-        <div style="background:#2c3e50;padding:10px 20px;display:flex;justify-content:space-between;color:#fff;align-items:center;">
-            <b style="font-size:16px;">نظام الوكلاء ⚖️</b>
+        <div style="background:#2c3e50;padding:8px 20px;display:flex;justify-content:space-between;color:#fff;align-items:center;">
+            <b style="font-size:16px;">نظام الوكلاء الذكي ⚖️</b>
             <div style="display:flex;gap:15px;">
-                <input id="q-src" placeholder="🔎 بحث سريع..." style="padding:6px 15px;border-radius:20px;border:none;width:300px;color:#000;outline:none;">
-                <button id="add-b" style="background:#27ae60;color:#fff;border:none;padding:6px 15px;border-radius:5px;cursor:pointer;font-weight:bold;">+ إضافة</button>
-                <button onclick="document.getElementById('elite-bar-v12').remove()" style="background:#c0392b;color:#fff;border:none;padding:6px 15px;border-radius:5px;cursor:pointer;">إغلاق</button>
+                <input id="q-src" placeholder="🔎 بحث..." style="padding:6px 15px;border-radius:20px;width:250px;color:#000;border:none;">
+                <button id="add-b" style="background:#27ae60;color:#fff;border:none;padding:6px 15px;border-radius:5px;cursor:pointer;font-weight:bold;">+ إضافة جديد</button>
+                <button onclick="document.getElementById('elite-bar-v13').remove()" style="background:#c0392b;color:#fff;border:none;padding:6px 15px;border-radius:5px;cursor:pointer;">إغلاق</button>
             </div>
         </div>
         <div id="c-lst" style="display:flex;overflow-x:auto;padding:15px;gap:15px;background:#f4f7f6;flex:1;align-items:center;"></div>
-        <div id="m-edt" style="display:none;position:fixed;top:155px;right:20px;background:#fff;border:2px solid #2c3e50;padding:20px;width:380px;box-shadow:0 10px 30px rgba(0,0,0,0.3);border-radius:10px;z-index:1000001;color:#000;">
-            <h3 style="margin:0 0 10px;border-bottom:1px solid #eee;">تعديل البيانات</h3>
+        <div id="m-edt" style="display:none;position:fixed;top:150px;right:20px;background:#fff;border:2px solid #2c3e50;padding:20px;width:380px;box-shadow:0 10px 30px rgba(0,0,0,0.3);border-radius:10px;z-index:1000001;color:#000;">
+            <h3 style="margin:0 0 10px;border-bottom:1px solid #eee;color:#000;">تعديل البيانات</h3>
             <div id="m-ins" style="display:grid;gap:8px;"></div>
-            <button id="m-sv" style="width:100%;background:#27ae60;color:#fff;padding:12px;border:none;border-radius:5px;cursor:pointer;font-weight:bold;margin-top:10px;">حفظ التغييرات ✅</button>
+            <button id="m-sv" style="width:100%;background:#27ae60;color:#fff;padding:12px;border:none;border-radius:5px;cursor:pointer;font-weight:bold;margin-top:10px;">حفظ ✅</button>
         </div>
     `;
     document.body.appendChild(h);
@@ -47,20 +50,20 @@ javascript:(function() {
         cL.innerHTML = '';
         agents.filter(a => a.en.includes(f) || a.ag.includes(f)).forEach((it, idx) => {
             var card = document.createElement('div');
-            card.style = "min-width:240px;max-width:240px;background:#fff;border:1px solid #ddd;padding:12px;border-radius:8px;cursor:pointer;flex-shrink:0;box-shadow:0 2px 5px rgba(0,0,0,0.1);border-top:4px solid #4A6BA3;position:relative;color:#000;";
-            card.innerHTML = `<div style="font-weight:bold;font-size:13px;height:32px;overflow:hidden;">${it.en}</div><div style="font-size:13px;">${it.ag}</div><div style="font-size:11px;color:#e74c3c;">📄 ${it.poa}</div><button class="ed-b" style="position:absolute;left:8px;bottom:8px;font-size:11px;cursor:pointer;background:#f8f9fa;border:1px solid #ccc;color:#000;">تعديل البيانات 📝</button>`;
+            card.style = "min-width:240px;background:#fff;border:1px solid #ddd;padding:12px;border-radius:8px;cursor:pointer;flex-shrink:0;box-shadow:0 2px 5px rgba(0,0,0,0.1);border-top:4px solid #4A6BA3;position:relative;color:#000;";
+            card.innerHTML = `<div style="font-weight:bold;font-size:13px;height:32px;overflow:hidden;color:#000;">${it.en}</div><div style="font-size:13px;color:#000;">الوكيل: <b>${it.ag}</b></div><div style="font-size:11px;color:#e74c3c;">📄 ${it.poa}</div><button class="ed-b" style="position:absolute;left:8px;bottom:8px;font-size:11px;cursor:pointer;background:#f8f9fa;border:1px solid #ccc;color:#000;">تعديل البيانات 📝</button>`;
             card.onclick = function(e) {
                 if(e.target.className==='ed-b'){
                     eIdx = idx; mE.style.display='block'; mI.innerHTML='';
-                    flds.forEach(f=> mI.innerHTML+=`<label style="font-size:12px;font-weight:bold;">${f.l}</label><input id="f-${f.k}" value="${it[f.k]}" style="padding:6px;border:1px solid #ccc;color:#000;">`);
+                    flds.forEach(f=> mI.innerHTML+=`<label style="font-size:12px;font-weight:bold;color:#000;">${f.l}</label><input id="f-${f.k}" value="${it[f.k]}" style="padding:6px;border:1px solid #ccc;color:#000;">`);
                     return;
                 }
-                setVal('[name="entityIdentity"]', it.eid); setVal('[name="entityemail"]', E);
-                setVal('[name="attorneyIdentity"]', it.aid); setVal('[name="attorneyDateOfBirth"]', it.dob);
-                setVal('[name="attorneyemail"]', E); setVal('[name="attorneyPowerOfAttorney"]', it.poa);
+                sV('[name="entityIdentity"]', it.eid); sV('[name="entityemail"]', E);
+                sV('[name="attorneyIdentity"]', it.aid); sV('[name="attorneyDateOfBirth"]', it.dob);
+                sV('[name="attorneyemail"]', E); sV('[name="attorneyPowerOfAttorney"]', it.poa);
                 document.querySelectorAll('input[type="tel"]').forEach(t => {
-                    setVal(t, "");
-                    setTimeout(() => setVal(t, "5" + it.ph.replace(/^966|^0/, "")), 50);
+                    sV(t, ""); // تصفير
+                    setTimeout(() => { sV(t, "5" + it.ph.replace(/^966|^0/, "")); }, 100);
                 });
                 card.style.background = "#d1e7dd"; setTimeout(()=>card.style.background="#fff", 500);
             };
@@ -73,7 +76,7 @@ javascript:(function() {
         if(eIdx > -1) agents[eIdx] = n; else agents.push(n);
         localStorage.setItem(K, JSON.stringify(agents)); mE.style.display='none'; render();
     };
-    h.querySelector('#add-b').onclick = function(){ eIdx = -1; mE.style.display='block'; mI.innerHTML=''; flds.forEach(f=> mI.innerHTML+=`<label style="font-size:12px;font-weight:bold;">${f.l}</label><input id="f-${f.k}" style="padding:6px;border:1px solid #ccc;color:#000;">`); };
+    h.querySelector('#add-b').onclick = function(){ eIdx = -1; mE.style.display='block'; mI.innerHTML=''; flds.forEach(f=> mI.innerHTML+=`<label style="font-size:12px;font-weight:bold;color:#000;">${f.l}</label><input id="f-${f.k}" style="padding:6px;border:1px solid #ccc;color:#000;">`); };
     h.querySelector('#q-src').oninput = function(e){ render(e.target.value); };
     render();
 })();
