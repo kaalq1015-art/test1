@@ -91,43 +91,4 @@ const render=(f="")=>{
 const list=h.querySelector('#list');list.innerHTML='';
 agents.filter(a=>a.en.includes(f)||a.ag.includes(f)).forEach((i,idx)=>{
 const c=document.createElement('div');
-c.style="min-width:240px;background:#1e293b;padding:12px;border-radius:12px;border:1px solid #334155;cursor:pointer;position:relative";
-c.innerHTML=`<div style="color:#60a5fa;font-weight:bold;font-size:13px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${i.en}</div>
-<div style="font-size:14px;margin-bottom:6px">${i.ag}</div>
-<div style="display:flex;justify-content:space-between;align-items:center">
-<span style="font-size:11px;color:#94a3b8">${i.poa}</span>
-<button class="ed" style="background:#334155;color:#fbbf24;border:none;padding:3px 8px;border-radius:5px;font-size:11px;cursor:pointer">⚙️ تعديل الكل</button>
-</div>`;
-c.onclick=(e)=>{
-if(e.target.className==='ed'){editOne(i);return}
-sV(document.querySelector('[name="entityIdentity"]'),i.eid);
-sV(document.querySelector('[name="entityemail"]'),E);
-sV(document.querySelector('[name="attorneyIdentity"]'),i.aid);
-sV(document.querySelector('[name="attorneyDateOfBirth"]'),i.dob||"");
-sV(document.querySelector('[name="attorneyemail"]'),E);
-sV(document.querySelector('[name="attorneyPowerOfAttorney"]'),i.poa);
-const m="+966"+i.ph.toString().replace(/^(00966|966|0|\+966)/,'');
-document.querySelectorAll('input[type="tel"]').forEach(t=>{sV(t,"");setTimeout(()=>sV(t,m),100)});
-c.style.borderColor="#3b82f6";setTimeout(()=>c.style.borderColor="#334155",600);
-};list.appendChild(c)});};
-
-function editOne(i){
-const box=document.createElement('div');
-box.style="position:fixed;top:20%;left:50%;transform:translate(-50%,-20%);background:#1e293b;padding:20px;border-radius:15px;z-index:10000000;width:350px;border:2px solid #3b82f6;box-shadow:0 0 50px #000;display:flex;flex-direction:column;gap:10px";
-const fields=[['الجهة','en'],['الوكيل','ag'],['700','eid'],['الهوية','aid'],['الجوال','ph'],['الوكالة','poa'],['الميلاد','dob']];
-fields.forEach(f=>{
-const inp=document.createElement('input');inp.placeholder=f[0];inp.value=i[f[1]]||"";inp.id="edt-"+f[1];
-inp.style="padding:8px;background:#0f172a;border:1px solid #334155;color:#fff;border-radius:5px";box.appendChild(inp);
-});
-const sav=document.createElement('button');sav.innerText="حفظ التعديلات";sav.style="background:#10b981;color:#fff;border:none;padding:10px;border-radius:5px;cursor:pointer;font-weight:bold";
-sav.onclick=()=>{
-fields.forEach(f=>i[f[1]]=box.querySelector("#edt-"+f[1]).value);
-localStorage.setItem(K,JSON.stringify(agents));render();box.remove();
-};box.appendChild(sav);
-const cls=document.createElement('button');cls.innerText="إلغاء";cls.style="background:#475569;color:#fff;border:none;padding:5px;border-radius:5px;cursor:pointer";
-cls.onclick=()=>box.remove();box.appendChild(cls);document.body.appendChild(box);
-}
-
-h.querySelector('#q').oninput=e=>render(e.target.value);
-h.querySelector('#addBtn').onclick=()=>editOne({en:'',ag:'',eid:'',aid:'',ph:'',poa:'',dob:''});
-render();})();
+c.style="min-width:240px;background:#1e293b;padding:12px;bo
