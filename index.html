@@ -8,7 +8,7 @@ javascript:(function(){
         .h { background: #0f172a; padding: 16px 20px; color: white; cursor: move; display: flex; justify-content: space-between; align-items: center; }
         .b { padding: 20px; }
         .l { display: block; font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 6px; text-transform: uppercase; }
-        .i { width: 100%; padding: 12px; border: 2px solid #f1f5f9; border-radius: 12px; font-size: 14px; box-sizing: border-box; margin-bottom: 12px; background: #f8fafc; transition: 0.2s; }
+        .i { width: 100%; padding: 12px; border: 2px solid #f1f5f9; border-radius: 12px; font-size: 14px; box-sizing: border-box; margin-bottom: 12px; background: #f8fafc; transition: 0.1s; }
         .i:focus { border-color: #3b82f6; background: #fff; outline: none; }
         #btn { width: 100%; padding: 14px; background: #3b82f6; color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; }
         #btn:hover { background: #2563eb; transform: translateY(-1px); }
@@ -55,7 +55,7 @@ javascript:(function(){
         const ctrl = t.closest('div').querySelector('[class*="-control"]');
         if (ctrl) {
             ctrl.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-            await slp(250);
+            await slp(150); /* سرعة فائقة لفتح القائمة */
             const m = d.querySelector('[class*="-menu"]');
             if (m) {
                 const o = Array.from(m.querySelectorAll('[id*="-option"]')).find(x => x.textContent.trim() === opt);
@@ -88,14 +88,17 @@ javascript:(function(){
         for (let k = 0; k < hrs.length; k++) {
             d.getElementById('st').innerText = `تعبئة الوارث ${k + 1} من ${hrs.length}`;
             
-            await sSel("نوع المالك", "فرد"); await slp(200);
-            await sSel("نوع الهوية", "هوية وطنية"); await slp(200);
+            /* تعديل لضمان المالك الأول */
+            await slp(200); 
+            await sSel("نوع المالك", "فرد"); await slp(100);
+            await sSel("نوع الهوية", "هوية وطنية"); await slp(100);
 
             trg('input[name="Identity"]', hrs[k].id);
             trg('input[name="DateOfBirth"]', hrs[k].dob);
             trg('input[name="email"]', v_e);
             trg('input[type="tel"]', "+966" + v_m.substring(1));
-            await slp(400);
+            
+            await slp(150); /* تأخير بسيط جداً لضمان ثبات البيانات قبل التحقق */
 
             const vB = Array.from(d.querySelectorAll('button')).find(b => b.innerText.includes('التحقق'));
             if (vB) {
@@ -110,7 +113,10 @@ javascript:(function(){
 
             if (k < hrs.length - 1) {
                 const ad = Array.from(d.querySelectorAll('button')).find(b => b.innerText.includes('إضافة مالك جديد'));
-                if (ad) { ad.click(); await slp(1000); }
+                if (ad) { 
+                    ad.click(); 
+                    await slp(500); /* سرعة فائقة للانتقال للوارث التالي */
+                }
             }
         }
         alert("اكتملت العملية بنجاح ✅"); c.remove(); s.remove();
