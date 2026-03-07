@@ -1,94 +1,122 @@
 javascript:(function(){
-    const d=document, s=d.createElement('style');
-    /* تصميم عصري واحترافي */
-    s.innerHTML=`#pro-ui{position:fixed;top:20px;right:20px;width:350px;background:rgba(255,255,255,0.95);z-index:2147483647;border-radius:20px;direction:rtl;font-family:'Segoe UI',system-ui,sans-serif;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.3);backdrop-filter:blur(10px);overflow:hidden;animation:slideIn 0.3s ease-out}
-    .h{background:#1e293b;color:#f8fafc;padding:16px;font-size:15px;font-weight:700;display:flex;justify-content:space-between;align-items:center;letter-spacing:0.5px}
-    .b{padding:20px} .i{width:100%;padding:12px;margin-bottom:12px;border:2px solid #f1f5f9;border-radius:12px;box-sizing:border-box;font-size:14px;transition:all 0.2s;background:#f8fafc}
-    .i:focus{outline:none;border-color:#3b82f6;background:#fff;box-shadow:0 0 0 4px rgba(59,130,246,0.1)}
-    #go{width:100%;padding:14px;background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%);color:#fff;border:none;border-radius:12px;font-weight:700;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 6px -1px rgba(59,130,246,0.3)}
-    #go:hover{transform:translateY(-1px);box-shadow:0 10px 15px -3px rgba(59,130,246,0.4)}
-    @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}`;
+    const d = document, oldUI = d.getElementById('pro-automation-container');
+    if (oldUI) oldUI.remove();
+
+    /* --- التصميم المستوحى من الملف المرفق --- */
+    const s = d.createElement('style');
+    s.innerHTML = `
+        #pro-automation-container { position: fixed; top: 50px; right: 50px; width: 380px; background: #fff; z-index: 2147483647; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); font-family: sans-serif; direction: rtl; text-align: right; overflow: hidden; display: flex; flex-direction: column; border: 1px solid #e2e8f0; }
+        .pro-header { background: #0f172a; padding: 16px 20px; color: white; cursor: move; display: flex; justify-content: space-between; align-items: center; }
+        .pro-body { padding: 24px; }
+        .pro-label { display: block; font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 6px; text-transform: uppercase; }
+        .pro-input { width: 100%; padding: 12px; border: 2px solid #f1f5f9; border-radius: 12px; font-size: 14px; box-sizing: border-box; margin-bottom: 15px; background: #f8fafc; }
+        .pro-card { background: #eff6ff; border: 1px solid #bfdbfe; padding: 15px; border-radius: 14px; margin-bottom: 20px; }
+        .pro-btn-primary { width: 100%; background: #3b82f6; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .spinner { width: 30px; height: 30px; border: 4px solid #f1f5f9; border-bottom-color: #3b82f6; border-radius: 50%; display: inline-block; animation: rot 1s linear infinite; }
+        @keyframes rot { 0% { transform: rotate(0deg) } 100% { transform: rotate(360deg) } }
+    `;
     d.head.appendChild(s);
-    
-    const c=d.createElement('div'); c.id='pro-ui';
-    c.innerHTML=`<div class="h"><span>⚡ أتمتة الورثة الذكية</span><span onclick="this.parentElement.parentElement.remove()" style="cursor:pointer;opacity:0.7">✕</span></div>
-    <div class="b">
-        <input id="m" class="i" placeholder="📱 رقم الجوال" value="05">
-        <input id="e" class="i" placeholder="📧 البريد الإلكتروني">
-        <textarea id="t" class="i" style="height:100px;resize:none" placeholder="📄 ألصق نص الصك هنا..."></textarea>
-        <button id="go">بدء المعالجة الفورية</button>
-    </div>`;
+
+    const c = d.createElement('div');
+    c.id = 'pro-automation-container';
+    c.innerHTML = `
+        <div class="pro-header" id="pro-drag">
+            <h3 style="margin:0;font-size:15px">⚡ أتمتة الورثة (التصميم المعتمد)</h3>
+            <span onclick="this.parentElement.parentElement.remove()" style="cursor:pointer">✕</span>
+        </div>
+        <div class="pro-body" id="pro-main">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                <div><label class="pro-label">الجوال</label><input type="text" id="auto_mob" class="pro-input" value="05"></div>
+                <div><label class="pro-label">البريد</label><input type="email" id="auto_mail" class="pro-input"></div>
+            </div>
+            <div class="pro-card">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                    <span style="font-size:12px; font-weight:bold; color:#1e40af;">تأخير الاستجابة</span>
+                    <span id="sd_val" style="color:#2563eb; font-weight:bold;">1 ثانية</span>
+                </div>
+                <input type="range" id="auto_sd" min="1" max="10" value="1" style="width:100%" oninput="document.getElementById('sd_val').innerText = this.value + ' ثانية'">
+            </div>
+            <label class="pro-label">نص صك حصر الورثة</label>
+            <textarea id="auto_text" class="pro-input" style="height:100px; resize:none"></textarea>
+            <button id="auto_start" class="pro-btn-primary">بدء التنفيذ التلقائي</button>
+        </div>
+    `;
     d.body.appendChild(c);
 
-    const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-    const trig=(sel,v)=>{
-        const el=d.querySelector(sel); if(!el)return;
-        const set=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value').set;
-        set.call(el,v); el.dispatchEvent(new Event('input',{bubbles:true})); el.dispatchEvent(new Event('change',{bubbles:true}));
+    /* --- منطق السحب (Drag) من الملف المرفق --- */
+    let isD = false, off = { x: 0, y: 0 };
+    const h = d.getElementById('pro-drag');
+    h.onmousedown = (e) => { isD = true; off.x = e.clientX - c.offsetLeft; off.y = e.clientY - c.offsetTop; };
+    d.onmousemove = (e) => { if (!isD) return; c.style.left = (e.clientX - off.x) + 'px'; c.style.top = (e.clientY - off.y) + 'px'; c.style.right = 'auto'; };
+    d.onmouseup = () => isD = false;
+
+    /* --- الوظائف البرمجية (المنطق الأخير) --- */
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+    const trig = (sel, v) => {
+        const el = d.querySelector(sel); if (!el) return;
+        const set = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+        set.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true }));
     };
 
     async function setSel(lbl, opt) {
-        const target = Array.from(d.querySelectorAll('p,label,span,div')).find(el=>el.textContent.trim()===lbl);
-        if(!target) return;
+        const target = Array.from(d.querySelectorAll('p,label,span,div')).find(el => el.textContent.trim() === lbl);
+        if (!target) return;
         const ctrl = target.closest('div').querySelector('[class*="-control"]');
-        if(ctrl) {
-            ctrl.dispatchEvent(new MouseEvent('mousedown',{bubbles:true}));
+        if (ctrl) {
+            ctrl.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
             await sleep(300);
             const menu = d.querySelector('[class*="-menu"]');
-            if(menu) {
-                const o = Array.from(menu.querySelectorAll('[id*="-option"]')).find(x=>x.textContent.trim()===opt);
-                if(o) o.click();
+            if (menu) {
+                const o = Array.from(menu.querySelectorAll('[id*="-option"]')).find(x => x.textContent.trim() === opt);
+                if (o) o.click();
             }
         }
     }
 
-    d.getElementById('go').onclick = async function() {
-        const txt=d.getElementById('t').value, mob=d.getElementById('m').value, email=d.getElementById('e').value;
-        const heirs=[]; const lines=txt.split('\n').map(l=>l.trim());
-        for(let i=0; i<lines.length; i++) {
-            if(/^[12]\d{9}/.test(lines[i])) {
-                let dob=""; for(let j=i; j<i+15 && j<lines.length; j++){
-                    let m=lines[j].match(/\d{4}\/\d{2}\/\d{2}/);
-                    if(m){dob=m[0].replace(/\//g,'-'); break;}
+    d.getElementById('auto_start').onclick = async function() {
+        const txt = d.getElementById('auto_text').value, mob = d.getElementById('auto_mob').value, email = d.getElementById('auto_mail').value;
+        const delay = parseInt(d.getElementById('auto_sd').value) * 1000;
+        const heirs = []; const lines = txt.split('\n').map(l => l.trim());
+
+        for (let i = 0; i < lines.length; i++) {
+            if (/^[12]\d{9}/.test(lines[i])) {
+                let dob = ""; for (let j = i; j < i + 15 && j < lines.length; j++) {
+                    let m = lines[j].match(/\d{4}\/\d{2}\/\d{2}/);
+                    if (m) { dob = m[0].replace(/\//g, '-'); break; }
                 }
-                if(dob) heirs.push({id:lines[i].match(/^[12]\d{9}/)[0], dob});
+                if (dob) heirs.push({ id: lines[i].match(/^[12]\d{9}/)[0], dob });
             }
         }
-        if(!heirs.length) return alert("❌ لم يتم العثور على بيانات ورثة");
-        
-        const btn = d.getElementById('go');
-        for(let k=0; k<heirs.length; k++){
-            btn.style.background = "#64748b";
-            btn.innerText=`⏳ جاري الوارث ${k+1} من ${heirs.length}`;
-            
+        if (!heirs.length) return alert("❌ لم يتم العثور على بيانات");
+
+        d.getElementById('pro-main').innerHTML = `<div style="text-align:center; padding:30px 0;"><span class="spinner"></span><h3 id="p_stat" style="font-size:14px; color:#1e293b; margin-top:20px;">جاري المعالجة...</h3></div>`;
+
+        for (let k = 0; k < heirs.length; k++) {
+            d.getElementById('p_stat').innerText = `تعبئة الوارث ${k + 1} من ${heirs.length}`;
             await setSel("نوع المالك", "فرد"); await sleep(250);
             await setSel("نوع الهوية", "هوية وطنية"); await sleep(250);
-            
+
             trig('input[name="Identity"]', heirs[k].id);
             trig('input[name="DateOfBirth"]', heirs[k].dob);
             trig('input[name="email"]', email);
-            trig('input[type="tel"]', "+966"+mob.replace(/^0/,''));
-            await sleep(400);
+            trig('input[type="tel"]', "+966" + mob.replace(/^0/, ''));
+            await sleep(delay);
 
-            const vBtn = Array.from(d.querySelectorAll('button')).find(b=>b.innerText.includes('التحقق'));
-            if(vBtn) {
+            const vBtn = Array.from(d.querySelectorAll('button')).find(b => b.innerText.includes('التحقق'));
+            if (vBtn) {
                 vBtn.click();
-                let success=false;
-                for(let a=0; a<100; a++) {
-                    if(d.body.innerText.includes("تم إضافة مالك جديد (فرد) بنجاح")) { success=true; break; }
+                let ok = false;
+                for (let a = 0; a < 100; a++) {
+                    if (d.body.innerText.includes("تم إضافة مالك جديد (فرد) بنجاح")) { ok = true; break; }
                     await sleep(200);
                 }
-                if(!success && !confirm(`⚠️ لم يتم رصد النجاح للوارث ${k+1}. متابعة؟`)) break;
+                if (!ok && !confirm(`⚠️ لم يظهر تأكيد الوارث ${k + 1}. هل نكمل؟`)) break;
             }
-            if(k < heirs.length-1) {
-                const add = Array.from(d.querySelectorAll('button')).find(b=>b.innerText.includes('إضافة مالك جديد'));
-                if(add){ add.click(); await sleep(800); }
+            if (k < heirs.length - 1) {
+                const add = Array.from(d.querySelectorAll('button')).find(b => b.innerText.includes('إضافة مالك جديد'));
+                if (add) { add.click(); await sleep(1000); }
             }
         }
-        btn.style.background = "#22c55e";
-        btn.innerText = "✅ اكتملت العملية";
-        await sleep(1500);
-        c.remove(); s.remove();
-        alert("انتهت المهمة بنجاح ✅");
+        alert("اكتملت العملية بنجاح ✅"); c.remove(); s.remove();
     };
 })();
