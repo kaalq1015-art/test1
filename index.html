@@ -55,7 +55,7 @@ javascript:(function(){
         const ctrl = t.closest('div').querySelector('[class*="-control"]');
         if (ctrl) {
             ctrl.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-            await slp(250);
+            await slp(200);
             const m = d.querySelector('[class*="-menu"]');
             if (m) {
                 const o = Array.from(m.querySelectorAll('[id*="-option"]')).find(x => x.textContent.trim() === opt);
@@ -66,8 +66,7 @@ javascript:(function(){
 
     d.getElementById('btn').onclick = async function() {
         const v_t = d.getElementById('txt').value, v_m = d.getElementById('mob').value.trim(), v_e = d.getElementById('mail').value;
-        
-        if (!/^05\d{8}$/.test(v_m)) return alert("❌ رقم الجوال إلزامي ويجب أن يكون 10 أرقام ويبدأ بـ 05");
+        if (!/^05\d{8}$/.test(v_m)) return alert("❌ رقم الجوال يجب أن يكون 10 أرقام ويبدأ بـ 05");
         
         const hrs = []; const lns = v_t.split('\n').map(l => l.trim());
         for (let i = 0; i < lns.length; i++) {
@@ -86,15 +85,15 @@ javascript:(function(){
 
         for (let k = 0; k < hrs.length; k++) {
             d.getElementById('st').innerText = `تعبئة الوارث ${k + 1} من ${hrs.length}`;
-            await sSel("نوع المالك", "فرد"); await slp(200);
-            await sSel("نوع الهوية", "هوية وطنية"); await slp(200);
+            await sSel("نوع المالك", "فرد"); await slp(150);
+            await sSel("نوع الهوية", "هوية وطنية"); await slp(150);
 
             trg('input[name="Identity"]', hrs[k].id);
             trg('input[name="DateOfBirth"]', hrs[k].dob);
             trg('input[name="email"]', v_e);
             trg('input[type="tel"]', "+966" + v_m.substring(1));
-            await slp(400);
-
+            
+            /* ضغطة التحقق الفورية */
             const vB = Array.from(d.querySelectorAll('button')).find(b => b.innerText.includes('التحقق'));
             if (vB) {
                 vB.click();
@@ -103,11 +102,12 @@ javascript:(function(){
                     if (d.body.innerText.includes("تم إضافة مالك جديد (فرد) بنجاح")) { ok = true; break; }
                     await slp(200);
                 }
-                if (!ok && !confirm(`⚠️ لم يظهر تأكيد الوارث ${k + 1}. هل نكمل؟`)) break;
+                if (!ok && !confirm(`⚠️ لم يتم رصد النجاح للوارث ${k+1}. متابعة؟`)) break;
             }
+
             if (k < hrs.length - 1) {
                 const ad = Array.from(d.querySelectorAll('button')).find(b => b.innerText.includes('إضافة مالك جديد'));
-                if (ad) { ad.click(); await slp(1000); }
+                if (ad) { ad.click(); await slp(800); }
             }
         }
         alert("اكتملت العملية بنجاح ✅"); c.remove(); s.remove();
