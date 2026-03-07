@@ -87,8 +87,6 @@ javascript:(function(){
         const mainContent = doc.getElementById('pro-main-content');
         mainContent.innerHTML = `<div style="text-align:center; padding:30px 0;"><span class="spinner"></span><h3 id="progress_status">جاري التهيئة...</h3></div>`;
 
-        const sleep = (ms) => new Promise(res => setTimeout(res, ms));
-
         async function setReactSelect(labelText, optionText) {
             const labels = Array.from(doc.querySelectorAll('p, label, span, div'));
             const targetLabel = labels.find(el => el.textContent.trim() === labelText);
@@ -96,20 +94,14 @@ javascript:(function(){
             const selectContainer = targetLabel.closest('div').querySelector('.css-b62m3t-container');
             if (!selectContainer) return;
 
-            const currentValue = selectContainer.querySelector('[class*="singleValue"]');
-            if (currentValue && currentValue.textContent.trim() === optionText) return;
-
             const control = selectContainer.querySelector('[class*="-control"]');
             control.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-            await sleep(700);
+            await new Promise(r => setTimeout(r, 600));
             const menu = doc.querySelector('[class*="-menu"]');
             if (!menu) return;
             const options = Array.from(menu.querySelectorAll('[id*="-option"]'));
             const targetOption = options.find(opt => opt.textContent.trim() === optionText);
-            if (targetOption) {
-                targetOption.click();
-                await sleep(500);
-            }
+            if (targetOption) targetOption.click();
         }
 
         const triggerInput = (selector, value) => {
@@ -121,16 +113,17 @@ javascript:(function(){
             el.dispatchEvent(new Event('change', { bubbles: true }));
         };
 
+        const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+
         const waitForSuccess = async () => {
             return new Promise((resolve) => {
                 let attempts = 0;
                 const interval = setInterval(() => {
-                    const text = doc.body.innerText;
-                    if (text.includes("تم إضافة مالك جديد (فرد) بنجاح")) {
+                    if (doc.body.innerText.includes("تم إضافة مالك جديد (فرد) بنجاح")) {
                         clearInterval(interval);
                         resolve(true);
                     }
-                    if (++attempts > 60) { clearInterval(interval); resolve(false); }
+                    if (++attempts > 50) { clearInterval(interval); resolve(false); }
                 }, 500);
             });
         };
@@ -140,10 +133,8 @@ javascript:(function(){
             const statusEl = doc.getElementById('progress_status');
             if(statusEl) statusEl.innerText = `تعبئة الوارث ${k+1} من ${heirs.length}`;
 
-            // اختيار نوع المالك في أول دورة فقط
-            if (k === 0) {
-                await setReactSelect("نوع المالك", "فرد");
-            }
+            await setReactSelect("نوع المالك", "فرد");
+            await sleep(600);
             
             await setReactSelect("نوع الهوية", "هوية وطنية");
             await sleep(600);
@@ -155,16 +146,14 @@ javascript:(function(){
             
             await sleep(selDelay);
 
-            const buttons = Array.from(doc.querySelectorAll('button'));
-            const verifyBtn = buttons.find(b => b.innerText.includes('التحقق') || b.classList.contains('bg-bluerega'));
-            
+            const verifyBtn = Array.from(doc.querySelectorAll('button')).find(b => b.innerText.includes('التحقق') || b.classList.contains('bg-bluerega'));
             if (verifyBtn) {
                 verifyBtn.click();
                 const success = await waitForSuccess();
                 if (success) {
-                    await sleep(1000); // ثانية انتظار بعد النجاح كما طلبت
+                    await sleep(1000);
                 } else {
-                    if (!confirm(`لم يتم رصد رسالة النجاح للوارث ${k+1}. هل تريد المتابعة للوارث التالي؟`)) break;
+                    if (!confirm(`لم يتم رصد النجاح للوارث ${k+1}. متابعة؟`)) break;
                 }
             }
 
@@ -172,7 +161,7 @@ javascript:(function(){
                 const addBtn = Array.from(doc.querySelectorAll('button')).find(b => b.innerText.includes('إضافة مالك جديد'));
                 if (addBtn) { 
                     addBtn.click(); 
-                    await sleep(2000); // وقت كافٍ لتحميل الحقول الجديدة
+                    await sleep(1500); 
                 }
             }
         }
