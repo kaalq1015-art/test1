@@ -55,7 +55,7 @@ javascript:(function(){
         const ctrl = t.closest('div').querySelector('[class*="-control"]');
         if (ctrl) {
             ctrl.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-            await slp(200);
+            await slp(300);
             const m = d.querySelector('[class*="-menu"]');
             if (m) {
                 const o = Array.from(m.querySelectorAll('[id*="-option"]')).find(x => x.textContent.trim() === opt);
@@ -80,36 +80,43 @@ javascript:(function(){
         }
         if (!hrs.length) return alert("❌ لم يتم العثور على بيانات ورثة");
 
+        /* التنبيه المطلوب قبل البدء */
+        if (!confirm("⚠️ تنبيه: يجب ضغط (إضافة مالك جديد) في الصفحة قبل البدء لضمان ظهور الخانات.\n\nهل أنت مستعد؟")) return;
+
         const main = d.getElementById('main');
         main.innerHTML = `<div style="text-align:center; padding:30px 0;"><span class="spin"></span><h3 id="st" style="font-size:14px; color:#1e293b; margin-top:15px;">جاري المعالجة...</h3></div>`;
 
         for (let k = 0; k < hrs.length; k++) {
             d.getElementById('st').innerText = `تعبئة الوارث ${k + 1} من ${hrs.length}`;
-            await sSel("نوع المالك", "فرد"); await slp(150);
-            await sSel("نوع الهوية", "هوية وطنية"); await slp(150);
+            
+            await sSel("نوع المالك", "فرد"); await slp(300);
+            await sSel("نوع الهوية", "هوية وطنية"); await slp(300);
 
             trg('input[name="Identity"]', hrs[k].id);
             trg('input[name="DateOfBirth"]', hrs[k].dob);
             trg('input[name="email"]', v_e);
             trg('input[type="tel"]', "+966" + v_m.substring(1));
-            
-            /* ضغطة التحقق الفورية */
+            await slp(600);
+
             const vB = Array.from(d.querySelectorAll('button')).find(b => b.innerText.includes('التحقق'));
             if (vB) {
                 vB.click();
                 let ok = false;
-                for (let a = 0; a < 100; a++) {
-                    if (d.body.innerText.includes("تم إضافة مالك جديد (فرد) بنجاح")) { ok = true; break; }
-                    await slp(200);
+                for (let a = 0; a < 60; a++) {
+                    const pageText = d.body.innerText;
+                    if (pageText.includes("تم إضافة مالك جديد (فرد) بنجاح") || pageText.includes("بنجاح")) { 
+                        ok = true; break; 
+                    }
+                    await slp(500);
                 }
-                if (!ok && !confirm(`⚠️ لم يتم رصد النجاح للوارث ${k+1}. متابعة؟`)) break;
+                if (!ok && !confirm(`⚠️ لم يتم التأكد من نجاح إضافة الوارث ${k + 1}. هل تريد الانتقال للتالي؟`)) break;
             }
 
             if (k < hrs.length - 1) {
                 const ad = Array.from(d.querySelectorAll('button')).find(b => b.innerText.includes('إضافة مالك جديد'));
-                if (ad) { ad.click(); await slp(800); }
+                if (ad) { ad.click(); await slp(1500); }
             }
         }
-        alert("اكتملت العملية بنجاح ✅"); c.remove(); s.remove();
+        alert("اكتملت العملية لجميع الورثة ✅"); c.remove(); s.remove();
     };
 })();
