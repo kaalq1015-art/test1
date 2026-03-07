@@ -8,7 +8,7 @@ javascript:(function(){
         #pro-automation-container {
             position: fixed; top: 50px; right: 50px; width: 380px;
             background: rgba(255, 255, 255, 0.98); z-index: 2147483647; 
-            border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
             font-family: 'Segoe UI', system-ui, sans-serif;
             direction: rtl; text-align: right; user-select: none;
             backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.4);
@@ -18,18 +18,22 @@ javascript:(function(){
         .pro-body { padding: 24px; max-height: 85vh; overflow-y: auto; }
         .pro-label { display: block; font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 6px; text-transform: uppercase; }
         .pro-input { width: 100%; padding: 12px; border: 2px solid #f1f5f9; border-radius: 12px; font-size: 14px; transition: 0.2s; box-sizing: border-box; margin-bottom: 15px; background: #f8fafc; }
+        .pro-input:focus { outline: none; border-color: #3b82f6; background: #fff; }
+        .pro-card { background: #eff6ff; border: 1px solid #bfdbfe; padding: 15px; border-radius: 14px; margin-bottom: 20px; }
         .pro-btn-primary { width: 100%; background: #3b82f6; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 14px; }
+        .pro-btn-primary:hover { background: #2563eb; transform: translateY(-1px); }
+        .pro-btn-close { background: none; border: none; color: white; cursor: pointer; font-size: 16px; opacity: 0.6; }
         .spinner { width: 40px; height: 40px; border: 4px solid #f1f5f9; border-bottom-color: #3b82f6; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
         @keyframes rotation { 0% { transform: rotate(0deg) } 100% { transform: rotate(360deg) } }
-    [cite_start]`; [cite: 1-17]
+    `;
     doc.head.appendChild(style);
 
     const container = doc.createElement('div');
     container.id = 'pro-automation-container';
     container.innerHTML = `
         <div class="pro-header" id="pro-drag-handle">
-            <h3><span>⚡</span> أتمتة الورثة - نسخة عبد الله</h3>
-            <button class="pro-btn-close" id="pro-close-btn" style="background:none; border:none; color:white; cursor:pointer;">✕</button>
+            <h3><span>⚡</span> تعبئة الورثة المطور</h3>
+            <button class="pro-btn-close" id="pro-close-btn">✕</button>
         </div>
         <div class="pro-body" id="pro-main-content">
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
@@ -42,32 +46,82 @@ javascript:(function(){
                     <input type="email" id="auto_mail" class="pro-input" placeholder="mail@example.com">
                 </div>
             </div>
-            <div style="margin-bottom:15px; background:#f0f7ff; padding:10px; border-radius:10px;">
-                <label class="pro-label">تأخير التعبئة: <span id="sd_val">1</span> ثانية</label>
-                <input type="range" id="auto_sd" min="0" max="10" step="0.5" value="1" style="width:100%;" oninput="document.getElementById('sd_val').innerText = this.value + ' ثانية'">
+            <div class="pro-card">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                    <span style="font-size:12px; font-weight:bold; color:#1e40af;">تأخير الاستجابة</span>
+                    <span id="sd_val" style="color:#2563eb; font-weight:bold;">2 ثانية</span>
+                </div>
+                <input type="range" id="auto_sd" min="1" max="15" value="2" style="width:100%; cursor:pointer;" oninput="document.getElementById('sd_val').innerText = this.value + ' ثانية'">
             </div>
             <label class="pro-label">نص صك حصر الورثة</label>
-            <textarea id="auto_text" class="pro-input" style="height:100px; resize:none;"></textarea>
-            <button id="auto_start" class="pro-btn-primary">بدء التنفيذ</button>
+            <textarea id="auto_text" class="pro-input" style="height:100px; resize:none; margin-bottom:20px;"></textarea>
+            <button id="auto_start" class="pro-btn-primary">بدء التنفيذ التلقائي</button>
         </div>
-    [cite_start]`; [cite: 18-24]
+    `;
     doc.body.appendChild(container);
 
-    // منطق السحب والإغلاق
+    // دالة السحب والتحريك
     let isDragging = false, offset = { x: 0, y: 0 };
     const handle = doc.getElementById('pro-drag-handle');
     handle.onmousedown = (e) => { isDragging = true; offset.x = e.clientX - container.offsetLeft; offset.y = e.clientY - container.offsetTop; };
-    doc.onmousemove = (e) => { if (isDragging) { container.style.left = (e.clientX - offset.x) + 'px'; container.style.top = (e.clientY - offset.y) + 'px'; container.style.right = 'auto'; } };
+    doc.onmousemove = (e) => { if (!isDragging) return; container.style.left = (e.clientX - offset.x) + 'px'; container.style.top = (e.clientY - offset.y) + 'px'; container.style.right = 'auto'; };
     doc.onmouseup = () => isDragging = false;
     doc.getElementById('pro-close-btn').onclick = () => { container.remove(); style.remove(); };
 
+    // --- الدوال المساعدة المدمجة ---
+    const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+
+    const triggerInput = (selector, value) => {
+        const el = doc.querySelector(selector);
+        if (!el) return;
+        const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+        setter.call(el, value);
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+    };
+
+    async function setReactSelect(labelText, optionText) {
+        const labels = Array.from(doc.querySelectorAll('p, label, span, div'));
+        const targetLabel = labels.find(el => el.textContent.trim() === labelText);
+        if (!targetLabel) return;
+        const containerEl = targetLabel.closest('div').querySelector('.css-b62m3t-container, [class*="-container"]');
+        if (!containerEl) return;
+        const control = containerEl.querySelector('[class*="-control"]');
+        if (control) {
+            control.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+            await sleep(500);
+            const menu = doc.querySelector('[class*="-menu"]');
+            if (menu) {
+                const options = Array.from(menu.querySelectorAll('[id*="-option"]'));
+                const targetOption = options.find(opt => opt.textContent.trim() === optionText);
+                if (targetOption) targetOption.click();
+            }
+        }
+    }
+
+    const waitForSuccess = async () => {
+        return new Promise((resolve) => {
+            let attempts = 0;
+            const interval = setInterval(() => {
+                if (doc.body.innerText.includes("تم إضافة مالك جديد (فرد) بنجاح")) {
+                    clearInterval(interval);
+                    resolve(true);
+                }
+                if (++attempts > 80) { clearInterval(interval); resolve(false); }
+            }, 500);
+        });
+    };
+
+    // --- تنفيذ الأتمتة عند الضغط ---
     doc.getElementById('auto_start').onclick = async function() {
         const rawText = doc.getElementById('auto_text').value;
         const inputMobile = doc.getElementById('auto_mob').value.trim();
         const email = doc.getElementById('auto_mail').value.trim();
-        const selDelay = parseFloat(doc.getElementById('auto_sd').value) * 1000;
+        const selDelay = parseInt(doc.getElementById('auto_sd').value) * 1000;
 
+        if (!/^(0|966|\+966)\d+$/.test(inputMobile)) return alert("رقم الجوال غير صحيح");
         const mobileFormatted = "+966" + inputMobile.replace(/^(0|966|\+966)/, '');
+
         const heirs = [];
         const lines = rawText.split('\n').map(l => l.trim()).filter(l => l !== "");
         for (let i = 0; i < lines.length; i++) {
@@ -79,97 +133,62 @@ javascript:(function(){
                 }
                 if (foundDob) heirs.push({ id: lines[i].match(/^[12]\d{9}/)[0], dob: foundDob });
             }
-        [cite_start]} [cite: 25-33]
-
-        if(heirs.length === 0) return alert("لم يتم العثور على بيانات.");
-        const mainContent = doc.getElementById('pro-main-content');
-        mainContent.innerHTML = `<div style="text-align:center; padding:30px 0;"><span class="spinner"></span><h3 id="progress_status">جاري التنفيذ...</h3></div>`;
-
-        async function setReactSelect(labelText, optionText) {
-            const labels = Array.from(doc.querySelectorAll('p, label, span, div'));
-            const targetLabel = labels.find(el => el.textContent.trim() === labelText);
-            if (!targetLabel) return;
-            const selectContainer = targetLabel.closest('div').querySelector('.css-b62m3t-container');
-            if (!selectContainer) return;
-
-            const control = selectContainer.querySelector('[class*="-control"]');
-            control.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-            await new Promise(r => setTimeout(r, 400)); // وقت كافٍ لظهور القائمة (400ms) لضمان الاستقرار
-            const menu = doc.querySelector('[class*="-menu"]');
-            if (!menu) return;
-            const options = Array.from(menu.querySelectorAll('[id*="-option"]'));
-            const targetOption = options.find(opt => opt.textContent.trim() === optionText);
-            if (targetOption) targetOption.click();
         }
 
-        const triggerInput = (selector, value) => {
-            const el = doc.querySelector(selector);
-            if (!el) return;
-            const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-            setter.call(el, value);
-            el.dispatchEvent(new Event('input', { bubbles: true }));
-            el.dispatchEvent(new Event('change', { bubbles: true }));
-        [cite_start]}; [cite: 35-37]
+        if(heirs.length === 0) return alert("لم يتم العثور على بيانات ورثة (رقم هوية + تاريخ).");
 
-        const sleep = (ms) => new Promise(res => setTimeout(res, ms));
-
-        const waitForSuccess = async () => {
-            return new Promise((resolve) => {
-                let attempts = 0;
-                const interval = setInterval(() => {
-                    if (doc.body.innerText.includes("تم إضافة مالك جديد (فرد) بنجاح")) {
-                        clearInterval(interval);
-                        resolve(true);
-                    }
-                    if (++attempts > 60) { clearInterval(interval); resolve(false); }
-                }, 300);
-            });
-        [cite_start]}; [cite: 38-40]
+        const mainContent = doc.getElementById('pro-main-content');
+        mainContent.innerHTML = `
+            <div style="text-align:center; padding:30px 0;">
+                <span class="spinner"></span>
+                <h3 id="progress_status" style="color:#1e293b; margin-top:20px; font-size:14px;">جاري البدء...</h3>
+            </div>
+        `;
 
         for (let k = 0; k < heirs.length; k++) {
             const h = heirs[k];
             const statusEl = doc.getElementById('progress_status');
-            if(statusEl) statusEl.innerText = `تعبئة الوارث ${k+1} من ${heirs.length}`;
+            if(statusEl) statusEl.innerText = `جاري معالجة الوارث ${k+1} من ${heirs.length}`;
 
-            // 1. اختيار نوع المالك ونوع الهوية
+            // 1. اختيار نوع المالك ونوع الهوية أولاً
             await setReactSelect("نوع المالك", "فرد");
-            await sleep(150);
+            await sleep(600);
             await setReactSelect("نوع الهوية", "هوية وطنية");
-            await sleep(150);
+            await sleep(600);
 
-            // 2. تعبئة البيانات
+            // 2. تعبئة البيانات النصية
             triggerInput('input[name="Identity"]', h.id);
             triggerInput('input[name="DateOfBirth"]', h.dob);
             triggerInput('input[name="email"]', email);
             triggerInput('input[type="tel"]', mobileFormatted);
             
-            await sleep(selDelay); // تأخير من الشريط قبل التحقق
+            await sleep(selDelay);
 
+            // 3. النقر على زر التحقق
             const verifyBtn = Array.from(doc.querySelectorAll('button')).find(b => 
                 b.innerText.includes('التحقق') || b.classList.contains('bg-bluerega')
-            [cite_start]);[span_0](end_span)
-            
+            );
             if (verifyBtn) {
-                [span_1](start_span)verifyBtn.click();[span_1](end_span)
-                [span_2](start_span)if (await waitForSuccess()) {[span_2](end_span)
-                    // 3. الانتظار لمدة 0.7 ثانية بعد ظهور رسالة النجاح
-                    await sleep(700); 
-                } else {
-                    [span_3](start_span)if (!confirm(`لم يتم رصد النجاح للوارث ${k+1}. متابعة؟`)) break;[span_3](end_span)
+                verifyBtn.click();
+                // 4. الانتظار حتى تظهر رسالة النجاح
+                const success = await waitForSuccess();
+                if (!success) {
+                    if (!confirm(`لم يتم رصد رسالة النجاح للوارث ${k+1}. هل تريد الاستمرار للوارث التالي؟`)) break;
                 }
             }
 
+            // 5. النقر على إضافة مالك جديد للانتقال للوارث التالي (إلا إذا كان الأخير)
             if (k < heirs.length - 1) {
                 const addBtn = Array.from(doc.querySelectorAll('button')).find(b => b.innerText.includes('إضافة مالك جديد'));
                 if (addBtn) { 
-                    [span_4](start_span)addBtn.click();[span_4](end_span)
-                    await sleep(1000); 
+                    addBtn.click(); 
+                    await sleep(1500); 
                 }
             }
         }
 
         container.remove();
         style.remove();
-        [span_5](start_span)alert("انتهت العملية بنجاح ✅");[span_5](end_span)
+        alert("اكتملت العملية لجميع الورثة بنجاح ✅");
     };
 })();
