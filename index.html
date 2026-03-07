@@ -154,11 +154,8 @@ javascript:(function(){
             const verifyBtn = Array.from(doc.querySelectorAll('button')).find(b => b.innerText.includes('التحقق') || b.classList.contains('bg-bluerega'));
             if (verifyBtn) {
                 verifyBtn.click();
-                
                 const success = await waitForSuccess();
-                if (success) {
-                    await sleep(1000); // الانتظار لثانية واحدة بعد النجاح
-                } else {
+                if (!success) {
                     if (!confirm(`لم يتم رصد النجاح للوارث ${k+1}. متابعة؟`)) break;
                 }
             }
