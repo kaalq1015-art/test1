@@ -1,1 +1,77 @@
-javascript:(async function(){const d=document;const old=d.getElementById('pro-ui');if(old)old.remove();const s=d.createElement('style');s.innerHTML=`#pro-ui{position:fixed;top:20px;right:20px;width:350px;background:#fff;z-index:99999;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,0.2);direction:rtl;padding:20px;font-family:sans-serif} .p-in{width:100%;margin-bottom:10px;padding:10px;border:1px solid #ccc;border-radius:8px;box-sizing:border-box} .p-btn{width:100%;background:#3b82f6;color:#fff;border:none;padding:12px;border-radius:8px;cursor:pointer;font-weight:bold}`;d.head.appendChild(s);const c=d.createElement('div');c.id='pro-ui';c.innerHTML=`<h3>⚡ أتمتة الورثة</h3><input id="p_mob" class="p-in" placeholder="الجوال"><input id="p_mail" class="p-in" placeholder="البريد"><textarea id="p_txt" class="p-in" style="height:80px" placeholder="نص الصك"></textarea><button id="p_go" class="p-btn">بدء التنفيذ</button>`;d.body.appendChild(c);const sleep=m=>new Promise(r=>setTimeout(r,m));const trig=(sel,val)=>{const el=d.querySelector(sel);if(!el)return;const st=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value').set;st.call(el,val);el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}))};async function setSel(lab,opt){const els=Array.from(d.querySelectorAll('p,label,span,div')).find(e=>e.textContent.trim()===lab);if(!els)return;const cont=els.closest('div').querySelector('.css-b62m3t-container');if(!cont)return;cont.querySelector('[class*="-control"]').dispatchEvent(new MouseEvent('mousedown',{bubbles:true}));await sleep(300);const m=d.querySelector('[class*="-menu"]');if(!m)return;const o=Array.from(m.querySelectorAll('[id*="-option"]')).find(x=>x.textContent.trim()===opt);if(o)o.click()}d.getElementById('p_go').onclick=async function(){const txt=d.getElementById('p_txt').value,mob="+966"+d.getElementById('p_mob').value.replace(/^(0|966|\+966)/,''),mail=d.getElementById('p_mail').value;const heirs=[];const lines=txt.split('\n');for(let i=0;i<lines.length;i++){if(/^[12]\d{9}/.test(lines[i].trim())){let dob="";for(let j=i;j<Math.min(i+15,lines.length);j++){const m=lines[j].match(/\d{4}\/\d{2}\/\d{2}/);if(m){dob=m[0].replace(/\//g,'-');break}}if(dob)heirs.push({id:lines[i].trim().match(/^[12]\d{9}/)[0],dob})}}if(!heirs.length)return alert("لا بيانات");for(let k=0;k<heirs.length;k++){const h=heirs[k];await setSel("نوع المالك","فرد");await sleep(200);await setSel("نوع الهوية","هوية وطنية");await sleep(200);trig('input[name="Identity"]',h.id);trig('input[name="DateOfBirth"]',h.dob);trig('input[name="email"]',mail);trig('input[type="tel"]',mob);await sleep(500);const vBtn=Array.from(d.querySelectorAll('button')).find(b=>b.innerText.includes('التحقق')||b.classList.contains('bg-bluerega'));if(vBtn){vBtn.click();let ok=false;for(let a=0;a<60;a++){await sleep(400);if(d.body.innerText.includes("تم إضافة مالك جديد (فرد) بنجاح")){ok=true;break}}if(ok){await sleep(700);if(k<heirs.length-1){const add=Array.from(d.querySelectorAll('button')).find(b=>b.innerText.includes('إضافة مالك جديد'));if(add){add.click();await sleep(800)}}}else{if(!confirm("فشل التحقق، استمرار؟"))break}}}alert("تم ✅")}}();
+javascript:(function(){
+    const d=document, s=d.createElement('style');
+    s.innerHTML=`#pro-ui{position:fixed;top:40px;right:40px;width:340px;background:#fff;z-index:2147483647;border-radius:15px;direction:rtl;font-family:sans-serif;box-shadow:0 20px 40px #0004;overflow:hidden}
+    .h{background:#0f172a;color:#fff;padding:12px;font-size:14px;font-weight:bold;display:flex;justify-content:space-between}
+    .b{padding:15px} .i{width:100%;padding:10px;margin-bottom:10px;border:1px solid #ddd;border-radius:8px;box-sizing:border-box}
+    #go{width:100%;padding:12px;background:#3b82f6;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer}`;
+    d.head.appendChild(s);
+    const c=d.createElement('div'); c.id='pro-ui';
+    c.innerHTML=`<div class="h"><span>⚡ أتمتة الورثة المطور</span><span onclick="this.parentElement.parentElement.remove()" style="cursor:pointer">✕</span></div>
+    <div class="b"><input id="m" class="i" placeholder="رقم الجوال (05xxxx)" value="05"><input id="e" class="i" placeholder="البريد الإلكتروني"><textarea id="t" class="i" style="height:80px" placeholder="نص الصك"></textarea><button id="go">بدء التنفيذ السريع</button></div>`;
+    d.body.appendChild(c);
+
+    const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+    const trig=(sel,v)=>{
+        const el=d.querySelector(sel); if(!el)return;
+        const set=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value').set;
+        set.call(el,v); el.dispatchEvent(new Event('input',{bubbles:true})); el.dispatchEvent(new Event('change',{bubbles:true}));
+    };
+
+    async function setSel(lbl, opt) {
+        const target = Array.from(d.querySelectorAll('p,label,span,div')).find(el=>el.textContent.trim()===lbl);
+        if(!target) return;
+        const ctrl = target.closest('div').querySelector('[class*="-control"]');
+        if(ctrl) {
+            ctrl.dispatchEvent(new MouseEvent('mousedown',{bubbles:true}));
+            await sleep(250); /* سرعة استجابة القائمة */
+            const menu = d.querySelector('[class*="-menu"]');
+            if(menu) {
+                const o = Array.from(menu.querySelectorAll('[id*="-option"]')).find(x=>x.textContent.trim()===opt);
+                if(o) o.click();
+            }
+        }
+    }
+
+    d.getElementById('go').onclick = async () => {
+        const txt=d.getElementById('t').value, mob=d.getElementById('m').value, email=d.getElementById('e').value;
+        const heirs=[]; const lines=txt.split('\n').map(l=>l.trim());
+        for(let i=0; i<lines.length; i++) {
+            if(/^[12]\d{9}/.test(lines[i])) {
+                let dob=""; for(let j=i; j<i+15 && j<lines.length; j++){
+                    let m=lines[j].match(/\d{4}\/\d{2}\/\d{2}/);
+                    if(m){dob=m[0].replace(/\//g,'-'); break;}
+                }
+                if(dob) heirs.push({id:lines[i].match(/^[12]\d{9}/)[0], dob});
+            }
+        }
+        if(!heirs.length) return alert("لم يتم العثور على بيانات");
+        
+        for(let k=0; k<heirs.length; k++){
+            d.getElementById('go').innerText=`معالجة ${k+1} / ${heirs.length}`;
+            await setSel("نوع المالك", "فرد"); await sleep(200);
+            await setSel("نوع الهوية", "هوية وطنية"); await sleep(200);
+            
+            trig('input[name="Identity"]', heirs[k].id);
+            trig('input[name="DateOfBirth"]', heirs[k].dob);
+            trig('input[name="email"]', email);
+            trig('input[type="tel"]', "+966"+mob.replace(/^0/,''));
+            await sleep(300); /* سرعة تعبئة الخانات */
+
+            const vBtn = Array.from(d.querySelectorAll('button')).find(b=>b.innerText.includes('التحقق'));
+            if(vBtn) {
+                vBtn.click();
+                let success=false;
+                for(let a=0; a<100; a++) { /* فحص سريع كل 200 ملي ثانية لرسالة النجاح */
+                    if(d.body.innerText.includes("تم إضافة مالك جديد (فرد) بنجاح")) { success=true; break; }
+                    await sleep(200);
+                }
+                if(!success && !confirm("لم يظهر تأكيد النجاح، هل نكمل؟")) break;
+            }
+            if(k < heirs.length-1) {
+                const add = Array.from(d.querySelectorAll('button')).find(b=>b.innerText.includes('إضافة مالك جديد'));
+                if(add){ add.click(); await sleep(800); }
+            }
+        }
+        alert("انتهى بنجاح ✅"); c.remove(); s.remove();
+    };
+})();
