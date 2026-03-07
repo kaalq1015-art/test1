@@ -55,7 +55,7 @@ javascript:(function(){
         const ctrl = t.closest('div').querySelector('[class*="-control"]');
         if (ctrl) {
             ctrl.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-            await slp(150); /* سرعة فائقة لفتح القائمة */
+            await slp(100); 
             const m = d.querySelector('[class*="-menu"]');
             if (m) {
                 const o = Array.from(m.querySelectorAll('[id*="-option"]')).find(x => x.textContent.trim() === opt);
@@ -88,8 +88,7 @@ javascript:(function(){
         for (let k = 0; k < hrs.length; k++) {
             d.getElementById('st').innerText = `تعبئة الوارث ${k + 1} من ${hrs.length}`;
             
-            /* تعديل لضمان المالك الأول */
-            await slp(200); 
+            await slp(200); /* لضمان استجابة المالك الأول وكل وريث جديد */
             await sSel("نوع المالك", "فرد"); await slp(100);
             await sSel("نوع الهوية", "هوية وطنية"); await slp(100);
 
@@ -98,7 +97,8 @@ javascript:(function(){
             trg('input[name="email"]', v_e);
             trg('input[type="tel"]', "+966" + v_m.substring(1));
             
-            await slp(150); /* تأخير بسيط جداً لضمان ثبات البيانات قبل التحقق */
+            /* الانتظار لمدة ثانية واحدة قبل التحقق بناءً على طلبك */
+            await slp(1000); 
 
             const vB = Array.from(d.querySelectorAll('button')).find(b => b.innerText.includes('التحقق'));
             if (vB) {
@@ -115,7 +115,7 @@ javascript:(function(){
                 const ad = Array.from(d.querySelectorAll('button')).find(b => b.innerText.includes('إضافة مالك جديد'));
                 if (ad) { 
                     ad.click(); 
-                    await slp(500); /* سرعة فائقة للانتقال للوارث التالي */
+                    await slp(400); 
                 }
             }
         }
