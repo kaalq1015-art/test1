@@ -1,1 +1,79 @@
-javascript:(function(){const E="aa11@ooslo.sa",K="AG_MORTGAGE_V33",D=[{ag:"عبدالله الجريوي",aid:"1025158781",ph:"535588832",en:"شركة الراجحي للتطوير المحدودة",poa:"461065673",eid:"7010997174",dob:"1395-04-02",em:E}];let ags=JSON.parse(localStorage.getItem(K))||D;const st=`<style>@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');#U_POP{position:fixed;top:80px;left:40px;width:370px;background:rgba(15,23,42,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:30px;border:1px solid rgba(255,255,255,0.1);box-shadow:0 25px 50px rgba(0,0,0,0.5);z-index:9999999;color:#fff;font-family:'Cairo',sans-serif;direction:rtl;overflow:hidden}#U_POP .hdr{padding:18px 22px;background:rgba(30,41,59,0.8);cursor:move;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.05)}#U_POP .hdr b{font-size:15px;color:#3b82f6;letter-spacing:0.5px}#U_POP .hdr button{background:rgba(239,68,68,0.15);color:#ef4444;border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px}#U_POP .main{padding:18px}#U_POP .box{display:flex;gap:10px;margin-bottom:18px}#U_POP .box input{flex:1;padding:12px 18px;background:rgba(15,23,42,0.8);border:1px solid #334155;border-radius:15px;color:#fff;font-size:13px;outline:none}#U_POP .box input:focus{border-color:#3b82f6}#U_POP .box button{background:#3b82f6;color:#fff;border:none;padding:0 18px;border-radius:15px;font-weight:700;cursor:pointer}#U_POP .lst{max-height:400px;overflow-y:auto;scrollbar-width:none}#U_POP .crd{background:rgba(255,255,255,0.03);padding:16px;border-radius:20px;border:1px solid rgba(255,255,255,0.05);margin-bottom:12px;cursor:pointer;transition:0.3s}#U_POP .crd:hover{background:rgba(59,130,246,0.1);border-color:#3b82f6;transform:translateY(-2px)}#U_POP .crd i{color:#60a5fa;font-size:10px;font-weight:600;display:block;margin-bottom:4px}#U_POP .crd .r{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px}#U_POP .crd .ed{color:#94a3b8;font-size:18px;padding:4px}#U_POP .crd .ed:hover{color:#3b82f6}#E_MOD{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0f172a;padding:25px;border-radius:32px;z-index:10000005;border:1px solid #3b82f6;width:340px;box-shadow:0 0 60px #000;color:#fff;font-family:'Cairo'}#E_MOD label{font-size:10px;color:#94a3b8;display:block;margin:8px 10px 2px 0}#E_MOD input{width:100%;padding:10px;background:#1e293b;color:#fff;border:1px solid #334155;border-radius:12px;box-sizing:border-box;outline:none}#E_MOD .btns{display:flex;gap:10px;margin-top:20px}#E_MOD button{flex:1;padding:12px;border:none;border-radius:14px;font-weight:700;cursor:pointer}</style>`;document.head.insertAdjacentHTML("beforeend",st);function sV(el,v){if(!el)return;el.focus();Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(el,v);['input','change'].forEach(e=>el.dispatchEvent(new Event(e,{bubbles:true})));el.blur()}function edit(i,x){const m=document.createElement('div');m.id='E_MOD';const fs=[['الجهة','en'],['اسم الوكيل','ag'],['700','eid'],['الهوية','aid'],['الجوال','ph'],['الوكالة','poa'],['الميلاد','dob'],['الإيميل','em']];let h='';fs.forEach(f=>h+=`<label>${f[0]}</label><input value="${i[f[1]]||""}" id="z-${f[1]}">`);m.innerHTML=h+`<div class="btns"><button id="sv" style="background:#3b82f6;color:#fff">حفظ</button><button id="cl" style="background:#334155;color:#fff">إلغاء</button></div>`;document.body.appendChild(m);m.querySelector('#cl').onclick=()=>m.remove();m.querySelector('#sv').onclick=()=>{fs.forEach(f=>i[f[1]]=m.querySelector("#z-"+f[1]).value);if(x===-1)ags.push(i);localStorage.setItem(K,JSON.stringify(ags));location.reload()}}const h=document.createElement('div');h.id="U_POP";h.innerHTML=`<div class="hdr" id="dr"><b>⚖️ وكلاء الرهن</b><button onclick="this.closest('#U_POP').remove()">×</button></div><div class="main"><div class="box"><input id="q" placeholder="بحث.."><button id="nb">+</button></div><div id="lst" class="lst"></div></div>`;document.body.appendChild(h);let dr=false,ox,oy;h.querySelector('#dr').onmousedown=e=>{dr=true;ox=e.clientX-h.offsetLeft;oy=e.clientY-h.offsetTop};document.onmousemove=e=>{if(dr){h.style.left=(e.clientX-ox)+'px';h.style.top=(e.clientY-oy)+'px'}};document.onmouseup=()=>dr=false;const rend=(f="")=>{const l=h.querySelector('#lst');l.innerHTML='';ags.filter(a=>(a.en||'').includes(f)||(a.ag||'').includes(f)).forEach((i,x)=>{const c=document.createElement('div');c.className='crd';c.innerHTML=`<i>${i.en}</i><div class="r"><span>${i.ag}</span><span class="ed">⚙️</span></div>`;c.onclick=(e)=>{if(e.target.className==='ed'){edit(i,x);return}sV(document.querySelector('[name="entityIdentity"]'),i.eid);sV(document.querySelector('[name="entityemail"]'),i.em||E);sV(document.querySelector('[name="attorneyIdentity"]'),i.aid);sV(document.querySelector('[name="attorneyDateOfBirth"]'),i.dob);sV(document.querySelector('[name="attorneyemail"]'),i.em||E);sV(document.querySelector('[name="attorneyPowerOfAttorney"]'),i.poa);const m="+966"+i.ph.toString().replace(/^(00966|966|0|\+966)/,'');document.querySelectorAll('input[type="tel"]').forEach(t=>{sV(t,"");setTimeout(()=>sV(t,m),100)})};l.appendChild(c)})};h.querySelector('#q').oninput=e=>rend(e.target.value);h.querySelector('#nb').onclick=()=>edit({em:E},-1);rend()})();
+javascript:(function(){
+    const E="aa11@ooslo.sa",K="AG_MORTGAGE_V32",D=[{ag:"عبدالله الجريوي",aid:"1025158781",ph:"535588832",en:"شركة الراجحي للتطوير المحدودة",poa:"461065673",eid:"7010997174",dob:"1395-04-02",em:E}];
+    let ags=JSON.parse(localStorage.getItem(K))||D;
+    const st=`<style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap');
+        #U_POP{position:fixed;top:80px;right:20px;width:360px;background:rgba(8,12,25,0.9);backdrop-filter:blur(20px);border-radius:36px;border:1px solid rgba(100,120,255,0.3);box-shadow:0 20px 50px rgba(0,0,0,0.8);z-index:9999999;color:#fff;font-family:'Cairo',sans-serif;direction:rtl;overflow:hidden}
+        #U_POP .h{padding:16px 20px;background:#1a1f35;cursor:move;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #2d3366}
+        #U_POP .h b{color:#a5b4fc;font-size:14px}
+        #U_POP .h button{background:#2d3366;color:#a5b4fc;border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px}
+        #U_POP .m{padding:18px}
+        #U_POP .s{display:flex;gap:8px;margin-bottom:16px}
+        #U_POP .s input{flex:1;padding:12px 16px;background:#0f142a;border:1px solid #3b4087;border-radius:25px;color:#fff;outline:none;font-size:13px}
+        #U_POP .s input:focus{border-color:#6366f1;box-shadow:0 0 0 2px #383e9e}
+        #U_POP .s button{background:#4f52b5;color:#fff;border:none;width:46px;border-radius:25px;font-size:22px;cursor:pointer}
+        #U_POP .s button:hover{background:#6366f1}
+        #U_POP .l{max-height:380px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#4f52b5 #0f142a}
+        #U_POP .l::-webkit-scrollbar{width:4px}
+        #U_POP .l::-webkit-scrollbar-track{background:#0f142a}
+        #U_POP .l::-webkit-scrollbar-thumb{background:#4f52b5;border-radius:10px}
+        #U_POP .c{background:#10152e;padding:15px;border-radius:22px;border:1px solid #2d3366;margin-bottom:10px;cursor:pointer;transition:0.2s}
+        #U_POP .c:hover{background:#1a1f3a;border-color:#6366f1;transform:translateY(-2px)}
+        #U_POP .c .t{color:#9aa5d9;font-size:10px;font-weight:600;margin-bottom:4px}
+        #U_POP .c .r{display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px}
+        #U_POP .c .e{color:#c7d2fe;font-size:18px;padding:4px}
+        #E_MOD{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0b1025;padding:24px;border-radius:40px;z-index:10000010;border:1px solid #4f52b5;width:340px;box-shadow:0 30px 60px #000;color:#fff;font-family:'Cairo'}
+        #E_MOD label{font-size:10px;color:#9aa5d9;display:block;margin:8px 0 2px}
+        #E_MOD input{width:100%;padding:10px 14px;background:#1e2442;color:#fff;border:1px solid #3b4087;border-radius:20px;box-sizing:border-box;outline:none}
+        #E_MOD input:focus{border-color:#6366f1}
+        #E_MOD .btns{display:flex;gap:12px;margin-top:20px}
+        #E_MOD button{flex:1;padding:12px;border:none;border-radius:28px;font-weight:600;cursor:pointer}
+        #E_MOD #sv{background:#4f52b5;color:#fff}
+        #E_MOD #cl{background:#2d3366;color:#a5b4fc}
+    </style>`;
+    document.head.insertAdjacentHTML("beforeend",st);
+    function sV(e,v){if(!e)return;e.focus();Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(e,v);['input','change'].forEach(ev=>e.dispatchEvent(new Event(ev,{bubbles:true})));e.blur()}
+    function edit(i,x){
+        let m=document.createElement('div');m.id='E_MOD';
+        let f=[['الجهة','en'],['الوكيل','ag'],['700','eid'],['الهوية','aid'],['الجوال','ph'],['الوكالة','poa'],['الميلاد','dob'],['الإيميل','em']];
+        let h='';f.forEach(o=>h+=`<label>${o[0]}</label><input value="${i[o[1]]||''}" id="z-${o[1]}">`);
+        m.innerHTML=h+`<div class="btns"><button id="sv">حفظ</button><button id="cl">إلغاء</button></div>`;
+        document.body.appendChild(m);
+        m.querySelector('#cl').onclick=()=>m.remove();
+        m.querySelector('#sv').onclick=()=>{
+            f.forEach(o=>i[o[1]]=m.querySelector("#z-"+o[1]).value);
+            if(x===-1)ags.push(i);
+            localStorage.setItem(K,JSON.stringify(ags));
+            location.reload();
+        };
+    }
+    let p=document.createElement('div');p.id='U_POP';
+    p.innerHTML=`<div class="h" id="dr"><b>⚡ وكلاء الرهن</b><button onclick="this.closest('#U_POP').remove()">✕</button></div><div class="m"><div class="s"><input id="q" placeholder="بحث.."><button id="nb">+</button></div><div id="lst" class="l"></div></div>`;
+    document.body.appendChild(p);
+    let drag=!1,ox,oy;
+    p.querySelector('#dr').onmousedown=e=>{drag=!0;ox=e.clientX-p.offsetLeft;oy=e.clientY-p.offsetTop};
+    document.onmousemove=e=>{if(drag){p.style.left=(e.clientX-ox)+'px';p.style.top=(e.clientY-oy)+'px';p.style.right='auto'}};
+    document.onmouseup=()=>drag=!1;
+    let rend=(f='')=>{
+        let l=p.querySelector('#lst');l.innerHTML='';
+        ags.filter(a=>(a.en||'').includes(f)||(a.ag||'').includes(f)).forEach((i,x)=>{
+            let c=document.createElement('div');c.className='c';
+            c.innerHTML=`<div class="t">${i.en}</div><div class="r"><span>${i.ag}</span><span class="e">⚙️</span></div>`;
+            c.onclick=e=>{
+                if(e.target.classList.contains('e')){edit(i,x);return}
+                sV(document.querySelector('[name="entityIdentity"]'),i.eid);
+                sV(document.querySelector('[name="entityemail"]'),i.em||E);
+                sV(document.querySelector('[name="attorneyIdentity"]'),i.aid);
+                sV(document.querySelector('[name="attorneyDateOfBirth"]'),i.dob);
+                sV(document.querySelector('[name="attorneyemail"]'),i.em||E);
+                sV(document.querySelector('[name="attorneyPowerOfAttorney"]'),i.poa);
+                let m="+966"+i.ph.toString().replace(/^(00966|966|0|\+966)/,'');
+                document.querySelectorAll('input[type="tel"]').forEach(t=>{sV(t,"");setTimeout(()=>sV(t,m),100)});
+            };
+            l.appendChild(c);
+        });
+    };
+    p.querySelector('#q').oninput=e=>rend(e.target.value);
+    p.querySelector('#nb').onclick=()=>edit({em:E},-1);
+    rend();
+})();
