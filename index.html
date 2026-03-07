@@ -1,423 +1,171 @@
 javascript:(function(){
-	const E = "aaaoooslo.sa";
-	const K = "AG_V30_INDIGO";
-	const D = [{
-		ag: "عبدالله الجريوي",
-		aid: "1025158781",
-		ph: "535588832",
-		en: "شركة الراجحي للتطوير المحدودة",
-		poa: "461065673",
-		eid: "7010997174",
-		dob: "1395-04-02",
-		em: E
-	}];
-	let ags = JSON.parse(localStorage.getItem(K)) || D;
+    const doc = document;
+    const oldUI = doc.getElementById('pro-automation-container');
+    if (oldUI) oldUI.remove();
 
-	// ========== STYLES ==========
-	const style = `
-		<style>
-			@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
-			#U_POP, #U_POP * {
-				font-family: 'Cairo', sans-serif;
-				box-sizing: border-box;
-			}
-			#U_POP {
-				position: fixed;
-				top: 50px;
-				left: 50px;
-				width: 380px;
-				background: rgba(10, 15, 30, 0.85);
-				backdrop-filter: blur(16px) saturate(180%);
-				-webkit-backdrop-filter: blur(16px) saturate(180%);
-				border-radius: 32px;
-				border: 1px solid rgba(120, 100, 255, 0.3);
-				box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-				z-index: 9999999;
-				color: #fff;
-				overflow: hidden;
-				transition: opacity 0.2s ease, transform 0.2s ease;
-			}
-			#U_POP .header {
-				padding: 18px 20px;
-				background: linear-gradient(135deg, #2a2a5a, #1e1a4a);
-				border-bottom: 1px solid rgba(255,255,255,0.1);
-				cursor: move;
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				font-weight: 700;
-				font-size: 15px;
-				letter-spacing: 0.5px;
-				text-shadow: 0 2px 5px rgba(0,0,0,0.3);
-			}
-			#U_POP .header button {
-				background: rgba(255,255,255,0.15);
-				color: #fff;
-				border: none;
-				width: 30px;
-				height: 30px;
-				border-radius: 50%;
-				cursor: pointer;
-				font-size: 18px;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				transition: 0.2s;
-				backdrop-filter: blur(5px);
-			}
-			#U_POP .header button:hover {
-				background: rgba(255,255,255,0.3);
-				transform: scale(1.05);
-			}
-			#U_POP .content {
-				padding: 20px;
-			}
-			#U_POP .search-box {
-				display: flex;
-				gap: 10px;
-				margin-bottom: 20px;
-			}
-			#U_POP .search-box input {
-				flex: 1;
-				padding: 12px 18px;
-				background: rgba(20, 25, 45, 0.7);
-				border: 1px solid rgba(160, 140, 255, 0.4);
-				border-radius: 24px;
-				color: #fff;
-				font-size: 14px;
-				outline: none;
-				transition: 0.2s;
-				backdrop-filter: blur(5px);
-			}
-			#U_POP .search-box input:focus {
-				border-color: #8b7aff;
-				box-shadow: 0 0 0 3px rgba(120, 100, 255, 0.3);
-			}
-			#U_POP .search-box button {
-				background: linear-gradient(145deg, #6d5dfa, #5b4bcb);
-				color: #fff;
-				border: none;
-				width: 48px;
-				height: 48px;
-				border-radius: 50%;
-				font-size: 22px;
-				font-weight: bold;
-				cursor: pointer;
-				box-shadow: 0 6px 14px rgba(90, 70, 220, 0.4);
-				transition: 0.15s;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-			}
-			#U_POP .search-box button:hover {
-				transform: scale(1.05);
-				background: linear-gradient(145deg, #7f70ff, #6a5ae0);
-				box-shadow: 0 8px 18px rgba(90, 70, 220, 0.6);
-			}
-			#U_POP .list {
-				max-height: 380px;
-				overflow-y: auto;
-				scrollbar-width: thin;
-				scrollbar-color: #6b5af0 #1a1a35;
-				padding-left: 4px;
-			}
-			#U_POP .list::-webkit-scrollbar {
-				width: 5px;
-			}
-			#U_POP .list::-webkit-scrollbar-track {
-				background: #1a1a35;
-				border-radius: 10px;
-			}
-			#U_POP .list::-webkit-scrollbar-thumb {
-				background: #6b5af0;
-				border-radius: 10px;
-			}
-			#U_POP .card {
-				background: rgba(30, 30, 55, 0.5);
-				backdrop-filter: blur(10px);
-				-webkit-backdrop-filter: blur(10px);
-				border: 1px solid rgba(140, 120, 255, 0.25);
-				border-radius: 24px;
-				padding: 16px;
-				margin-bottom: 12px;
-				cursor: pointer;
-				transition: 0.2s;
-				box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-			}
-			#U_POP .card:hover {
-				background: rgba(45, 45, 75, 0.7);
-				border-color: #8f7eff;
-				transform: translateY(-3px) scale(1.02);
-				box-shadow: 0 15px 25px rgba(0,0,0,0.6);
-			}
-			#U_POP .card .entity {
-				color: #b1a6ff;
-				font-size: 11px;
-				font-weight: 600;
-				text-transform: uppercase;
-				letter-spacing: 0.3px;
-				margin-bottom: 5px;
-				opacity: 0.9;
-			}
-			#U_POP .card .agent-row {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				font-size: 16px;
-				font-weight: 700;
-			}
-			#U_POP .card .agent-row span:first-child {
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				max-width: 180px;
-			}
-			#U_POP .card .edit-icon {
-				color: #b1a6ff;
-				font-size: 18px;
-				background: rgba(255,255,255,0.05);
-				width: 32px;
-				height: 32px;
-				border-radius: 50%;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				transition: 0.2s;
-			}
-			#U_POP .card .edit-icon:hover {
-				background: #6b5af0;
-				color: #fff;
-				transform: rotate(15deg);
-			}
+    const style = doc.createElement('style');
+    style.innerHTML = `
+        #pro-automation-container {
+            position: fixed; top: 50px; right: 50px; width: 380px;
+            background: rgba(255, 255, 255, 0.98); z-index: 2147483647; 
+            border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            direction: rtl; text-align: right; user-select: none;
+            backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.4);
+            overflow: hidden; display: flex; flex-direction: column;
+        }
+        .pro-header { background: #0f172a; padding: 16px 20px; color: white; cursor: move; display: flex; justify-content: space-between; align-items: center; }
+        .pro-body { padding: 24px; max-height: 85vh; overflow-y: auto; }
+        .pro-label { display: block; font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 6px; text-transform: uppercase; }
+        .pro-input { width: 100%; padding: 12px; border: 2px solid #f1f5f9; border-radius: 12px; font-size: 14px; transition: 0.2s; box-sizing: border-box; margin-bottom: 15px; background: #f8fafc; }
+        .pro-btn-primary { width: 100%; background: #3b82f6; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 14px; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #f1f5f9; border-bottom-color: #3b82f6; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
+        @keyframes rotation { 0% { transform: rotate(0deg) } 100% { transform: rotate(360deg) } }
+    [cite_start]`; [cite: 1-17]
+    doc.head.appendChild(style);
 
-			/* Edit Modal */
-			.edit-modal {
-				position: fixed;
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%, -50%);
-				background: rgba(20, 20, 45, 0.95);
-				backdrop-filter: blur(20px);
-				-webkit-backdrop-filter: blur(20px);
-				padding: 28px;
-				border-radius: 40px;
-				z-index: 10000010;
-				border: 1px solid rgba(160, 140, 255, 0.4);
-				box-shadow: 0 40px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.1) inset;
-				width: 400px;
-				max-width: 90vw;
-				color: #fff;
-				display: flex;
-				flex-direction: column;
-				gap: 12px;
-			}
-			.edit-modal label {
-				font-size: 11px;
-				font-weight: 600;
-				color: #a79eff;
-				display: block;
-				margin-bottom: 3px;
-				letter-spacing: 0.2px;
-			}
-			.edit-modal input {
-				width: 100%;
-				padding: 12px 16px;
-				background: rgba(10, 10, 25, 0.7);
-				border: 1px solid #3d3a6a;
-				border-radius: 24px;
-				color: #fff;
-				font-size: 14px;
-				outline: none;
-				transition: 0.2s;
-			}
-			.edit-modal input:focus {
-				border-color: #8b7aff;
-				box-shadow: 0 0 0 3px rgba(110, 90, 255, 0.4);
-			}
-			.edit-modal .button-group {
-				display: flex;
-				gap: 10px;
-				margin-top: 15px;
-				flex-wrap: wrap;
-			}
-			.edit-modal button {
-				flex: 1;
-				padding: 12px;
-				border: none;
-				border-radius: 30px;
-				font-weight: 700;
-				font-size: 14px;
-				cursor: pointer;
-				transition: 0.15s;
-				background: #6b5af0;
-				color: #fff;
-				box-shadow: 0 5px 15px rgba(90, 70, 220, 0.4);
-			}
-			.edit-modal button:hover {
-				background: #8070ff;
-				transform: scale(1.02);
-			}
-			.edit-modal button.cancel {
-				background: transparent;
-				box-shadow: none;
-				border: 1px solid #6b5af0;
-				color: #b1a6ff;
-			}
-			.edit-modal button.cancel:hover {
-				background: rgba(110, 90, 255, 0.15);
-				border-color: #a79eff;
-			}
-			.edit-modal button.delete {
-				background: #b52b4d;
-				box-shadow: 0 5px 15px rgba(200, 50, 80, 0.3);
-				flex: 0.4;
-			}
-			.edit-modal button.delete:hover {
-				background: #d43f62;
-			}
-		</style>
-	`;
-	document.head.insertAdjacentHTML("beforeend", style);
+    const container = doc.createElement('div');
+    container.id = 'pro-automation-container';
+    container.innerHTML = `
+        <div class="pro-header" id="pro-drag-handle">
+            <h3><span>⚡</span> أتمتة الورثة (أقصى سرعة)</h3>
+            <button class="pro-btn-close" id="pro-close-btn" style="background:none; border:none; color:white; cursor:pointer;">✕</button>
+        </div>
+        <div class="pro-body" id="pro-main-content">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                <div>
+                    <label class="pro-label">رقم الجوال</label>
+                    <input type="text" id="auto_mob" class="pro-input" placeholder="05xxxxxxxx">
+                </div>
+                <div>
+                    <label class="pro-label">البريد الإلكتروني</label>
+                    <input type="email" id="auto_mail" class="pro-input" placeholder="mail@example.com">
+                </div>
+            </div>
+            <div style="margin-bottom:15px;">
+                <label class="pro-label">تأخير التعبئة: <span id="sd_val">1</span> ثانية</label>
+                <input type="range" id="auto_sd" min="0" max="10" step="0.5" value="1" style="width:100%;" oninput="document.getElementById('sd_val').innerText = this.value + ' ثانية'">
+            </div>
+            <label class="pro-label">نص صك حصر الورثة</label>
+            <textarea id="auto_text" class="pro-input" style="height:100px; resize:none;"></textarea>
+            <button id="auto_start" class="pro-btn-primary">بدء التنفيذ</button>
+        </div>
+    [cite_start]`; [cite: 18-24]
+    doc.body.appendChild(container);
 
-	// ========== HELPER FUNCTIONS ==========
-	function sV(el, v) {
-		if (!el) return;
-		el.focus();
-		Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(el, v);
-		['input', 'change'].forEach(e => el.dispatchEvent(new Event(e, { bubbles: true })));
-		el.blur();
-	}
+    let isDragging = false, offset = { x: 0, y: 0 };
+    const handle = doc.getElementById('pro-drag-handle');
+    handle.onmousedown = (e) => { isDragging = true; offset.x = e.clientX - container.offsetLeft; offset.y = e.clientY - container.offsetTop; };
+    doc.onmousemove = (e) => { if (isDragging) { container.style.left = (e.clientX - offset.x) + 'px'; container.style.top = (e.clientY - offset.y) + 'px'; container.style.right = 'auto'; } };
+    doc.onmouseup = () => isDragging = false;
+    doc.getElementById('pro-close-btn').onclick = () => { container.remove(); style.remove(); };
 
-	function edit(item, idx) {
-		const modal = document.createElement('div');
-		modal.className = 'edit-modal';
+    doc.getElementById('auto_start').onclick = async function() {
+        const rawText = doc.getElementById('auto_text').value;
+        const inputMobile = doc.getElementById('auto_mob').value.trim();
+        const email = doc.getElementById('auto_mail').value.trim();
+        const selDelay = parseFloat(doc.getElementById('auto_sd').value) * 1000;
 
-		const fields = [
-			['الجهة', 'en'],
-			['الوكيل', 'ag'],
-			['700', 'eid'],
-			['الهوية', 'aid'],
-			['الجوال', 'ph'],
-			['الوكالة', 'poa'],
-			['الميلاد', 'dob'],
-			['الإيميل', 'em']
-		];
+        const mobileFormatted = "+966" + inputMobile.replace(/^(0|966|\+966)/, '');
+        const heirs = [];
+        const lines = rawText.split('\n').map(l => l.trim()).filter(l => l !== "");
+        for (let i = 0; i < lines.length; i++) {
+            if (/^[12]\d{9}/.test(lines[i])) {
+                let foundDob = "";
+                for (let j = i; j < Math.min(i + 15, lines.length); j++) {
+                    const dateMatch = lines[j].match(/\d{4}\/\d{2}\/\d{2}/);
+                    if (dateMatch) { foundDob = dateMatch[0].replace(/\//g, '-'); break; }
+                }
+                if (foundDob) heirs.push({ id: lines[i].match(/^[12]\d{9}/)[0], dob: foundDob });
+            }
+        [cite_start]} [cite: 25-33]
 
-		fields.forEach(([label, key]) => {
-			const wrapper = document.createElement('div');
-			wrapper.innerHTML = `<label>${label}</label><input value="${item[key] || ''}" id="y-${key}" autocomplete="off">`;
-			modal.appendChild(wrapper);
-		});
+        if(heirs.length === 0) return alert("لم يتم العثور على بيانات.");
+        const mainContent = doc.getElementById('pro-main-content');
+        mainContent.innerHTML = `<div style="text-align:center; padding:30px 0;"><span class="spinner"></span><h3 id="progress_status">جاري التنفيذ...</h3></div>`;
 
-		const btnGroup = document.createElement('div');
-		btnGroup.className = 'button-group';
+        async function setReactSelect(labelText, optionText) {
+            const labels = Array.from(doc.querySelectorAll('p, label, span, div'));
+            const targetLabel = labels.find(el => el.textContent.trim() === labelText);
+            if (!targetLabel) return;
+            const selectContainer = targetLabel.closest('div').querySelector('.css-b62m3t-container');
+            if (!selectContainer) return;
 
-		const saveBtn = document.createElement('button');
-		saveBtn.innerText = '💾 حفظ البيانات';
-		saveBtn.onclick = () => {
-			fields.forEach(([_, key]) => item[key] = modal.querySelector("#y-" + key).value);
-			if (idx === -1) ags.push(item);
-			localStorage.setItem(K, JSON.stringify(ags));
-			location.reload();
-		};
+            const control = selectContainer.querySelector('[class*="-control"]');
+            control.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+            await new Promise(r => setTimeout(r, 200)); // وقت استجابة سريع جداً للقائمة
+            const menu = doc.querySelector('[class*="-menu"]');
+            if (!menu) return;
+            const options = Array.from(menu.querySelectorAll('[id*="-option"]'));
+            const targetOption = options.find(opt => opt.textContent.trim() === optionText);
+            if (targetOption) targetOption.click();
+        }
 
-		const cancelBtn = document.createElement('button');
-		cancelBtn.innerText = '❌ إلغاء';
-		cancelBtn.className = 'cancel';
-		cancelBtn.onclick = () => modal.remove();
+        const triggerInput = (selector, value) => {
+            const el = doc.querySelector(selector);
+            if (!el) return;
+            const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+            setter.call(el, value);
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+        [cite_start]}; [cite: 35-37]
 
-		btnGroup.appendChild(saveBtn);
-		btnGroup.appendChild(cancelBtn);
+        const sleep = (ms) => new Promise(res => setTimeout(res, ms));
 
-		if (idx !== -1) {
-			const delBtn = document.createElement('button');
-			delBtn.innerText = '🗑️ حذف';
-			delBtn.className = 'delete';
-			delBtn.onclick = () => {
-				if (confirm('حذف هذا الوكيل؟')) {
-					ags.splice(idx, 1);
-					localStorage.setItem(K, JSON.stringify(ags));
-					location.reload();
-				}
-			};
-			btnGroup.appendChild(delBtn);
-		}
+        const waitForSuccess = async () => {
+            return new Promise((resolve) => {
+                let attempts = 0;
+                const interval = setInterval(() => {
+                    if (doc.body.innerText.includes("تم إضافة مالك جديد (فرد) بنجاح")) {
+                        clearInterval(interval);
+                        resolve(true);
+                    }
+                    if (++attempts > 60) { clearInterval(interval); resolve(false); }
+                }, 300);
+            });
+        [cite_start]}; [cite: 38-40]
 
-		modal.appendChild(btnGroup);
-		document.body.appendChild(modal);
-	}
+        for (let k = 0; k < heirs.length; k++) {
+            const h = heirs[k];
+            const statusEl = doc.getElementById('progress_status');
+            if(statusEl) statusEl.innerText = `تعبئة الوارث ${k+1} من ${heirs.length}`;
 
-	// ========== MAIN POPUP ==========
-	const popup = document.createElement('div');
-	popup.id = 'U_POP';
-	popup.innerHTML = `
-		<div class="header" id="dr">
-			<span>⚡ AGENT SYSTEM V30</span>
-			<button onclick="this.closest('#U_POP').remove()">✕</button>
-		</div>
-		<div class="content">
-			<div class="search-box">
-				<input id="q" placeholder="ابحث عن وكيل..." autocomplete="off">
-				<button id="nb">+</button>
-			</div>
-			<div class="list" id="lst"></div>
-		</div>
-	`;
-	document.body.appendChild(popup);
+            // اختيار "نوع المالك" ثم "نوع الهوية" مباشرة بدون ديلي خارجي
+            await setReactSelect("نوع المالك", "فرد");
+            await setReactSelect("نوع الهوية", "هوية وطنية");
+            
+            // البدء الفوري بتعبئة الخانات
+            triggerInput('input[name="Identity"]', h.id);
+            triggerInput('input[name="DateOfBirth"]', h.dob);
+            triggerInput('input[name="email"]', email);
+            triggerInput('input[type="tel"]', mobileFormatted);
+            
+            await sleep(selDelay); // التحكم بالديلي النهائي قبل التحقق من الشريط
 
-	// Dragging
-	let isDragging = false, offsetX, offsetY;
-	const header = popup.querySelector('#dr');
-	header.onmousedown = (e) => {
-		isDragging = true;
-		offsetX = e.clientX - popup.offsetLeft;
-		offsetY = e.clientY - popup.offsetTop;
-	};
-	document.onmousemove = (e) => {
-		if (isDragging) {
-			popup.style.left = (e.clientX - offsetX) + 'px';
-			popup.style.top = (e.clientY - offsetY) + 'px';
-		}
-	};
-	document.onmouseup = () => isDragging = false;
+            const verifyBtn = Array.from(doc.querySelectorAll('button')).find(b => 
+                b.innerText.includes('التحقق') || b.classList.contains('bg-bluerega')
+            );
+            
+            if (verifyBtn) {
+                verifyBtn.click();
+                if (await waitForSuccess()) {
+                    await sleep(700); // 0.7 ثانية بعد النجاح
+                } else {
+                    if (!confirm(`لم يتم رصد النجاح للوارث ${k+1}. متابعة؟`)) break;
+                }
+            }
 
-	// Render list
-	const renderList = (filter = '') => {
-		const list = popup.querySelector('#lst');
-		list.innerHTML = '';
-		ags.filter(a => (a.en || '').includes(filter) || (a.ag || '').includes(filter)).forEach((item, index) => {
-			const card = document.createElement('div');
-			card.className = 'card';
-			card.innerHTML = `
-				<div class="entity">${item.en}</div>
-				<div class="agent-row">
-					<span>${item.ag}</span>
-					<span class="edit-icon">⚙️</span>
-				</div>
-			`;
-			card.onclick = (e) => {
-				if (e.target.classList.contains('edit-icon')) {
-					edit(item, index);
-					return;
-				}
-				// Fill fields
-				sV(document.querySelector('[name="entityIdentity"]'), item.eid);
-				sV(document.querySelector('[name="entityemail"]'), item.em || E);
-				sV(document.querySelector('[name="attorneyIdentity"]'), item.aid);
-				sV(document.querySelector('[name="attorneyDateOfBirth"]'), item.dob);
-				sV(document.querySelector('[name="attorneyemail"]'), item.em || E);
-				sV(document.querySelector('[name="attorneyPowerOfAttorney"]'), item.poa);
-				const phone = "+966" + item.ph.toString().replace(/^(00966|966|0|\+966)/, '');
-				document.querySelectorAll('input[type="tel"]').forEach(t => {
-					sV(t, "");
-					setTimeout(() => sV(t, phone), 100);
-				});
-			};
-			list.appendChild(card);
-		});
-	};
+            if (k < heirs.length - 1) {
+                const addBtn = Array.from(doc.querySelectorAll('button')).find(b => b.innerText.includes('إضافة مالك جديد'));
+                if (addBtn) { 
+                    addBtn.click();
+                    await sleep(600); // وقت بسيط لتحميل الواجهة الجديدة
+                }
+            }
+        }
 
-	popup.querySelector('#q').oninput = (e) => renderList(e.target.value);
-	popup.querySelector('#nb').onclick = () => edit({ em: E }, -1);
-	renderList();
+        container.remove();
+        style.remove();
+        alert("انتهت العملية بنجاح ✅");
+    };
 })();
