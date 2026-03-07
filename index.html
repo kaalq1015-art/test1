@@ -43,8 +43,8 @@ javascript:(function(){
                 </div>
             </div>
             <div style="margin-bottom:15px;">
-                <label class="pro-label">تأخير الاستجابة: <span id="sd_val">2</span> ثانية</label>
-                <input type="range" id="auto_sd" min="1" max="15" value="2" style="width:100%;" oninput="document.getElementById('sd_val').innerText = this.value">
+                <label class="pro-label">تأخير الاستجابة: <span id="sd_val">0</span> ثانية</label>
+                <input type="range" id="auto_sd" min="0" max="10" value="0" style="width:100%;" oninput="document.getElementById('sd_val').innerText = this.value">
             </div>
             <label class="pro-label">نص صك حصر الورثة</label>
             <textarea id="auto_text" class="pro-input" style="height:100px; resize:none;"></textarea>
@@ -84,7 +84,7 @@ javascript:(function(){
 
         if(heirs.length === 0) return alert("لم يتم العثور على بيانات.");
         const mainContent = doc.getElementById('pro-main-content');
-        mainContent.innerHTML = `<div style="text-align:center; padding:30px 0;"><span class="spinner"></span><h3 id="progress_status">جاري التهيئة...</h3></div>`;
+        mainContent.innerHTML = `<div style="text-align:center; padding:30px 0;"><span class="spinner"></span><h3 id="progress_status">جاري التنفيذ الفوري...</h3></div>`;
 
         async function setReactSelect(labelText, optionText) {
             const labels = Array.from(doc.querySelectorAll('p, label, span, div'));
@@ -95,7 +95,7 @@ javascript:(function(){
 
             const control = selectContainer.querySelector('[class*="-control"]');
             control.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-            await new Promise(r => setTimeout(r, 250)); 
+            await new Promise(r => setTimeout(r, 150)); 
             const menu = doc.querySelector('[class*="-menu"]');
             if (!menu) return;
             const options = Array.from(menu.querySelectorAll('[id*="-option"]'));
@@ -122,35 +122,35 @@ javascript:(function(){
                         clearInterval(interval);
                         resolve(true);
                     }
-                    if (++attempts > 40) { clearInterval(interval); resolve(false); }
-                }, 400);
+                    if (++attempts > 50) { clearInterval(interval); resolve(false); }
+                }, 300);
             });
         };
 
         for (let k = 0; k < heirs.length; k++) {
             const h = heirs[k];
             const statusEl = doc.getElementById('progress_status');
-            if(statusEl) statusEl.innerText = `تعبئة الوارث ${k+1} من ${heirs.length}`;
+            if(statusEl) statusEl.innerText = `جاري تعبئة وارث ${k+1} من ${heirs.length}`;
 
-            // اختيار الأنواع بسرعة متتالية
-            await setReactSelect("نوع المالك", "فرد");
-            await sleep(200); 
-            await setReactSelect("نوع الهوية", "هوية وطنية");
+            // التنفيذ المتوازي والسريع جداً
+            const p1 = setReactSelect("نوع المالك", "فرد");
+            const p2 = sleep(150).then(() => setReactSelect("نوع الهوية", "هوية وطنية"));
             
-            // تعبئة البيانات النصية فوراً أثناء معالجة القوائم
             triggerInput('input[name="Identity"]', h.id);
             triggerInput('input[name="DateOfBirth"]', h.dob);
             triggerInput('input[name="email"]', email);
             triggerInput('input[type="tel"]', mobileFormatted);
             
-            await sleep(selDelay);
+            await Promise.all([p1, p2]);
+            await sleep(selDelay); // المؤقت اليدوي إذا أردت استخدامه، وإلا فهو 0
 
+            // الضغط الفوري على التحقق
             const verifyBtn = Array.from(doc.querySelectorAll('button')).find(b => b.innerText.includes('التحقق') || b.classList.contains('bg-bluerega'));
             if (verifyBtn) {
                 verifyBtn.click();
                 const success = await waitForSuccess();
                 if (success) {
-                    await sleep(1000); 
+                    await sleep(1000); // ثانية انتظار بعد النجاح
                 } else {
                     if (!confirm(`لم يتم رصد النجاح للوارث ${k+1}. متابعة؟`)) break;
                 }
@@ -160,7 +160,7 @@ javascript:(function(){
                 const addBtn = Array.from(doc.querySelectorAll('button')).find(b => b.innerText.includes('إضافة مالك جديد'));
                 if (addBtn) { 
                     addBtn.click(); 
-                    await sleep(800); 
+                    await sleep(200); // انتظار تقني بسيط جداً لظهور الحقول الجديدة
                 }
             }
         }
