@@ -83,7 +83,6 @@ javascript:(function(){
         }
 
         if(heirs.length === 0) return alert("لم يتم العثور على بيانات.");
-
         const mainContent = doc.getElementById('pro-main-content');
         mainContent.innerHTML = `<div style="text-align:center; padding:30px 0;"><span class="spinner"></span><h3 id="progress_status">جاري التهيئة...</h3></div>`;
 
@@ -96,7 +95,7 @@ javascript:(function(){
 
             const control = selectContainer.querySelector('[class*="-control"]');
             control.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-            await new Promise(r => setTimeout(r, 600));
+            await new Promise(r => setTimeout(r, 250)); 
             const menu = doc.querySelector('[class*="-menu"]');
             if (!menu) return;
             const options = Array.from(menu.querySelectorAll('[id*="-option"]'));
@@ -123,8 +122,8 @@ javascript:(function(){
                         clearInterval(interval);
                         resolve(true);
                     }
-                    if (++attempts > 50) { clearInterval(interval); resolve(false); }
-                }, 500);
+                    if (++attempts > 40) { clearInterval(interval); resolve(false); }
+                }, 400);
             });
         };
 
@@ -133,12 +132,12 @@ javascript:(function(){
             const statusEl = doc.getElementById('progress_status');
             if(statusEl) statusEl.innerText = `تعبئة الوارث ${k+1} من ${heirs.length}`;
 
+            // اختيار الأنواع بسرعة متتالية
             await setReactSelect("نوع المالك", "فرد");
-            await sleep(600);
-            
+            await sleep(200); 
             await setReactSelect("نوع الهوية", "هوية وطنية");
-            await sleep(600);
-
+            
+            // تعبئة البيانات النصية فوراً أثناء معالجة القوائم
             triggerInput('input[name="Identity"]', h.id);
             triggerInput('input[name="DateOfBirth"]', h.dob);
             triggerInput('input[name="email"]', email);
@@ -151,7 +150,7 @@ javascript:(function(){
                 verifyBtn.click();
                 const success = await waitForSuccess();
                 if (success) {
-                    await sleep(1000);
+                    await sleep(1000); 
                 } else {
                     if (!confirm(`لم يتم رصد النجاح للوارث ${k+1}. متابعة؟`)) break;
                 }
@@ -161,7 +160,7 @@ javascript:(function(){
                 const addBtn = Array.from(doc.querySelectorAll('button')).find(b => b.innerText.includes('إضافة مالك جديد'));
                 if (addBtn) { 
                     addBtn.click(); 
-                    await sleep(1500); 
+                    await sleep(800); 
                 }
             }
         }
