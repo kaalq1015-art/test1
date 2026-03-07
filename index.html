@@ -2,202 +2,222 @@ javascript:(function(){
     const E="aa11@ooslo.sa",K="AG_MORTGAGE_V32",D=[{ag:"عبدالله الجريوي",aid:"1025158781",ph:"535588832",en:"شركة الراجحي للتطوير المحدودة",poa:"461065673",eid:"7010997174",dob:"1395-04-02",em:E}];
     let ags=JSON.parse(localStorage.getItem(K))||D;
     const st=`<style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         #U_POP{
             position:fixed;
-            top:60px;
+            top:70px;
             right:30px;
-            width:350px;
-            background:#ffffff;
-            border-radius:20px;
-            box-shadow:0 20px 40px rgba(0,0,0,0.15),0 0 0 1px rgba(0,0,0,0.05);
+            width:380px;
+            background:#0f172a;
+            border-radius:28px;
+            box-shadow:0 30px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.05) inset;
             z-index:9999999;
-            color:#1e293b;
+            color:#fff;
             font-family:'Inter',sans-serif;
             direction:rtl;
             overflow:hidden;
+            border:1px solid #334155;
         }
         #U_POP .h{
-            padding:16px 20px;
-            background:#f8fafc;
-            border-bottom:1px solid #e2e8f0;
+            padding:20px 24px;
+            background:#1e293b;
+            border-bottom:1px solid #334155;
             cursor:move;
             display:flex;
             justify-content:space-between;
             align-items:center;
         }
         #U_POP .h b{
-            font-size:14px;
+            font-size:16px;
             font-weight:600;
-            color:#0f172a;
+            color:#f1f5f9;
+            letter-spacing:0.3px;
         }
         #U_POP .h button{
-            background:#f1f5f9;
-            color:#475569;
+            background:#334155;
+            color:#cbd5e1;
             border:none;
-            width:28px;
-            height:28px;
-            border-radius:50%;
+            width:34px;
+            height:34px;
+            border-radius:12px;
             cursor:pointer;
-            font-size:16px;
+            font-size:20px;
             display:flex;
             align-items:center;
             justify-content:center;
-            transition:0.15s;
+            transition:0.2s;
         }
         #U_POP .h button:hover{
-            background:#e2e8f0;
-            color:#0f172a;
+            background:#475569;
+            color:#fff;
         }
         #U_POP .c{
-            padding:20px;
+            padding:22px;
         }
         #U_POP .s{
             display:flex;
-            gap:8px;
-            margin-bottom:20px;
+            gap:10px;
+            margin-bottom:24px;
         }
         #U_POP .s input{
             flex:1;
-            padding:10px 14px;
-            background:#f8fafc;
-            border:1px solid #e2e8f0;
-            border-radius:12px;
-            color:#1e293b;
+            padding:14px 18px;
+            background:#1e293b;
+            border:1px solid #334155;
+            border-radius:20px;
+            color:#fff;
             outline:none;
-            font-size:13px;
+            font-size:14px;
+            transition:0.2s;
         }
         #U_POP .s input:focus{
-            border-color:#94a3b8;
-            background:#ffffff;
+            border-color:#6366f1;
+            background:#0f172a;
         }
         #U_POP .s button{
-            background:#0f172a;
-            color:#ffffff;
+            background:#6366f1;
+            color:#fff;
             border:none;
-            width:42px;
-            border-radius:12px;
-            font-size:20px;
+            width:52px;
+            border-radius:26px;
+            font-size:24px;
+            font-weight:500;
             cursor:pointer;
-            transition:0.15s;
+            transition:0.2s;
+            box-shadow:0 8px 20px -8px #6366f1;
         }
         #U_POP .s button:hover{
-            background:#1e293b;
+            background:#4f52e0;
+            transform:scale(1.02);
         }
         #U_POP .l{
-            max-height:380px;
+            max-height:420px;
             overflow-y:auto;
             scrollbar-width:thin;
-            scrollbar-color:#cbd5e1 #f1f5f9;
+            scrollbar-color:#475569 #1e293b;
         }
         #U_POP .l::-webkit-scrollbar{
             width:5px;
         }
         #U_POP .l::-webkit-scrollbar-track{
-            background:#f1f5f9;
+            background:#1e293b;
+            border-radius:10px;
         }
         #U_POP .l::-webkit-scrollbar-thumb{
-            background:#cbd5e1;
+            background:#475569;
             border-radius:10px;
         }
         #U_POP .card{
-            background:#ffffff;
-            border:1px solid #e2e8f0;
-            border-radius:16px;
-            padding:14px;
-            margin-bottom:10px;
+            background:#1e293b;
+            border-radius:22px;
+            padding:18px;
+            margin-bottom:12px;
             cursor:pointer;
-            transition:0.15s;
+            transition:0.2s;
+            border:1px solid #334155;
         }
         #U_POP .card:hover{
-            background:#f8fafc;
-            border-color:#94a3b8;
-            transform:translateY(-1px);
+            background:#2d3a4f;
+            border-color:#6366f1;
+            transform:translateY(-2px);
+            box-shadow:0 12px 24px -12px #000;
         }
         #U_POP .card .ent{
-            color:#64748b;
-            font-size:10px;
+            color:#94a3b8;
+            font-size:11px;
             font-weight:500;
-            text-transform:uppercase;
-            margin-bottom:4px;
+            margin-bottom:6px;
+            letter-spacing:0.3px;
         }
         #U_POP .card .row{
             display:flex;
             justify-content:space-between;
             align-items:center;
-            font-weight:500;
-            font-size:14px;
+            font-weight:600;
+            font-size:16px;
         }
         #U_POP .card .edt{
-            color:#64748b;
-            font-size:16px;
-            padding:4px;
+            color:#a5b4fc;
+            font-size:20px;
+            background:#2d3a4f;
+            width:38px;
+            height:38px;
+            border-radius:14px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            transition:0.2s;
+        }
+        #U_POP .card .edt:hover{
+            background:#6366f1;
+            color:#fff;
         }
         #E_MOD{
             position:fixed;
             top:50%;
             left:50%;
             transform:translate(-50%,-50%);
-            background:#ffffff;
-            padding:24px;
-            border-radius:24px;
+            background:#1e293b;
+            padding:30px;
+            border-radius:36px;
             z-index:10000010;
-            border:1px solid #e2e8f0;
-            width:340px;
-            box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);
-            color:#1e293b;
+            border:1px solid #6366f1;
+            width:360px;
+            max-width:90vw;
+            box-shadow:0 40px 80px #000;
+            color:#fff;
             font-family:'Inter',sans-serif;
         }
         #E_MOD label{
-            font-size:10px;
-            color:#64748b;
+            font-size:11px;
+            color:#94a3b8;
             display:block;
-            margin:10px 0 2px;
+            margin:12px 0 4px;
             font-weight:500;
         }
         #E_MOD input{
             width:100%;
-            padding:10px 12px;
-            background:#f8fafc;
-            border:1px solid #e2e8f0;
-            border-radius:12px;
-            color:#1e293b;
+            padding:14px 16px;
+            background:#0f172a;
+            border:1px solid #334155;
+            border-radius:20px;
+            color:#fff;
             box-sizing:border-box;
             outline:none;
-            font-size:13px;
+            font-size:14px;
         }
         #E_MOD input:focus{
-            border-color:#94a3b8;
-            background:#ffffff;
+            border-color:#6366f1;
         }
         #E_MOD .btns{
             display:flex;
-            gap:12px;
-            margin-top:22px;
+            gap:14px;
+            margin-top:28px;
         }
         #E_MOD button{
             flex:1;
-            padding:12px;
+            padding:14px;
             border:none;
-            border-radius:14px;
-            font-weight:500;
+            border-radius:28px;
+            font-weight:600;
             cursor:pointer;
-            font-size:14px;
-            transition:0.15s;
+            font-size:15px;
+            transition:0.2s;
         }
         #E_MOD #sv{
-            background:#0f172a;
-            color:#ffffff;
+            background:#6366f1;
+            color:#fff;
         }
         #E_MOD #sv:hover{
-            background:#1e293b;
+            background:#4f52e0;
         }
         #E_MOD #cl{
-            background:#f1f5f9;
-            color:#475569;
+            background:#334155;
+            color:#cbd5e1;
         }
         #E_MOD #cl:hover{
-            background:#e2e8f0;
+            background:#475569;
+            color:#fff;
         }
     </style>`;
     document.head.insertAdjacentHTML("beforeend",st);
@@ -217,7 +237,7 @@ javascript:(function(){
         };
     }
     let p=document.createElement('div');p.id='U_POP';
-    p.innerHTML=`<div class="h" id="dr"><b>وكلاء الرهن</b><button onclick="this.closest('#U_POP').remove()">✕</button></div><div class="c"><div class="s"><input id="q" placeholder="بحث.."><button id="nb">+</button></div><div id="lst" class="l"></div></div>`;
+    p.innerHTML=`<div class="h" id="dr"><b>⚡ وكلاء الرهن</b><button onclick="this.closest('#U_POP').remove()">✕</button></div><div class="c"><div class="s"><input id="q" placeholder="ابحث عن وكيل..."><button id="nb">+</button></div><div id="lst" class="l"></div></div>`;
     document.body.appendChild(p);
     let drag=!1,ox,oy;
     p.querySelector('#dr').onmousedown=e=>{drag=!0;ox=e.clientX-p.offsetLeft;oy=e.clientY-p.offsetTop};
