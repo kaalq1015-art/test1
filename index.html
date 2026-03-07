@@ -93,6 +93,10 @@ javascript:(function(){
             if (!targetLabel) return;
             const selectContainer = targetLabel.closest('div').querySelector('.css-b62m3t-container');
             if (!selectContainer) return;
+
+            const currentValue = selectContainer.querySelector('[class*="singleValue"]');
+            if (currentValue && currentValue.textContent.trim() === optionText) return;
+
             const control = selectContainer.querySelector('[class*="-control"]');
             control.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
             await new Promise(r => setTimeout(r, 600));
@@ -122,7 +126,7 @@ javascript:(function(){
                         clearInterval(interval);
                         resolve(true);
                     }
-                    if (++attempts > 60) { clearInterval(interval); resolve(false); }
+                    if (++attempts > 40) { clearInterval(interval); resolve(false); }
                 }, 500);
             });
         };
@@ -132,10 +136,13 @@ javascript:(function(){
             const statusEl = doc.getElementById('progress_status');
             if(statusEl) statusEl.innerText = `تعبئة الوارث ${k+1} من ${heirs.length}`;
 
-            await setReactSelect("نوع المالك", "فرد");
-            await sleep(800);
+            if (k === 0) {
+                await setReactSelect("نوع المالك", "فرد");
+                await sleep(500);
+            }
+            
             await setReactSelect("نوع الهوية", "هوية وطنية");
-            await sleep(800);
+            await sleep(500);
 
             triggerInput('input[name="Identity"]', h.id);
             triggerInput('input[name="DateOfBirth"]', h.dob);
@@ -149,8 +156,10 @@ javascript:(function(){
                 verifyBtn.click();
                 
                 const success = await waitForSuccess();
-                if (!success) {
-                    if (!confirm(`لم يتم رصد نجاح للوارث رقم ${k+1}. هل تريد المتابعة يدوياً؟`)) break;
+                if (success) {
+                    await sleep(1000); // الانتظار لثانية واحدة بعد النجاح
+                } else {
+                    if (!confirm(`لم يتم رصد النجاح للوارث ${k+1}. متابعة؟`)) break;
                 }
             }
 
@@ -158,7 +167,7 @@ javascript:(function(){
                 const addBtn = Array.from(doc.querySelectorAll('button')).find(b => b.innerText.includes('إضافة مالك جديد'));
                 if (addBtn) { 
                     addBtn.click(); 
-                    await sleep(2000); 
+                    await sleep(1500); 
                 }
             }
         }
