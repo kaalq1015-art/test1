@@ -1006,25 +1006,48 @@
             if (!isValidWord(gameState.currentGuess)) {
                 // عرض رسالة مع زر إضافة للقاموس
                 const msgDiv = document.getElementById('message');
+                // مسح المحتوى السابق
                 msgDiv.innerHTML = '';
                 const textSpan = document.createElement('span');
                 textSpan.textContent = 'الكلمة غير موجودة.. ';
                 const btn = document.createElement('button');
                 btn.className = 'suggest-btn';
                 btn.textContent = 'إضافة للقاموس؟';
+                // إضافة حدث الضغط
                 btn.onclick = (e) => {
                     e.stopPropagation();
-                    reportToSupabase(gameState.currentGuess, 'new_word');
+                    // تعطيل الزر ومنع الضغط المتكرر
                     btn.disabled = true;
-                    btn.textContent = '✓ تم الإرسال';
+                    btn.textContent = 'جاري الإرسال...';
+                    reportToSupabase(gameState.currentGuess, 'new_word');
+                    // بعد الإرسال نعرض رسالة "تم الإرسال" ثم نزيل الزر
                     setTimeout(() => {
                         if (msgDiv.contains(btn)) {
-                            msgDiv.innerHTML = '';
+                            msgDiv.innerHTML = '✅ تم إرسال طلبك للقاموس';
+                            setTimeout(() => {
+                                if (msgDiv.innerHTML === '✅ تم إرسال طلبك للقاموس') {
+                                    msgDiv.innerHTML = '';
+                                }
+                            }, 2000);
                         }
-                    }, 3000);
+                    }, 500);
                 };
                 msgDiv.appendChild(textSpan);
                 msgDiv.appendChild(btn);
+                // إضافة مؤقت لإزالة الزر بعد 5 ثوانٍ إذا لم يُضغط
+                const timeoutId = setTimeout(() => {
+                    if (msgDiv.contains(btn)) {
+                        msgDiv.innerHTML = '';
+                    }
+                }, 5000);
+                // ربط timeout بالزر ليمكن إلغاؤه عند الضغط
+                btn._timeoutId = timeoutId;
+                // عند الضغط نلغي المؤقت
+                const originalClick = btn.onclick;
+                btn.onclick = (e) => {
+                    if (btn._timeoutId) clearTimeout(btn._timeoutId);
+                    originalClick(e);
+                };
                 shakeRow();
                 return;
             }
