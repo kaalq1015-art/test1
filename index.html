@@ -95,6 +95,41 @@
                 border-radius: 4px;
             }
 
+            /* إضافات تنسيق الأزرار الجديدة */
+            .suggest-btn {
+                background-color: #2980b9;
+                color: white;
+                padding: 2px 10px;
+                border-radius: 4px;
+                font-size: 0.8rem;
+                margin-right: 8px;
+                cursor: pointer;
+                border: none;
+            }
+            .hard-word-btn {
+                background-color: #e67e22;
+                color: white;
+                padding: 10px;
+                border-radius: 8px;
+                font-weight: bold;
+                width: 100%;
+                margin-top: 15px;
+                cursor: pointer;
+                border: none;
+            }
+
+            @media (max-width: 640px) {
+                .tile { width: 48px; height: 48px; font-size: 1.7rem; }
+            }
+
+            @media (max-width: 480px) {
+                .tile { width: 44px; height: 44px; font-size: 1.6rem; }
+            }
+
+            @media (max-width: 380px) {
+                .tile { width: 40px; height: 40px; font-size: 1.5rem; }
+            }
+
             .tile.filled {
                 border-color: #878a8c;
                 animation: pop 0.1s ease;
@@ -140,6 +175,10 @@
 
             .key.enter { background-color: var(--enter-color); color: white; font-size: 0.85rem; }
             .key.backspace { background-color: var(--backspace-color); color: white; }
+
+            .key:hover { opacity: 0.9; }
+            .key.wide { min-width: 60px; }
+
             .key.correct { background-color: var(--correct-color); color: white; }
             .key.present { background-color: var(--present-color); color: white; }
             .key.absent { background-color: var(--absent-color); color: white; }
@@ -162,6 +201,34 @@
                 backdrop-filter: blur(4px);
             }
 
+            header { padding: 8px 12px; border-bottom: 1px solid var(--border-color); }
+            h1 { font-size: 1.6rem; text-align: center; }
+
+            #newGameHeaderBtn {
+                background-color: var(--newgame-color);
+                color: white;
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            main {
+                padding: 10px 5px;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                width: 100%;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+
+            #grid { gap: 6px; margin-bottom: 15px; }
+            .grid-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 6px; }
+
             .modal-content {
                 width: 95%;
                 max-width: 500px;
@@ -181,31 +248,21 @@
                 font-weight: bold;
             }
 
-            /* --- الإضافات الجديدة للتنسيق --- */
-            .suggest-btn {
-                background-color: #2980b9;
-                color: white;
-                padding: 2px 10px;
-                border-radius: 4px;
-                font-size: 0.8rem;
-                margin-right: 8px;
-                cursor: pointer;
-                border: none;
-            }
-            .hard-word-btn {
-                background-color: #e67e22;
-                color: white;
-                padding: 10px;
-                border-radius: 8px;
-                font-weight: bold;
-                width: 100%;
-                margin-top: 15px;
-                cursor: pointer;
-                border: none;
+            .attempt-matrix-container {
+                margin: 20px 0;
+                padding: 15px;
+                border: 2px solid var(--border-color);
+                border-radius: 10px;
+                background-color: rgba(129, 131, 132, 0.05);
             }
 
-            .grid-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 6px; }
-            .difficulty-dropdown { position: relative; display: inline-block; }
+            .matrix-grid { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+            .matrix-row { display: flex; justify-content: center; gap: 6px; }
+            .matrix-tile { width: 24px; height: 24px; border-radius: 3px; }
+            .matrix-tile.correct { background-color: var(--correct-color); }
+            .matrix-tile.present { background-color: var(--present-color); }
+            .matrix-tile.absent { background-color: var(--absent-color); }
+
             .difficulty-menu {
                 position: absolute; top: 100%; left: 0; right: 0; margin-top: 5px;
                 background-color: var(--bg-color); border: 2px solid var(--border-color);
@@ -233,13 +290,13 @@
                         <button data-difficulty="easy" class="difficulty-option">سهل</button>
                     </div>
                 </div>
-                <button id="newGameHeaderBtn" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center bg-[var(--newgame-color)] text-white rounded-full shrink-0"><i class="fas fa-redo-alt text-xs sm:text-sm"></i></button>
-                <button id="themeToggle" class="p-1.5 hover:bg-[var(--default-color)] rounded-full shrink-0"><i class="fas fa-sun text-lg"></i></button>
+                <button id="newGameHeaderBtn" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center bg-[var(--newgame-color)] text-white rounded-full"><i class="fas fa-redo-alt text-xs sm:text-sm"></i></button>
+                <button id="themeToggle" class="p-1.5 hover:bg-[var(--default-color)] rounded-full"><i class="fas fa-sun text-lg"></i></button>
             </div>
         </header>
 
         <main class="flex-grow flex flex-col items-center justify-center">
-            <div id="message" class="text-center font-bold h-8 mb-2 flex items-center justify-center"></div>
+            <div id="message" class="text-center font-bold h-10 mb-2 flex items-center justify-center"></div>
             <div id="grid" class="mb-4"></div>
             <div id="keyboard" class="w-full px-2 space-y-2 max-w-xl"></div>
         </main>
@@ -247,7 +304,7 @@
         <div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
             <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content p-5">
                 <h2 class="text-xl font-bold mb-4">طريقة اللعب</h2>
-                <p id="helpAttemptsText" class="mb-4">خمّن الكلمة في 6 محاولات.</p>
+                <p id="helpAttemptsText" class="mb-4 text-center">خمّن الكلمة في 6 محاولات.</p>
                 <button id="startGameBtn" class="bg-[var(--correct-color)] text-white px-6 py-2 rounded-lg font-bold w-full">ابدأ اللعب</button>
             </div>
         </div>
@@ -255,10 +312,14 @@
         <div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
             <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content p-5">
                 <h2 class="text-xl font-bold text-center" id="resultModalTitle">نتيجة اللعبة</h2>
-                <div id="gameResultDetails"></div>
+                <div id="gameResultDetails" class="text-center"></div>
                 
                 <button id="reportHardBtn" class="hard-word-btn">الكلمة صعبة! بلّغ عنها</button>
 
+                <div id="attemptMatrixContainer" class="attempt-matrix-container">
+                    <h3 class="text-center font-bold mb-3">خريطة التفكير</h3>
+                    <div id="matrixGrid" class="matrix-grid"></div>
+                </div>
                 <div class="flex gap-2 mt-4">
                     <button id="playAgainBtn" class="bg-[var(--correct-color)] text-white flex-1 py-2 rounded font-bold">لعبة جديدة</button>
                     <button id="viewStatsBtn" class="border border-[var(--border-color)] flex-1 py-2 rounded font-bold">الإحصائيات</button>
@@ -278,12 +339,11 @@
         </div>
 
         <script>
-            // إعدادات الربط - استبدل القيم بمفاتيحك
+            // --- إعدادات Supabase ---
             const SB_URL = 'رابط_مشروعك_هنا';
             const SB_KEY = 'مفتاح_مشروعك_هنا';
             const _supabase = supabase.createClient(SB_URL, SB_KEY);
 
-            // وظيفة الإرسال لقاعدة البيانات
             async function reportToSupabase(word, type) {
                 const { error } = await _supabase.from('suggestions').insert([{ word, type }]);
                 if (!error) {
@@ -305,9 +365,9 @@
             const DICTIONARY = [...new Set(WORD_LIST)].concat(["صصصصص", "ثثثثث", "ققققق", "ففففف"]);
 
             const gameState = {
-                targetWord: "", currentRow: 0, currentGuess: "", gameOver: false,
+                targetWord: "", currentRow: 0, currentGuess: "", gameOver: false, gameWon: false,
                 stats: { played: 0, wins: 0, currentStreak: 0, maxStreak: 0 },
-                difficulty: 'hard', maxRows: 6, isProcessing: false
+                difficulty: 'hard', maxRows: 6, isProcessing: false, attemptResults: []
             };
 
             function init() {
@@ -325,7 +385,8 @@
             function startNewGame() {
                 gameState.targetWord = WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
                 gameState.currentRow = 0; gameState.currentGuess = '';
-                gameState.gameOver = false; gameState.isProcessing = false;
+                gameState.gameOver = false; gameState.gameWon = false;
+                gameState.isProcessing = false; gameState.attemptResults = [];
                 document.getElementById('grid').innerHTML = ''; createGrid();
                 document.querySelectorAll('.key').forEach(k => k.classList.remove('correct', 'present', 'absent'));
                 document.getElementById('message').textContent = '';
@@ -353,7 +414,7 @@
                 keyboard.innerHTML = '';
                 layout.forEach((row, idx) => {
                     const rowDiv = document.createElement('div');
-                    rowDiv.className = 'keyboard-row flex justify-center gap-1 mb-2';
+                    rowDiv.className = 'flex justify-center gap-1 mb-2';
                     if (idx === 2) rowDiv.appendChild(createKey('Enter', 'Enter', 'key enter wide'));
                     row.forEach(char => rowDiv.appendChild(createKey(char, char, 'key')));
                     if (idx === 2) rowDiv.appendChild(createKey('⌫', 'Backspace', 'key backspace wide'));
@@ -390,7 +451,7 @@
             function submitGuess() {
                 if (gameState.currentGuess.length !== 5) return;
                 
-                // منطق التحقق مع زر الإضافة للقاموس
+                // --- تعديل وظيفة التحقق مع زر الإضافة ---
                 if (!DICTIONARY.includes(gameState.currentGuess)) {
                     const msgDiv = document.getElementById('message');
                     msgDiv.innerHTML = 'الكلمة غير موجودة.. ';
@@ -404,6 +465,7 @@
 
                 gameState.isProcessing = true;
                 const result = calculateResult(gameState.currentGuess, gameState.targetWord);
+                gameState.attemptResults.push(result);
                 revealRow(result);
             }
 
@@ -440,24 +502,38 @@
 
             function checkGameEnd() {
                 if (gameState.currentGuess === gameState.targetWord) {
-                    gameState.gameOver = true;
-                    showResult(true);
-                    updateStats(true);
+                    gameState.gameOver = true; gameState.gameWon = true;
+                    showResult(true); updateStats(true);
                 } else if (gameState.currentRow === gameState.maxRows - 1) {
                     gameState.gameOver = true;
-                    showResult(false);
-                    updateStats(false);
+                    showResult(false); updateStats(false);
                 } else {
-                    gameState.currentRow++;
-                    gameState.currentGuess = '';
+                    gameState.currentRow++; gameState.currentGuess = '';
                     gameState.isProcessing = false;
                 }
             }
 
             function showResult(win) {
-                document.getElementById('resultModalTitle').textContent = win ? "🎉 أحسنت!" : "💔 حظ أوفر";
+                const title = document.getElementById('resultModalTitle');
+                title.textContent = win ? "🎉 أحسنت!" : "💔 حظ أوفر";
                 document.getElementById('gameResultDetails').innerHTML = `<div class="correct-word">${gameState.targetWord}</div>`;
+                renderMatrix();
                 document.getElementById('gameResultModal').classList.remove('hidden');
+            }
+
+            function renderMatrix() {
+                const grid = document.getElementById('matrixGrid');
+                grid.innerHTML = '';
+                gameState.attemptResults.forEach(res => {
+                    const row = document.createElement('div');
+                    row.className = 'matrix-row';
+                    res.forEach(status => {
+                        const tile = document.createElement('div');
+                        tile.className = `matrix-tile ${status}`;
+                        row.appendChild(tile);
+                    });
+                    grid.appendChild(row);
+                });
             }
 
             function updateStats(win) {
@@ -487,7 +563,9 @@
                     };
                 });
 
+                // تفعيل زر التبليغ
                 document.getElementById('reportHardBtn').onclick = () => reportToSupabase(gameState.targetWord, 'hard_word');
+
                 document.getElementById('playAgainBtn').onclick = startNewGame;
                 document.getElementById('newGameHeaderBtn').onclick = startNewGame;
                 document.getElementById('helpBtn').onclick = () => document.getElementById('helpModal').classList.remove('hidden');
@@ -499,7 +577,11 @@
                 };
                 document.getElementById('closeStats').onclick = () => document.getElementById('statsModal').classList.add('hidden');
                 
-                document.addEventListener('keydown', (e) => handleInput(e.key === 'Backspace' ? 'Backspace' : (e.key === 'Enter' ? 'Enter' : e.key)));
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') handleInput('Enter');
+                    else if (e.key === 'Backspace') handleInput('Backspace');
+                    else if (/^[\u0600-\u06FF]$/.test(e.key)) handleInput(e.key);
+                });
             }
 
             function loadStats() {
