@@ -2,17 +2,14 @@
 <html lang="ar" dir="rtl">
     <head>
         <script>
-            // Disable Right Click
             document.addEventListener('contextmenu', event => event.preventDefault());
 
-            // Disable Shortcuts (F12, Ctrl+Shift+I/J/C, Ctrl+U)
             document.onkeydown = function(e) {
                 if(e.keyCode == 123) return false;
-                if(e.ctrlKey && e.shiftKey && (e.keyCode == 73  e.keyCode == 74  e.keyCode == 67)) return false;
+                if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) return false;
                 if(e.ctrlKey && e.keyCode == 85) return false;
             }
 
-            // Aggressive Debugger Loop
             setInterval(function(){
                 var start = new Date().getTime();
                 debugger; 
@@ -36,7 +33,6 @@
                 box-sizing: border-box;
             }
 
-            /* الوضع الليلي (الأساسي) */
             :root {
                 --correct-color: #538d4e;
                 --present-color: #b59f3b;
@@ -55,7 +51,6 @@
                 --hard-color: #f44336;
             }
 
-            /* الوضع النهاري */
             .light-mode {
                 --correct-color: #6ca965;
                 --present-color: #c8b653;
@@ -85,7 +80,6 @@
                 touch-action: manipulation;
             }
 
-            /* تحسينات للأحجام النسبية */
             .tile {
                 width: 50px;
                 height: 50px;
@@ -100,7 +94,6 @@
                 border-radius: 4px;
             }
 
-            /* أحجام متجاوبة للجوال */
             @media (max-width: 640px) {
                 .tile {
                     width: 48px;
@@ -133,7 +126,6 @@
                 }
             }
 
-            /* أحجام للكمبيوتر */
             @media (min-width: 768px) {
                 .tile {
                     width: 55px;
@@ -164,15 +156,9 @@
             }
 
             @keyframes pop {
-                0% {
-                    transform: scale(1);
-                }
-                50% {
-                    transform: scale(1.1);
-                }
-                100% {
-                    transform: scale(1);
-                }
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
             }
 
             .tile.correct {
@@ -198,18 +184,11 @@
             }
 
             @keyframes flip {
-                0% {
-                    transform: rotateX(0);
-                }
-                50% {
-                    transform: rotateX(90deg);
-                }
-                100% {
-                    transform: rotateX(0);
-                }
+                0% { transform: rotateX(0); }
+                50% { transform: rotateX(90deg); }
+                100% { transform: rotateX(0); }
             }
 
-            /* تحسينات للوحة المفاتيح */
             .key {
                 height: 50px;
                 min-width: 32px;
@@ -231,7 +210,6 @@
                 touch-action: manipulation;
             }
 
-            /* ألوان خاصة للأزرار */
             .key.enter {
                 background-color: var(--enter-color);
                 color: white;
@@ -243,7 +221,6 @@
                 color: white;
             }
 
-            /* أحجام متجاوبة للأزرار */
             @media (max-width: 640px) {
                 .key {
                     height: 48px;
@@ -252,10 +229,7 @@
                     margin: 0 2px;
                     padding: 0 3px;
                 }
-
-                .key.enter {
-                    font-size: 0.8rem;
-                }
+                .key.enter { font-size: 0.8rem; }
             }
 
             @media (max-width: 480px) {
@@ -266,107 +240,31 @@
                     margin: 0 1.5px;
                     padding: 0 2px;
                 }
-
-                .key.enter {
-                    font-size: 0.75rem;
-                }
+                .key.enter { font-size: 0.75rem; }
             }
 
-            @media (max-width: 380px) {
-                .key {
-                    height: 42px;
-                    min-width: 24px;
-                    font-size: 0.85rem;
-                    margin: 0 1px;
-                    padding: 0 1px;
-                }
+            .key:hover { opacity: 0.9; }
+            .key.wide { min-width: 60px; }
 
-                .key.enter {
-                    font-size: 0.7rem;
-                }
-            }
+            @media (max-width: 640px) { .key.wide { min-width: 50px; } }
 
-            @media (max-width: 340px) {
-                .key {
-                    height: 40px;
-                    min-width: 22px;
-                    font-size: 0.8rem;
-                    margin: 0 0.5px;
-                }
+            .key.correct { background-color: var(--correct-color); color: white; }
+            .key.present { background-color: var(--present-color); color: white; }
+            .key.absent { background-color: var(--absent-color); color: white; }
 
-                .key.enter {
-                    font-size: 0.65rem;
-                }
-            }
-
-            .key:hover {
-                opacity: 0.9;
-            }
-
-            .key.wide {
-                min-width: 60px;
-            }
-
-            @media (max-width: 640px) {
-                .key.wide {
-                    min-width: 50px;
-                }
-            }
-
-            @media (max-width: 480px) {
-                .key.wide {
-                    min-width: 45px;
-                }
-            }
-
-            @media (max-width: 380px) {
-                .key.wide {
-                    min-width: 40px;
-                }
-            }
-
-            .key.correct {
-                background-color: var(--correct-color);
-                color: white;
-            }
-
-            .key.present {
-                background-color: var(--present-color);
-                color: white;
-            }
-
-            .key.absent {
-                background-color: var(--absent-color);
-                color: white;
-            }
-
-            .shake {
-                animation: shake 0.5s ease;
-            }
+            .shake { animation: shake 0.5s ease; }
 
             @keyframes shake {
-                0%, 100% {
-                    transform: translateX(0);
-                }
-                10%, 30%, 50%, 70%, 90% {
-                    transform: translateX(-5px);
-                }
-                20%, 40%, 60%, 80% {
-                    transform: translateX(5px);
-                }
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                20%, 40%, 60%, 80% { transform: translateX(5px); }
             }
 
-            .bounce {
-                animation: bounce 0.5s ease;
-            }
+            .bounce { animation: bounce 0.5s ease; }
 
             @keyframes bounce {
-                0%, 100% {
-                    transform: translateY(0);
-                }
-                50% {
-                    transform: translateY(-10px);
-                }
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
             }
 
             .modal-overlay {
@@ -374,54 +272,13 @@
                 backdrop-filter: blur(4px);
             }
 
-            .stats-bar {
-                height: 30px;
-                background-color: var(--absent-color);
-                color: white;
-                font-size: 0.9rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 4px;
-                margin: 2px 0;
-            }
-
-            /* تحسينات للرأس */
             header {
                 padding: 8px 12px;
                 border-bottom: 1px solid var(--border-color);
             }
 
-            @media (max-width: 480px) {
-                header {
-                    padding: 6px 10px;
-                }
-            }
+            h1 { font-size: 1.6rem; text-align: center; }
 
-            h1 {
-                font-size: 1.6rem;
-                text-align: center;
-            }
-
-            @media (max-width: 640px) {
-                h1 {
-                    font-size: 1.5rem;
-                }
-            }
-
-            @media (max-width: 480px) {
-                h1 {
-                    font-size: 1.4rem;
-                }
-            }
-
-            @media (max-width: 380px) {
-                h1 {
-                    font-size: 1.3rem;
-                }
-            }
-
-            /* تحسين زر الإعادة */
             #newGameHeaderBtn {
                 background-color: var(--newgame-color);
                 color: white;
@@ -435,22 +292,12 @@
             }
 
             @media (max-width: 480px) {
-                #newGameHeaderBtn {
-                    width: 40px;
-                    height: 40px;
-                }
+                #newGameHeaderBtn { width: 40px; height: 40px; }
             }
 
-            #newGameHeaderBtn:hover {
-                background-color: var(--newgame-hover);
-                opacity: 1;
-            }
+            #newGameHeaderBtn:hover { background-color: var(--newgame-hover); }
+            #newGameHeaderBtn:active { transform: scale(0.95); }
 
-            #newGameHeaderBtn:active {
-                transform: scale(0.95);
-            }
-
-            /* تحسينات للمحتوى الرئيسي */
             main {
                 padding: 10px 5px;
                 flex: 1;
@@ -462,56 +309,8 @@
                 margin: 0 auto;
             }
 
-            @media (max-width: 640px) {
-                main {
-                    padding: 8px 4px;
-                }
-            }
-
-            @media (max-width: 480px) {
-                main {
-                    padding: 6px 3px;
-                }
-            }
-
-            #grid {
-                gap: 6px;
-                margin-bottom: 15px;
-            }
-
-            @media (max-width: 640px) {
-                #grid {
-                    gap: 5px;
-                    margin-bottom: 12px;
-                }
-            }
-
-            @media (max-width: 480px) {
-                #grid {
-                    gap: 4px;
-                    margin-bottom: 10px;
-                }
-            }
-
-            #keyboard {
-                padding: 8px;
-                gap: 6px;
-                width: 100%;
-            }
-
-            @media (max-width: 640px) {
-                #keyboard {
-                    padding: 6px;
-                    gap: 5px;
-                }
-            }
-
-            @media (max-width: 480px) {
-                #keyboard {
-                    padding: 5px;
-                    gap: 4px;
-                }
-            }
+            #grid { gap: 6px; margin-bottom: 15px; }
+            #keyboard { padding: 8px; gap: 6px; width: 100%; }
 
             .keyboard-row {
                 display: flex;
@@ -521,21 +320,6 @@
                 width: 100%;
             }
 
-            @media (max-width: 640px) {
-                .keyboard-row {
-                    gap: 3px;
-                    margin-bottom: 5px;
-                }
-            }
-
-            @media (max-width: 480px) {
-                .keyboard-row {
-                    gap: 2px;
-                    margin-bottom: 4px;
-                }
-            }
-
-            /* تحسينات للرسائل */
             #message {
                 font-size: 1rem;
                 height: 28px;
@@ -547,29 +331,6 @@
                 text-align: center;
             }
 
-            @media (max-width: 640px) {
-                #message {
-                    font-size: 0.95rem;
-                    height: 26px;
-                    margin-bottom: 10px;
-                }
-            }
-
-            @media (max-width: 480px) {
-                #message {
-                    font-size: 0.9rem;
-                    height: 24px;
-                    margin-bottom: 8px;
-                }
-            }
-
-            /* تحسينات للأزرار */
-            button {
-                touch-action: manipulation;
-                -webkit-tap-highlight-color: transparent;
-            }
-
-            /* تحسينات للنوافذ المنبثقة */
             .modal-content {
                 width: 95%;
                 max-width: 500px;
@@ -578,15 +339,6 @@
                 margin: 10px;
             }
 
-            @media (max-width: 640px) {
-                .modal-content {
-                    width: 98%;
-                    max-height: 90vh;
-                    margin: 5px;
-                }
-            }
-
-            /* عرض الكلمة الصحيحة في النتائج */
             .correct-word {
                 background-color: var(--correct-color);
                 color: white;
@@ -599,35 +351,12 @@
                 animation: pulse 2s infinite;
             }
 
-            @media (max-width: 640px) {
-                .correct-word {
-                    padding: 10px;
-                    font-size: 1.3rem;
-                    margin: 10px 0;
-                }
-            }
-
-            @media (max-width: 480px) {
-                .correct-word {
-                    padding: 8px;
-                    font-size: 1.2rem;
-                    margin: 8px 0;
-                }
-            }
-
             @keyframes pulse {
-                0% {
-                    transform: scale(1);
-                }
-                50% {
-                    transform: scale(1.05);
-                }
-                100% {
-                    transform: scale(1);
-                }
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
             }
 
-            /* تحسينات للتعليمات */
             .color-example {
                 display: flex;
                 align-items: center;
@@ -636,14 +365,6 @@
                 padding: 10px;
                 border-radius: 8px;
                 background-color: rgba(129, 131, 132, 0.1);
-            }
-
-            @media (max-width: 640px) {
-                .color-example {
-                    gap: 10px;
-                    padding: 8px;
-                    margin-bottom: 12px;
-                }
             }
 
             .color-box {
@@ -659,66 +380,12 @@
                 flex-shrink: 0;
             }
 
-            @media (max-width: 640px) {
-                .color-box {
-                    width: 40px;
-                    height: 40px;
-                    font-size: 1.3rem;
-                }
-            }
+            .color-box.correct { background-color: var(--correct-color); border-color: var(--correct-color); color: white; }
+            .color-box.present { background-color: var(--present-color); border-color: var(--present-color); color: white; }
+            .color-box.absent { background-color: var(--absent-color); border-color: var(--absent-color); color: white; }
 
-            @media (max-width: 480px) {
-                .color-box {
-                    width: 35px;
-                    height: 35px;
-                    font-size: 1.2rem;
-                }
-            }
+            .color-description { flex: 1; font-size: 0.95rem; }
 
-            .color-box.correct {
-                background-color: var(--correct-color);
-                border-color: var(--correct-color);
-                color: white;
-            }
-
-            .color-box.present {
-                background-color: var(--present-color);
-                border-color: var(--present-color);
-                color: white;
-            }
-
-            .color-box.absent {
-                background-color: var(--absent-color);
-                border-color: var(--absent-color);
-                color: white;
-            }
-
-            .color-description {
-                flex: 1;
-                font-size: 0.95rem;
-            }
-
-            @media (max-width: 640px) {
-                .color-description {
-                    font-size: 0.9rem;
-                }
-            }
-
-            .instructions-footer {
-                margin-top: 20px;
-                padding-top: 12px;
-                border-top: 1px solid var(--border-color);
-                font-size: 0.95rem;
-                color: var(--absent-color);
-                text-align: center;
-            }
-
-            .creator-name {
-                font-weight: bold;
-                color: var(--correct-color);
-            }
-
-            /* تنسيقات لجدول المحاولات */
             .attempts-table-container {
                 max-height: 250px;
                 overflow-y: auto;
@@ -728,140 +395,26 @@
                 padding: 8px;
             }
 
-            @media (max-width: 640px) {
-                .attempts-table-container {
-                    max-height: 200px;
-                    margin: 12px 0;
-                    padding: 6px;
-                }
-            }
+            .attempts-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+            .attempts-table th { background-color: var(--default-color); padding: 8px; text-align: center; border-bottom: 2px solid var(--border-color); }
+            .attempts-table td { padding: 6px; text-align: center; border-bottom: 1px solid var(--border-color); }
 
-            .attempts-table {
-                width: 100%;
-                border-collapse: collapse;
-                font-size: 0.9rem;
-            }
+            .attempt-number { font-weight: bold; color: var(--correct-color); }
+            .attempt-result { font-size: 1.1rem; font-weight: bold; }
+            .attempt-result.win { color: var(--correct-color); }
+            .attempt-result.loss { color: var(--absent-color); }
+            .attempts-title { font-size: 1.2rem; font-weight: bold; margin: 12px 0 8px 0; text-align: center; color: var(--text-color); }
 
-            @media (max-width: 640px) {
-                .attempts-table {
-                    font-size: 0.85rem;
-                }
-            }
-
-            .attempts-table th {
-                background-color: var(--default-color);
-                padding: 8px;
-                text-align: center;
-                border-bottom: 2px solid var(--border-color);
-                font-size: 0.9rem;
-            }
-
-            @media (max-width: 640px) {
-                .attempts-table th {
-                    padding: 6px;
-                    font-size: 0.85rem;
-                }
-            }
-
-            .attempts-table td {
-                padding: 6px;
-                text-align: center;
-                border-bottom: 1px solid var(--border-color);
-            }
-
-            @media (max-width: 640px) {
-                .attempts-table td {
-                    padding: 5px;
-                }
-            }
-
-            .attempts-table tr:last-child td {
-                border-bottom: none;
-            }
-
-            .attempt-number {
-                font-weight: bold;
-                color: var(--correct-color);
-            }
-
-            .attempt-result {
-                font-size: 1.1rem;
-                font-weight: bold;
-            }
-
-            .attempt-result.win {
-                color: var(--correct-color);
-            }
-
-            .attempt-result.loss {
-                color: var(--absent-color);
-            }
-
-            .attempts-title {
-                font-size: 1.2rem;
-                font-weight: bold;
-                margin: 12px 0 8px 0;
-                text-align: center;
-                color: var(--text-color);
-            }
-
-            @media (max-width: 640px) {
-                .attempts-title {
-                    font-size: 1.1rem;
-                    margin: 10px 0 6px 0;
-                }
-            }
-
-            /* تأثيرات للفوز */
-            .win-celebration {
-                animation: winCelebration 2s ease infinite;
-            }
+            .win-celebration { animation: winCelebration 2s ease infinite; }
 
             @keyframes winCelebration {
-                0%, 100% {
-                    transform: scale(1);
-                }
-                50% {
-                    transform: scale(1.05);
-                }
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.05); }
             }
 
-            /* تحسينات للشبكة */
-            .grid-row {
-                display: flex;
-                justify-content: center;
-                gap: 6px;
-                margin-bottom: 6px;
-            }
+            .grid-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 6px; }
+            .no-attempts-message { text-align: center; padding: 15px; color: var(--absent-color); font-style: italic; font-size: 0.95rem; }
 
-            /* رسالة إذا لم تكن هناك محاولات */
-            .no-attempts-message {
-                text-align: center;
-                padding: 15px;
-                color: var(--absent-color);
-                font-style: italic;
-                font-size: 0.95rem;
-            }
-
-            @media (max-width: 640px) {
-                .no-attempts-message {
-                    padding: 12px;
-                    font-size: 0.9rem;
-                }
-            }
-
-            /* إخفاء النصوص على الشاشات الصغيرة */
-            .mobile-hidden {
-                display: none;
-            }
-
-            @media (min-width: 640px) {
-                .mobile-hidden {
-                    display: inline;
-                }
-            }
-
-            /* إضافة: تنسيقات لمصفوفة المحاولات المرئية */
             .attempt-matrix-container {
                 margin: 20px 0;
                 padding: 15px;
@@ -870,27 +423,9 @@
                 background-color: rgba(129, 131, 132, 0.05);
             }
 
-            .matrix-title {
-                font-size: 1.2rem;
-                font-weight: bold;
-                margin-bottom: 15px;
-                text-align: center;
-                color: var(--text-color);
-            }
-
-            .matrix-grid {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 8px;
-                margin-bottom: 15px;
-            }
-
-            .matrix-row {
-                display: flex;
-                justify-content: center;
-                gap: 6px;
-            }
+            .matrix-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; text-align: center; color: var(--text-color); }
+            .matrix-grid { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 15px; }
+            .matrix-row { display: flex; justify-content: center; gap: 6px; }
 
             .matrix-tile {
                 width: 24px;
@@ -906,143 +441,25 @@
                 cursor: pointer;
             }
 
-            @media (max-width: 640px) {
-                .matrix-tile {
-                    width: 22px;
-                    height: 22px;
-                }
-            }
+            .matrix-tile.correct { background-color: var(--correct-color); border-color: var(--correct-color); }
+            .matrix-tile.present { background-color: var(--present-color); border-color: var(--present-color); }
+            .matrix-tile.absent { background-color: var(--absent-color); border-color: var(--absent-color); }
+
+            .matrix-legend { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
+            .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; }
+            .legend-color { width: 16px; height: 16px; border-radius: 3px; }
+            .legend-color.correct { background-color: var(--correct-color); }
+            .legend-color.present { background-color: var(--present-color); }
+            .legend-color.absent { background-color: var(--absent-color); }
+
+            .result-buttons { display: flex; gap: 10px; margin-top: 20px; }
+            .result-buttons button { flex: 1; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; transition: all 0.2s ease; }
 
             @media (max-width: 480px) {
-                .matrix-tile {
-                    width: 20px;
-                    height: 20px;
-                }
+                .result-buttons { flex-direction: column; gap: 8px; }
             }
 
-            @media (max-width: 380px) {
-                .matrix-tile {
-                    width: 18px;
-                    height: 18px;
-                }
-            }
-
-            @media (max-width: 340px) {
-                .matrix-tile {
-                    width: 16px;
-                    height: 16px;
-                }
-            }
-
-            .matrix-tile.correct {
-                background-color: var(--correct-color);
-                border-color: var(--correct-color);
-            }
-
-            .matrix-tile.present {
-                background-color: var(--present-color);
-                border-color: var(--present-color);
-            }
-
-            .matrix-tile.absent {
-                background-color: var(--absent-color);
-                border-color: var(--absent-color);
-            }
-
-            .matrix-legend {
-                display: flex;
-                justify-content: center;
-                gap: 15px;
-                margin-top: 10px;
-                flex-wrap: wrap;
-            }
-
-            .legend-item {
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                font-size: 0.8rem;
-            }
-
-            .legend-color {
-                width: 16px;
-                height: 16px;
-                border-radius: 3px;
-            }
-
-            .legend-color.correct {
-                background-color: var(--correct-color);
-            }
-
-            .legend-color.present {
-                background-color: var(--present-color);
-            }
-
-            .legend-color.absent {
-                background-color: var(--absent-color);
-            }
-
-            /* تنسيقات متجاوبة للنافذة المنبثقة */
-            @media (max-width: 480px) {
-                .attempt-matrix-container {
-                    margin: 15px 0;
-                    padding: 12px;
-                }
-
-                .matrix-title {
-                    font-size: 1.1rem;
-                    margin-bottom: 12px;
-                }
-
-                .matrix-grid {
-                    gap: 6px;
-                    margin-bottom: 12px;
-                }
-
-                .matrix-row {
-                    gap: 4px;
-                }
-            }
-
-            /* نافذة نتائج اللعبة الجديدة */
-            #gameResultModal .modal-content {
-                max-height: 85vh;
-                overflow-y: auto;
-            }
-
-            .result-buttons {
-                display: flex;
-                gap: 10px;
-                margin-top: 20px;
-            }
-
-            .result-buttons button {
-                flex: 1;
-                padding: 12px;
-                border-radius: 8px;
-                font-weight: bold;
-                font-size: 1rem;
-                transition: all 0.2s ease;
-            }
-
-            @media (max-width: 480px) {
-                .result-buttons {
-                    flex-direction: column;
-                    gap: 8px;
-                }
-
-                .result-buttons button {
-                    padding: 10px;
-                    font-size: 0.95rem;
-                }
-            }
-
-            /* أنماط قائمة الصعوبة المنسدلة */
-            .difficulty-dropdown {
-                position: relative;
-                display: inline-block;
-            }
-
+            .difficulty-dropdown { position: relative; display: inline-block; }
             .difficulty-toggle {
                 padding: 8px 16px;
                 border-radius: 6px;
@@ -1060,10 +477,6 @@
                 justify-content: center;
             }
 
-            .difficulty-toggle:hover {
-                background-color: var(--default-color);
-            }
-
             .difficulty-menu {
                 position: absolute;
                 top: 100%;
@@ -1078,9 +491,7 @@
                 display: none;
             }
 
-            .difficulty-menu.show {
-                display: block;
-            }
+            .difficulty-menu.show { display: block; }
 
             .difficulty-option {
                 width: 100%;
@@ -1095,96 +506,50 @@
                 border-bottom: 1px solid var(--border-color);
             }
 
-            .difficulty-option:last-child {
-                border-bottom: none;
-            }
-
-            .difficulty-option:hover {
-                background-color: var(--default-color);
-            }
-
-            .difficulty-option.active {
-                color: var(--correct-color);
-                font-weight: bold;
-            }
-
-            .difficulty-icon {
-                font-size: 0.8rem;
-                transition: transform 0.3s ease;
-            }
-
-            .difficulty-dropdown.open .difficulty-icon {
-                transform: rotate(180deg);
-            }
-
-            @media (max-width: 480px) {
-                .difficulty-toggle {
-                    padding: 6px 12px;
-                    font-size: 0.8rem;
-                    min-width: 100px;
-                }
-                
-                .difficulty-option {
-                    padding: 10px 12px;
-                    font-size: 0.8rem;
-                }
-            }
-
-            /* تعديلات للرأس */
-            .header-center {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 4px;
-            }
+            .difficulty-option.active { color: var(--correct-color); font-weight: bold; }
+            .difficulty-icon { font-size: 0.8rem; transition: transform 0.3s ease; }
+            .difficulty-dropdown.open .difficulty-icon { transform: rotate(180deg); }
         </style>
     </head>
     <body class="flex flex-col min-h-screen">
-        <!-- الرأس -->
         <header class="grid grid-cols-3 items-center px-2 py-3 border-b border-[var(--border-color)] min-h-[60px]">
-    
-    <div class="flex items-center gap-1">
-        <button id="helpBtn" class="p-1.5 hover:bg-[var(--default-color)] rounded-full">
-            <i class="fas fa-question-circle text-lg"></i>
-        </button>
-        <button id="statsBtn" class="p-1.5 hover:bg-[var(--default-color)] rounded-full">
-            <i class="fas fa-chart-bar text-lg"></i>
-        </button>
-    </div>
-
-    <div class="flex justify-center">
-        <h1 class="font-bold text-lg sm:text-xl whitespace-nowrap">كلمة</h1>
-    </div>
-
-    <div class="flex items-center justify-end gap-1 sm:gap-2">
-        <div class="difficulty-dropdown">
-            <button id="difficultyToggle" class="flex items-center gap-1 px-1.5 py-1 sm:px-2 sm:py-1.5 border-2 border-[var(--border-color)] rounded-lg bg-[var(--bg-color)]">
-                <span class="text-[10px] sm:text-sm font-bold">الصعوبة</span>
-                <i class="fas fa-chevron-down text-[8px] sm:text-[10px]"></i>
-            </button>
-            <div id="difficultyMenu" class="difficulty-menu text-xs sm:text-sm">
-                <button data-difficulty="hard" class="difficulty-option active">صعب</button>
-                <button data-difficulty="easy" class="difficulty-option">سهل</button>
+            <div class="flex items-center gap-1">
+                <button id="helpBtn" class="p-1.5 hover:bg-[var(--default-color)] rounded-full">
+                    <i class="fas fa-question-circle text-lg"></i>
+                </button>
+                <button id="statsBtn" class="p-1.5 hover:bg-[var(--default-color)] rounded-full">
+                    <i class="fas fa-chart-bar text-lg"></i>
+                </button>
             </div>
-        </div>
-        
-        <button id="newGameHeaderBtn" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center bg-[var(--newgame-color)] text-white rounded-full shrink-0">
-            <i class="fas fa-redo-alt text-xs sm:text-sm"></i>
-        </button>
+            <div class="flex justify-center">
+                <h1 class="font-bold text-lg sm:text-xl whitespace-nowrap">كلمة</h1>
+            </div>
+            <div class="flex items-center justify-end gap-1 sm:gap-2">
+                <div class="difficulty-dropdown">
+                    <button id="difficultyToggle" class="flex items-center gap-1 px-1.5 py-1 sm:px-2 sm:py-1.5 border-2 border-[var(--border-color)] rounded-lg bg-[var(--bg-color)]">
+                        <span class="text-[10px] sm:text-sm font-bold">الصعوبة</span>
+                        <i class="fas fa-chevron-down text-[8px] sm:text-[10px]"></i>
+                    </button>
+                    <div id="difficultyMenu" class="difficulty-menu text-xs sm:text-sm">
+                        <button data-difficulty="hard" class="difficulty-option active">صعب</button>
+                        <button data-difficulty="easy" class="difficulty-option">سهل</button>
+                    </div>
+                </div>
+                <button id="newGameHeaderBtn" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center bg-[var(--newgame-color)] text-white rounded-full shrink-0">
+                    <i class="fas fa-redo-alt text-xs sm:text-sm"></i>
+                </button>
+                <button id="themeToggle" class="p-1.5 hover:bg-[var(--default-color)] rounded-full shrink-0">
+                    <i class="fas fa-sun text-lg"></i>
+                </button>
+            </div>
+        </header>
 
-        <button id="themeToggle" class="p-1.5 hover:bg-[var(--default-color)] rounded-full shrink-0">
-            <i class="fas fa-sun text-lg"></i>
-        </button>
-    </div>
-</header>
-        <!-- شبكة اللعبة -->
         <main class="flex-grow flex flex-col items-center justify-center">
             <div id="message" class="text-center font-bold"></div>
             <div id="grid" class="mb-4"></div>
-            <!-- لوحة المفاتيح -->
             <div id="keyboard" class="w-full px-2 space-y-2 max-w-xl"></div>
         </main>
-        <!-- نافذة التعليمات -->
+
         <div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
             <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
                 <div class="p-5">
@@ -1194,7 +559,6 @@
                     </div>
                     <div class="mb-6">
                         <p class="text-base mb-5 text-center" id="helpAttemptsText">خمّن الكلمة في 6 محاولات.</p>
-                        <!-- اللون الأخضر -->
                         <div class="color-example">
                             <div class="color-box correct"></div>
                             <div class="color-description">
@@ -1202,7 +566,6 @@
                                 <p>الحرف صحيح وفي المكان الصحيح.</p>
                             </div>
                         </div>
-                        <!-- اللون الأصفر -->
                         <div class="color-example">
                             <div class="color-box present"></div>
                             <div class="color-description">
@@ -1210,7 +573,6 @@
                                 <p>الحرف صحيح ولكن في المكان الخطأ.</p>
                             </div>
                         </div>
-                        <!-- اللون الرمادي -->
                         <div class="color-example">
                             <div class="color-box absent"></div>
                             <div class="color-description">
@@ -1219,14 +581,13 @@
                             </div>
                         </div>
                     </div>
-                   
                     <div class="text-center mt-5">
                         <button id="startGameBtn" class="bg-[var(--correct-color)] text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 text-base">فهمت، ابدأ اللعب</button>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- نافذة الإحصائيات -->
+
         <div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
             <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
                 <div class="p-5">
@@ -1273,7 +634,7 @@
                 </div>
             </div>
         </div>
-        <!-- نافذة نتائج اللعبة مع مصفوفة المحاولات المرئية -->
+
         <div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
             <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
                 <div class="p-5">
@@ -1282,37 +643,28 @@
                         <button id="closeGameResult" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
                     </div>
                     <div id="gameResultDetails" class="text-center mb-4"></div>
-                    <!-- مصفوفة المحاولات المرئية -->
                     <div id="attemptMatrixContainer" class="attempt-matrix-container">
                         <h3 class="matrix-title">خريطة رحلتك في التفكير</h3>
                         <div id="matrixGrid" class="matrix-grid"></div>
                         <div class="matrix-legend">
-                            <div class="legend-item">
-                                <div class="legend-color correct"></div>
-                            </div>
-                            <div class="legend-item">
-                                <div class="legend-color present"></div>
-                            </div>
-                            <div class="legend-item">
-                                <div class="legend-color absent"></div>
-                            </div>
+                            <div class="legend-item"><div class="legend-color correct"></div></div>
+                            <div class="legend-item"><div class="legend-color present"></div></div>
+                            <div class="legend-item"><div class="legend-color absent"></div></div>
                         </div>
                     </div>
                     <div class="result-buttons">
                         <button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90">
-                            <i class="fas fa-redo-alt ml-2"></i>
-                            العب مرة أخرى
+                            <i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى
                         </button>
                         <button id="viewStatsBtn" class="border border-[var(--border-color)] hover:bg-[var(--default-color)]">
-                            <i class="fas fa-chart-bar ml-2"></i>
-                            عرض الإحصائيات
+                            <i class="fas fa-chart-bar ml-2"></i>عرض الإحصائيات
                         </button>
                     </div>
                 </div>
             </div>
         </div>
+
         <script>
-            // مفاتيح التخزين المحلي
             const HELP_SEEN_KEY = 'kalima_help_seen_v10';
             const STATS_KEY = 'kalima_stats_v10';
             const THEME_KEY = 'kalima_dark_v10';
@@ -1320,11 +672,9 @@
             const ATTEMPT_MATRICES_KEY = 'kalima_attempt_matrices_v6';
             const DIFFICULTY_KEY = 'kalima_difficulty_v4';
 
-            // قائمة الكلمات العربية (محدثة)
-           const WORD_LIST = ["صصصصص", "ثثثثث", "ققققق", "ففففف"];
-           const DICTIONARY = [...new Set(WORD_LIST)].concat(["صصصصص", "ثثثثث", "ققققق", "ففففف"]);
+            const WORD_LIST = ["صصصصص", "ثثثثث", "ققققق", "ففففف"];
+            const DICTIONARY = [...new Set(WORD_LIST)].concat(["صصصصص", "ثثثثث", "ققققق", "ففففف"]);
 
-            // حالة اللعبة
             const gameState = {
                 targetWord: "",
                 currentRow: 0,
@@ -1334,21 +684,15 @@
                 startTime: null,
                 gameDuration: 0,
                 attemptResults: [],
-                stats: {
-                    played: 0,
-                    wins: 0,
-                    currentStreak: 0,
-                    maxStreak: 0
-                },
+                stats: { played: 0, wins: 0, currentStreak: 0, maxStreak: 0 },
                 attemptsHistory: [],
                 attemptMatrices: [],
                 isProcessing: false,
                 inputLock: false,
-                difficulty: 'hard', // 'hard' أو 'easy' - 'hard' افتراضي أول مرة
-                maxRows: 6 // القيمة الافتراضية: صعب = 6، سهل = 8
+                difficulty: 'hard',
+                maxRows: 6
             };
 
-            // التهيئة
             function init() {
                 loadDifficulty();
                 loadStats();
@@ -1363,23 +707,14 @@
                 updateDifficultyUI();
             }
 
-            // تحميل مستوى الصعوبة
             function loadDifficulty() {
                 const saved = localStorage.getItem(DIFFICULTY_KEY);
-                if (saved && (saved === 'easy' || saved === 'hard')) {
-                    gameState.difficulty = saved;
-                } else {
-                    gameState.difficulty = 'hard'; // 'hard' افتراضي أول مرة
-                }
+                gameState.difficulty = (saved === 'easy' || saved === 'hard') ? saved : 'hard';
                 gameState.maxRows = gameState.difficulty === 'hard' ? 6 : 8;
             }
 
-            // حفظ مستوى الصعوبة
-            function saveDifficulty() {
-                localStorage.setItem(DIFFICULTY_KEY, gameState.difficulty);
-            }
+            function saveDifficulty() { localStorage.setItem(DIFFICULTY_KEY, gameState.difficulty); }
 
-            // تحديث واجهة مستوى الصعوبة
             function updateDifficultyUI() {
                 const easyOption = document.querySelector('[data-difficulty="easy"]');
                 const hardOption = document.querySelector('[data-difficulty="hard"]');
@@ -1396,206 +731,118 @@
                 }
             }
 
-            // تغيير مستوى الصعوبة
             function changeDifficulty(newDifficulty) {
                 if (newDifficulty !== 'easy' && newDifficulty !== 'hard') return;
                 if (gameState.difficulty === newDifficulty) return;
-                
                 gameState.difficulty = newDifficulty;
                 gameState.maxRows = newDifficulty === 'hard' ? 6 : 8;
                 saveDifficulty();
                 updateDifficultyUI();
-                
-                // إعادة إنشاء الشبكة بناءً على الصعوبة الجديدة
                 createGrid();
                 startNewGame();
             }
 
-            // تحميل الإحصائيات
             function loadStats() {
                 const saved = localStorage.getItem(STATS_KEY);
                 if (saved) {
                     try {
                         const parsed = JSON.parse(saved);
-                        if (parsed && typeof parsed === 'object') {
-                            gameState.stats = parsed;
-                        }
-                    } catch (e) {
-                        resetStats();
-                    }
-                } else {
-                    resetStats();
-                }
+                        if (parsed && typeof parsed === 'object') gameState.stats = parsed;
+                    } catch (e) { resetStats(); }
+                } else { resetStats(); }
             }
 
-            // تحميل مصفوفات المحاولات المرئية
             function loadAttemptMatrices() {
                 const saved = localStorage.getItem(ATTEMPT_MATRICES_KEY);
                 if (saved) {
                     try {
                         const parsed = JSON.parse(saved);
-                        if (Array.isArray(parsed)) {
-                            gameState.attemptMatrices = parsed;
-                        }
-                    } catch (e) {
-                        gameState.attemptMatrices = [];
-                    }
-                } else {
-                    gameState.attemptMatrices = [];
+                        if (Array.isArray(parsed)) gameState.attemptMatrices = parsed;
+                    } catch (e) { gameState.attemptMatrices = []; }
                 }
             }
 
-            // حفظ مصفوفات المحاولات المرئية
-            function saveAttemptMatrices() {
-                localStorage.setItem(ATTEMPT_MATRICES_KEY, JSON.stringify(gameState.attemptMatrices));
-            }
+            function saveAttemptMatrices() { localStorage.setItem(ATTEMPT_MATRICES_KEY, JSON.stringify(gameState.attemptMatrices)); }
 
-            // إعادة تعيين الإحصائيات
             function resetStats() {
-                gameState.stats = {
-                    played: 0,
-                    wins: 0,
-                    currentStreak: 0,
-                    maxStreak: 0
-                };
+                gameState.stats = { played: 0, wins: 0, currentStreak: 0, maxStreak: 0 };
                 saveStats();
             }
 
-            // تحميل سجل المحاولات
             function loadAttemptsHistory() {
                 const saved = localStorage.getItem(ATTEMPTS_KEY);
                 if (saved) {
                     try {
                         const parsed = JSON.parse(saved);
-                        if (Array.isArray(parsed)) {
-                            gameState.attemptsHistory = parsed;
-                        }
-                    } catch (e) {
-                        gameState.attemptsHistory = [];
-                    }
-                } else {
-                    gameState.attemptsHistory = [];
+                        if (Array.isArray(parsed)) gameState.attemptsHistory = parsed;
+                    } catch (e) { gameState.attemptsHistory = []; }
                 }
             }
 
-            // حفظ الإحصائيات
-            function saveStats() {
-                localStorage.setItem(STATS_KEY, JSON.stringify(gameState.stats));
-            }
+            function saveStats() { localStorage.setItem(STATS_KEY, JSON.stringify(gameState.stats)); }
+            function saveAttemptsHistory() { localStorage.setItem(ATTEMPTS_KEY, JSON.stringify(gameState.attemptsHistory)); }
 
-            // حفظ سجل المحاولات
-            function saveAttemptsHistory() {
-                localStorage.setItem(ATTEMPTS_KEY, JSON.stringify(gameState.attemptsHistory));
-            }
-
-            // تحميل الوضع (الوضع الليلي هو الأساسي)
             function loadTheme() {
                 const saved = localStorage.getItem(THEME_KEY);
+                const icon = document.querySelector('#themeToggle i');
                 if (saved === 'false') {
-                    // إذا كان الوضع المحفوظ هو النهاري
                     document.body.classList.add('light-mode');
-                    const icon = document.querySelector('#themeToggle i');
                     icon.className = 'fas fa-moon text-lg';
                 } else {
-                    // الوضع الليلي هو الأساسي
                     document.body.classList.remove('light-mode');
-                    const icon = document.querySelector('#themeToggle i');
                     icon.className = 'fas fa-sun text-lg';
                 }
             }
 
-            // عرض التعليمات إذا كانت أول مرة
             function showHelpIfFirstTime() {
-                const hasSeenHelp = localStorage.getItem(HELP_SEEN_KEY);
-                if (!hasSeenHelp) {
-                    setTimeout( () => {
-                        document.getElementById('helpModal').classList.remove('hidden');
-                    }, 500);
+                if (!localStorage.getItem(HELP_SEEN_KEY)) {
+                    setTimeout(() => document.getElementById('helpModal').classList.remove('hidden'), 500);
                     localStorage.setItem(HELP_SEEN_KEY, 'true');
                 }
             }
 
-            // إنشاء شبكة اللعبة بناءً على الصعوبة
             function createGrid() {
                 const grid = document.getElementById('grid');
                 grid.innerHTML = '';
-
-                const rows = gameState.maxRows;
-
-                for (let row = 0; row < rows; row++) {
+                for (let row = 0; row < gameState.maxRows; row++) {
                     const rowDiv = document.createElement('div');
                     rowDiv.className = 'grid-row';
                     rowDiv.id = `row-${row}`;
-                    rowDiv.dataset.row = row;
-
                     for (let col = 0; col < 5; col++) {
                         const tile = document.createElement('div');
                         tile.className = 'tile';
                         tile.id = `tile-${row}-${col}`;
-                        tile.dataset.row = row;
-                        tile.dataset.col = col;
                         rowDiv.appendChild(tile);
                     }
-
                     grid.appendChild(rowDiv);
                 }
             }
 
-            // إنشاء لوحة المفاتيح
             function createKeyboard() {
                 const keyboard = document.getElementById('keyboard');
-
-                // ترتيب لوحة المفاتيح حسب الطلب
                 const layout = [["ج", "ح", "خ", "ه", "ع", "غ", "ف", "ق", "ث", "ص", "ض"], ["ة", "ك", "م", "ن", "ت", "ا", "ل", "ب", "ي", "س", "ش"], ["ى", "و", "ر", "ز", "د", "ذ", "ط", "ظ", "ء", "أ"]];
-
                 keyboard.innerHTML = '';
-
-                layout.forEach( (row, index) => {
+                layout.forEach((row, index) => {
                     const rowDiv = document.createElement('div');
                     rowDiv.className = 'keyboard-row';
-
-                    // إضافة زر Enter في بداية الصف الثالث
-                    if (index === 2) {
-                        const enterKey = createKey('Enter', 'Enter', 'wide enter');
-                        rowDiv.appendChild(enterKey);
-                    }
-
-                    // إضافة الحروف
-                    for (const char of row) {
-                        const key = createKey(char, char);
-                        rowDiv.appendChild(key);
-                    }
-
-                    // إضافة زر Backspace في نهاية الصف الثالث
-                    if (index === 2) {
-                        const backspaceKey = createKey('⌫', 'Backspace', 'wide backspace');
-                        rowDiv.appendChild(backspaceKey);
-                    }
-
+                    if (index === 2) rowDiv.appendChild(createKey('Enter', 'Enter', 'wide enter'));
+                    for (const char of row) rowDiv.appendChild(createKey(char, char));
+                    if (index === 2) rowDiv.appendChild(createKey('⌫', 'Backspace', 'wide backspace'));
                     keyboard.appendChild(rowDiv);
                 });
             }
 
-            // إنشاء زر في لوحة المفاتيح
             function createKey(text, value, extraClass='') {
                 const key = document.createElement('button');
                 key.className = `key ${extraClass}`;
                 key.textContent = text;
                 key.dataset.key = value;
-
-                key.addEventListener('click', () => {
-                    handleInput(value);
-                });
-
+                key.addEventListener('click', () => handleInput(value));
                 return key;
             }
 
-            // بدء لعبة جديدة
             function startNewGame() {
-                // اختيار كلمة عشوائية
                 gameState.targetWord = WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
-
-                // إعادة تعيين حالة اللعبة الحالية بالكامل
                 gameState.currentRow = 0;
                 gameState.currentGuess = '';
                 gameState.gameOver = false;
@@ -1606,80 +853,43 @@
                 gameState.gameDuration = 0;
                 gameState.attemptResults = [];
 
-                // إعادة تعيين الشبكة بالكامل
                 document.querySelectorAll('.tile').forEach(tile => {
                     tile.className = 'tile';
                     tile.textContent = '';
-                    tile.classList.remove('filled', 'correct', 'present', 'absent', 'flip');
                 });
 
-                // إعادة تعيين الصفوف
-                document.querySelectorAll('.grid-row').forEach(row => {
-                    row.classList.remove('shake', 'win-celebration');
-                });
+                document.querySelectorAll('.grid-row').forEach(row => row.classList.remove('shake', 'win-celebration'));
 
-                // إعادة تعيين لوحة المفاتيح
                 document.querySelectorAll('.key').forEach(key => {
-                    if (key.dataset.key === 'Enter') {
-                        key.className = 'key wide enter';
-                    } else if (key.dataset.key === 'Backspace') {
-                        key.className = 'key wide backspace';
-                    } else {
-                        key.className = 'key';
-                        key.classList.remove('correct', 'present', 'absent');
-                        if (key.classList.contains('wide')) {
-                            key.classList.add('wide');
-                        }
-                    }
+                    key.classList.remove('correct', 'present', 'absent');
                 });
 
-                // إخفاء الرسالة
                 document.getElementById('message').textContent = '';
-                
-                // إخفاء النوافذ المنبثقة
                 document.getElementById('gameResultModal').classList.add('hidden');
                 document.getElementById('statsModal').classList.add('hidden');
-                
-                // تحديث الصف الحالي
                 updateCurrentRow();
             }
 
-            // معالجة الإدخال
             function handleInput(key) {
-                if (gameState.inputLock) return;
-                if (gameState.gameOver) return;
-                if (gameState.isProcessing) return;
-
-                if (key === 'Enter') {
-                    submitGuess();
-                } else if (key === 'Backspace') {
-                    handleBackspace();
-                } else if (/^[\u0600-\u06FF]$/.test(key)) {
-                    handleLetterInput(key);
-                }
+                if (gameState.inputLock || gameState.gameOver || gameState.isProcessing) return;
+                if (key === 'Enter') submitGuess();
+                else if (key === 'Backspace') handleBackspace();
+                else if (/^[\u0600-\u06FF]$/.test(key)) handleLetterInput(key);
             }
 
-            // معالجة إدخال الحرف
             function handleLetterInput(letter) {
                 if (gameState.currentGuess.length < 5) {
                     gameState.inputLock = true;
                     gameState.currentGuess += letter;
                     updateCurrentRow();
-
                     const tile = document.getElementById(`tile-${gameState.currentRow}-${gameState.currentGuess.length - 1}`);
                     if (tile) {
                         tile.classList.add('filled');
-                        setTimeout( () => {
-                            tile.classList.remove('filled');
-                            gameState.inputLock = false;
-                        }, 100);
-                    } else {
-                        gameState.inputLock = false;
-                    }
+                        setTimeout(() => { tile.classList.remove('filled'); gameState.inputLock = false; }, 100);
+                    } else { gameState.inputLock = false; }
                 }
             }
 
-            // معالجة زر المسح
             function handleBackspace() {
                 if (gameState.currentGuess.length > 0) {
                     gameState.currentGuess = gameState.currentGuess.slice(0, -1);
@@ -1687,122 +897,69 @@
                 }
             }
 
-            // تحديث الصف الحالي فقط
             function updateCurrentRow() {
-                // مسح جميع المربعات في الصف الحالي أولاً
                 for (let i = 0; i < 5; i++) {
                     const tile = document.getElementById(`tile-${gameState.currentRow}-${i}`);
                     if (tile) {
-                        tile.textContent = '';
-                        tile.className = 'tile';
-                    }
-                }
-
-                // ملء المربعات بما هو موجود في currentGuess
-                for (let i = 0; i < gameState.currentGuess.length; i++) {
-                    const tile = document.getElementById(`tile-${gameState.currentRow}-${i}`);
-                    if (tile) {
-                        tile.textContent = gameState.currentGuess[i];
+                        tile.textContent = gameState.currentGuess[i] || '';
                     }
                 }
             }
 
-            // إرسال التخمين
             function submitGuess() {
                 if (gameState.isProcessing) return;
-
-                if (gameState.currentGuess.length !== 5) {
-                    showMessage('الكلمة يجب أن تكون 5 أحرف');
-                    shakeRow();
-                    return;
-                }
-
-                if (!isValidWord(gameState.currentGuess)) {
-                    showMessage('الكلمة غير موجودة في القاموس');
-                    shakeRow();
-                    return;
-                }
-
+                if (gameState.currentGuess.length !== 5) { showMessage('الكلمة يجب أن تكون 5 أحرف'); shakeRow(); return; }
+                if (!isValidWord(gameState.currentGuess)) { showMessage('الكلمة غير موجودة في القاموس'); shakeRow(); return; }
                 gameState.isProcessing = true;
                 evaluateGuess();
             }
 
-            // التحقق من صحة الكلمة
-            function isValidWord(word) {
-                return DICTIONARY.includes(word);
-            }
+            function isValidWord(word) { return DICTIONARY.includes(word); }
 
-            // تقييم التخمين
             function evaluateGuess() {
                 const guess = gameState.currentGuess;
                 const target = gameState.targetWord;
-
                 const result = calculateGuessResult(guess, target);
                 gameState.attemptResults[gameState.currentRow] = result;
                 gameState.inputLock = true;
-
-                let completedAnimations = 0;
-                const totalAnimations = 5;
+                let completed = 0;
 
                 for (let i = 0; i < 5; i++) {
                     const tile = document.getElementById(`tile-${gameState.currentRow}-${i}`);
                     if (!tile) continue;
-
-                    const delay = i * 300;
-
-                    setTimeout( () => {
+                    setTimeout(() => {
                         tile.classList.add('flip');
-
-                        setTimeout( () => {
+                        setTimeout(() => {
                             tile.classList.add(result[i]);
                             updateKeyboard(guess[i], result[i]);
-
-                            completedAnimations++;
-
-                            if (completedAnimations === totalAnimations) {
-                                setTimeout( () => {
+                            completed++;
+                            if (completed === 5) {
+                                setTimeout(() => {
                                     processGuessResult(guess, target);
                                     gameState.inputLock = false;
                                 }, 300);
                             }
                         }, 300);
-                    }, delay);
+                    }, i * 300);
                 }
             }
 
-            // دالة حساب نتيجة التخمين
             function calculateGuessResult(guess, target) {
                 const result = Array(5).fill('absent');
-                const targetLetters = {};
-
-                for (const letter of target) {
-                    targetLetters[letter] = (targetLetters[letter] || 0) + 1;
-                }
-
+                const counts = {};
+                for (const l of target) counts[l] = (counts[l] || 0) + 1;
                 for (let i = 0; i < 5; i++) {
-                    if (guess[i] === target[i]) {
-                        result[i] = 'correct';
-                        targetLetters[guess[i]]--;
-                    }
+                    if (guess[i] === target[i]) { result[i] = 'correct'; counts[guess[i]]--; }
                 }
-
                 for (let i = 0; i < 5; i++) {
-                    if (result[i] !== 'correct' && targetLetters[guess[i]] > 0) {
-                        result[i] = 'present';
-                        targetLetters[guess[i]]--;
-                    }
+                    if (result[i] !== 'correct' && counts[guess[i]] > 0) { result[i] = 'present'; counts[guess[i]]--; }
                 }
-
                 return result;
             }
 
-            // معالجة نتيجة التخمين بعد اكتمال الحركات
             function processGuessResult(guess, target) {
-                const won = guess === target;
-
-                if (won) {
-                    gameState.gameWon = true;
-                    gameState.gameOver = true;
+                if (guess === target) {
+                    gameState.gameWon = gameState.gameOver = true;
                     gameState.isProcessing = false;
                     handleWin();
                 } else if (gameState.currentRow === gameState.maxRows - 1) {
@@ -1817,503 +974,181 @@
                 }
             }
 
-            // تحديث لوحة المفاتيح
             function updateKeyboard(letter, status) {
                 const key = document.querySelector(`.key[data-key="${letter}"]`);
-                if (!key) return;
-
-                if (key.classList.contains('enter') || key.classList.contains('backspace')) {
-                    return;
-                }
-
-                if (status === 'correct') {
-                    key.classList.add('correct');
-                    key.classList.remove('present', 'absent');
-                } else if (status === 'present' && !key.classList.contains('correct')) {
-                    key.classList.add('present');
-                    key.classList.remove('absent');
-                } else if (status === 'absent' && !key.classList.contains('correct') && !key.classList.contains('present')) {
-                    key.classList.add('absent');
-                }
+                if (!key || key.classList.contains('enter') || key.classList.contains('backspace')) return;
+                if (status === 'correct') { key.classList.add('correct'); key.classList.remove('present', 'absent'); }
+                else if (status === 'present' && !key.classList.contains('correct')) { key.classList.add('present'); key.classList.remove('absent'); }
+                else if (status === 'absent' && !key.classList.contains('correct') && !key.classList.contains('present')) key.classList.add('absent');
             }
 
-            /**
-             * دالة renderAttemptMatrix - تعرض مصفوفة المحاولات المرئية
-             */
             function renderAttemptMatrix() {
                 const container = document.getElementById('matrixGrid');
                 container.innerHTML = '';
-
-                if (!gameState.attemptResults || gameState.attemptResults.length === 0) {
-                    container.innerHTML = '<div class="text-center text-gray-500 py-4">لا توجد محاولات لعرضها</div>';
-                    return;
-                }
-
-                const usedAttempts = gameState.attemptResults.filter(row => row && row.length > 0);
-
-                usedAttempts.forEach( (rowResults, rowIndex) => {
+                const used = gameState.attemptResults.filter(r => r && r.length > 0);
+                used.forEach((res) => {
                     const rowDiv = document.createElement('div');
                     rowDiv.className = 'matrix-row';
-                    rowDiv.dataset.attemptNumber = rowIndex + 1;
-
-                    rowResults.forEach( (cellStatus, cellIndex) => {
+                    res.forEach((status) => {
                         const tile = document.createElement('div');
-                        tile.className = 'matrix-tile';
-                        
-                        if (cellStatus === 'correct') {
-                            tile.classList.add('correct');
-                        } else if (cellStatus === 'present') {
-                            tile.classList.add('present');
-                        } else if (cellStatus === 'absent') {
-                            tile.classList.add('absent');
-                        }
-
-                        tile.dataset.position = `${rowIndex + 1}-${cellIndex + 1}`;
-                        tile.dataset.status = cellStatus;
-                        tile.textContent = '';
-                        tile.title = `مربع ${rowIndex + 1}-${cellIndex + 1}: ${getStatusText(cellStatus)}`;
-
-                        tile.style.transition = 'transform 0.2s ease';
-                        tile.addEventListener('mouseenter', () => {
-                            tile.style.transform = 'scale(1.1)';
-                        });
-                        tile.addEventListener('mouseleave', () => {
-                            tile.style.transform = 'scale(1)';
-                        });
-
+                        tile.className = `matrix-tile ${status}`;
                         rowDiv.appendChild(tile);
                     });
-
                     container.appendChild(rowDiv);
                 });
-
-                updateMatrixStats(usedAttempts.length);
             }
 
-            /**
-             * دالة مساعدة: تحويل رمز الحالة إلى نص وصفي
-             */
-            function getStatusText(status) {
-                const statusMap = {
-                    'correct': 'حرف صحيح في مكانه',
-                    'present': 'حرف صحيح في مكان خاطئ',
-                    'absent': 'حرف غير موجود في الكلمة'
-                };
-                return statusMap[status] || 'حالة غير معروفة';
-            }
-
-            /**
-             * دالة مساعدة: تحديث إحصائيات المصفوفة
-             */
-            function updateMatrixStats(totalAttempts) {
-                const colorStats = {
-                    correct: 0,
-                    present: 0,
-                    absent: 0
-                };
-
-                gameState.attemptResults.forEach(row => {
-                    row.forEach(cell => {
-                        if (colorStats[cell] !== undefined) {
-                            colorStats[cell]++;
-                        }
-                    });
-                });
-
-                const statsElement = document.getElementById('matrixStats');
-                if (statsElement) {
-                    statsElement.innerHTML = `
-                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                        <div>عدد المحاولات: <strong>${totalAttempts}</strong></div>
-                        <div>المربعات الخضراء: <strong>${colorStats.correct}</strong></div>
-                        <div>المربعات الصفراء: <strong>${colorStats.present}</strong></div>
-                        <div>المربعات الرمادية: <strong>${colorStats.absent}</strong></div>
-                    </div>
-                `;
-                }
-            }
-
-            // التعامل مع الفوز
             function handleWin() {
                 gameState.gameDuration = Math.floor((new Date() - gameState.startTime) / 1000);
                 showMessage('🎉 أحسنت! لقد فزت!');
-
-                const attemptMatrix = collectAttemptMatrix();
-                gameState.attemptMatrices.unshift({
-                    matrix: attemptMatrix,
-                    result: 'win',
-                    attempts: gameState.currentRow + 1,
-                    difficulty: gameState.difficulty,
-                    date: new Date().toISOString(),
-                    word: gameState.targetWord
-                });
-
-                if (gameState.attemptMatrices.length > 50) {
-                    gameState.attemptMatrices = gameState.attemptMatrices.slice(0, 50);
+                const matrix = [];
+                for (let r = 0; r <= gameState.currentRow; r++) {
+                    const rowData = [];
+                    for (let c = 0; c < 5; c++) {
+                        const t = document.getElementById(`tile-${r}-${c}`);
+                        rowData.push(t.classList.contains('correct') ? 'correct' : (t.classList.contains('present') ? 'present' : 'absent'));
+                    }
+                    matrix.push(rowData);
                 }
-
+                gameState.attemptMatrices.unshift({ matrix, result: 'win', attempts: gameState.currentRow + 1, difficulty: gameState.difficulty, word: gameState.targetWord });
+                if (gameState.attemptMatrices.length > 50) gameState.attemptMatrices.pop();
                 saveAttemptMatrices();
 
-                const attemptRecord = {
-                    attemptNumber: gameState.attemptsHistory.length + 1,
-                    attempts: gameState.currentRow + 1,
-                    result: 'win',
-                    difficulty: gameState.difficulty,
-                    word: gameState.targetWord,
-                    duration: gameState.gameDuration
-                };
-
-                gameState.attemptsHistory.push(attemptRecord);
-
-                if (gameState.attemptsHistory.length > 100) {
-                    gameState.attemptsHistory = gameState.attemptsHistory.slice(-100);
-                }
-
+                gameState.attemptsHistory.push({ attemptNumber: gameState.attemptsHistory.length + 1, attempts: gameState.currentRow + 1, result: 'win', difficulty: gameState.difficulty, word: gameState.targetWord });
+                if (gameState.attemptsHistory.length > 100) gameState.attemptsHistory.shift();
                 saveAttemptsHistory();
 
                 gameState.stats.played++;
                 gameState.stats.wins++;
                 gameState.stats.currentStreak++;
                 gameState.stats.maxStreak = Math.max(gameState.stats.maxStreak, gameState.stats.currentStreak);
-
                 saveStats();
                 updateStatsDisplay();
-
-                setTimeout( () => {
-                    const rows = document.querySelectorAll('.grid-row');
-                    rows[gameState.currentRow].classList.add('win-celebration');
-                }, 2000);
-
-                setTimeout( () => {
-                    showGameResultModal(true);
-                }, 2500);
+                setTimeout(() => document.querySelectorAll('.grid-row')[gameState.currentRow].classList.add('win-celebration'), 2000);
+                setTimeout(() => showGameResultModal(true), 2500);
             }
 
-            // التعامل مع الخسارة
             function handleLoss() {
                 gameState.gameDuration = Math.floor((new Date() - gameState.startTime) / 1000);
                 showMessage(`💔 انتهت المحاولات! الكلمة الصحيحة: ${gameState.targetWord}`);
-
-                const attemptMatrix = collectAttemptMatrix();
-                gameState.attemptMatrices.unshift({
-                    matrix: attemptMatrix,
-                    result: 'loss',
-                    attempts: gameState.maxRows,
-                    difficulty: gameState.difficulty,
-                    date: new Date().toISOString(),
-                    word: gameState.targetWord
-                });
-
-                if (gameState.attemptMatrices.length > 50) {
-                    gameState.attemptMatrices = gameState.attemptMatrices.slice(0, 50);
-                }
-
-                saveAttemptMatrices();
-
-                const attemptRecord = {
-                    attemptNumber: gameState.attemptsHistory.length + 1,
-                    attempts: gameState.maxRows,
-                    result: 'loss',
-                    difficulty: gameState.difficulty,
-                    word: gameState.targetWord,
-                    duration: gameState.gameDuration
-                };
-
-                gameState.attemptsHistory.push(attemptRecord);
-
-                if (gameState.attemptsHistory.length > 100) {
-                    gameState.attemptsHistory = gameState.attemptsHistory.slice(-100);
-                }
-
-                saveAttemptsHistory();
-
-                gameState.stats.played++;
-                gameState.stats.currentStreak = 0;
-
-                saveStats();
-                updateStatsDisplay();
-
-                setTimeout( () => {
-                    showGameResultModal(false);
-                }, 1500);
-            }
-
-            // جمع مصفوفة المحاولات المرئية
-            function collectAttemptMatrix() {
                 const matrix = [];
-
-                for (let row = 0; row <= gameState.currentRow; row++) {
+                for (let r = 0; r < gameState.maxRows; r++) {
                     const rowData = [];
-                    for (let col = 0; col < 5; col++) {
-                        const tile = document.getElementById(`tile-${row}-${col}`);
-                        if (tile.classList.contains('correct')) {
-                            rowData.push('correct');
-                        } else if (tile.classList.contains('present')) {
-                            rowData.push('present');
-                        } else if (tile.classList.contains('absent')) {
-                            rowData.push('absent');
-                        } else {
-                            rowData.push('empty');
-                        }
+                    for (let c = 0; c < 5; c++) {
+                        const t = document.getElementById(`tile-${r}-${c}`);
+                        rowData.push(t.classList.contains('correct') ? 'correct' : (t.classList.contains('present') ? 'present' : 'absent'));
                     }
                     matrix.push(rowData);
                 }
-
-                return matrix;
+                gameState.attemptMatrices.unshift({ matrix, result: 'loss', attempts: gameState.maxRows, difficulty: gameState.difficulty, word: gameState.targetWord });
+                saveAttemptMatrices();
+                gameState.attemptsHistory.push({ attemptNumber: gameState.attemptsHistory.length + 1, attempts: gameState.maxRows, result: 'loss', difficulty: gameState.difficulty, word: gameState.targetWord });
+                saveAttemptsHistory();
+                gameState.stats.played++;
+                gameState.stats.currentStreak = 0;
+                saveStats();
+                updateStatsDisplay();
+                setTimeout(() => showGameResultModal(false), 1500);
             }
 
-            // عرض رسالة
             function showMessage(text) {
-                const messageEl = document.getElementById('message');
-                messageEl.textContent = text;
-                messageEl.classList.add('bounce');
-                setTimeout( () => messageEl.classList.remove('bounce'), 500);
+                const el = document.getElementById('message');
+                el.textContent = text;
+                el.classList.add('bounce');
+                setTimeout(() => el.classList.remove('bounce'), 500);
             }
 
-            // هز الصف
             function shakeRow() {
-                const row = document.getElementById(`row-${gameState.currentRow}`);
-                if (row) {
-                    row.classList.add('shake');
-                    setTimeout( () => row.classList.remove('shake'), 500);
-                }
+                const r = document.getElementById(`row-${gameState.currentRow}`);
+                if (r) { r.classList.add('shake'); setTimeout(() => r.classList.remove('shake'), 500); }
             }
 
-            // عرض نافذة نتائج اللعبة مع مصفوفة المحاولات
             function showGameResultModal(isWin) {
-                const modal = document.getElementById('gameResultModal');
-                const title = document.getElementById('resultModalTitle');
-                const details = document.getElementById('gameResultDetails');
-
-                if (isWin) {
-                    title.textContent = '🎉 مبروك! فزت!';
-                    details.innerHTML = `
-                    <div class="text-green-600 font-bold text-lg mb-2">لقد فزت في المحاولة ${gameState.currentRow + 1}!</div>
+                const m = document.getElementById('gameResultModal');
+                const t = document.getElementById('resultModalTitle');
+                const d = document.getElementById('gameResultDetails');
+                t.textContent = isWin ? '🎉 مبروك! فزت!' : '💔 انتهت المحاولات!';
+                d.innerHTML = `
+                    <div class="${isWin ? 'text-green-600' : 'text-red-600'} font-bold text-lg mb-2">${isWin ? 'لقد فزت في المحاولة ' + (gameState.currentRow+1) : 'انتهت محاولاتك!'}</div>
                     <div class="text-gray-600 dark:text-gray-400 mb-3">الكلمة الصحيحة:</div>
                     <div class="correct-word">${gameState.targetWord}</div>
                 `;
-                } else {
-                    title.textContent = '💔 انتهت المحاولات!';
-                    details.innerHTML = `
-                    <div class="text-red-600 font-bold text-lg mb-2">انتهت محاولاتك!</div>
-                    <div class="text-gray-600 dark:text-gray-400 mb-3">الكلمة الصحيحة:</div>
-                    <div class="correct-word">${gameState.targetWord}</div>
-                `;
-                }
-
                 renderAttemptMatrix();
-                modal.classList.remove('hidden');
-
-                setTimeout( () => {
-                    modal.style.opacity = '1';
-                    modal.style.transform = 'scale(1)';
-                }, 10);
+                m.classList.remove('hidden');
+                setTimeout(() => { m.style.opacity = '1'; m.style.transform = 'scale(1)'; }, 10);
             }
 
-            // عرض الإحصائيات
-            function showStats(isWin=false) {
-                updateStatsDisplay(isWin);
-                document.getElementById('statsModal').classList.remove('hidden');
-            }
+            function showStats(isWin=false) { updateStatsDisplay(isWin); document.getElementById('statsModal').classList.remove('hidden'); }
 
-            // تحديث عرض الإحصائيات
             function updateStatsDisplay(isWin=false) {
                 document.getElementById('playedCount').textContent = gameState.stats.played;
                 document.getElementById('winPercent').textContent = gameState.stats.played > 0 ? Math.round((gameState.stats.wins / gameState.stats.played) * 100) + '%' : '0%';
                 document.getElementById('currentStreak').textContent = gameState.stats.currentStreak;
                 document.getElementById('maxStreak').textContent = gameState.stats.maxStreak;
-
-                const resultInfo = document.getElementById('gameResultInfo');
-                resultInfo.innerHTML = '';
-
+                const info = document.getElementById('gameResultInfo');
+                info.innerHTML = '';
                 if (gameState.gameOver) {
-                    const resultDiv = document.createElement('div');
-                    resultDiv.className = 'text-center mb-4';
-
-                    if (gameState.gameDuration) {
-                        const minutes = Math.floor(gameState.gameDuration / 60);
-                        const seconds = gameState.gameDuration % 60;
-                        const timeText = document.createElement('div');
-                        timeText.className = 'text-gray-600 dark:text-gray-400 text-sm mb-2';
-                        timeText.textContent = `مدة اللعبة: ${minutes}:${seconds.toString().padStart(2, '0')}`;
-                        resultDiv.appendChild(timeText);
-                    }
-
-                    if (isWin) {
-                        resultDiv.innerHTML += `
-                        <div class="text-green-600 font-bold text-base mb-2">🎉 مبروك! فزت في المحاولة ${gameState.currentRow + 1}!</div>
-                        <div class="text-gray-600 dark:text-gray-400 text-sm">الصعوبة: ${gameState.difficulty === 'hard' ? 'صعب (6 محاولات)' : 'سهل (8 محاولات)'}</div>
-                        <div class="text-gray-600 dark:text-gray-400 text-sm">الكلمة الصحيحة كانت:</div>
+                    const div = document.createElement('div');
+                    div.className = 'text-center mb-4';
+                    div.innerHTML = `
+                        <div class="${isWin ? 'text-green-600' : 'text-red-600'} font-bold text-base mb-2">${isWin ? '🎉 مبروك! فزت!' : '💔 خسارة!'}</div>
                         <div class="correct-word">${gameState.targetWord}</div>
                     `;
-                    } else {
-                        resultDiv.innerHTML += `
-                        <div class="text-red-600 font-bold text-base mb-2">💔 انتهت المحاولات!</div>
-                        <div class="text-gray-600 dark:text-gray-400 text-sm">الصعوبة: ${gameState.difficulty === 'hard' ? 'صعب (6 محاولات)' : 'سهل (8 محاولات)'}</div>
-                        <div class="text-gray-600 dark:text-gray-400 text-sm">الكلمة الصحيحة كانت:</div>
-                        <div class="correct-word">${gameState.targetWord}</div>
-                    `;
-                    }
-
-                    resultInfo.appendChild(resultDiv);
+                    info.appendChild(div);
                 }
-
                 updateAttemptsTable();
             }
 
-            // تحديث جدول المحاولات
             function updateAttemptsTable() {
-                const tableBody = document.getElementById('attemptsTableBody');
-                const container = document.getElementById('attemptsTableContainer');
-                const noAttemptsMessage = document.getElementById('noAttemptsMessage');
-                const tableElement = document.querySelector('.attempts-table');
-
+                const body = document.getElementById('attemptsTableBody');
+                const noMsg = document.getElementById('noAttemptsMessage');
+                const table = document.querySelector('.attempts-table');
                 if (gameState.attemptsHistory.length > 0) {
-                    noAttemptsMessage.classList.add('hidden');
-                    tableElement.classList.remove('hidden');
-                    tableBody.innerHTML = '';
-
-                    const recentAttempts = [...gameState.attemptsHistory].reverse();
-
-                    recentAttempts.forEach(attempt => {
-                        const row = document.createElement('tr');
-
-                        const attemptNumberCell = document.createElement('td');
-                        attemptNumberCell.className = 'attempt-number';
-                        attemptNumberCell.textContent = attempt.attemptNumber;
-
-                        const attemptsCell = document.createElement('td');
-                        attemptsCell.textContent = attempt.attempts;
-
-                        const resultCell = document.createElement('td');
-                        const resultSpan = document.createElement('span');
-                        resultSpan.className = `attempt-result ${attempt.result}`;
-                        resultSpan.textContent = attempt.result === 'win' ? 'فوز ✓' : 'خسارة ✗';
-                        resultCell.appendChild(resultSpan);
-
-                        row.appendChild(attemptNumberCell);
-                        row.appendChild(attemptsCell);
-                        row.appendChild(resultCell);
-
-                        tableBody.appendChild(row);
+                    noMsg.classList.add('hidden');
+                    table.classList.remove('hidden');
+                    body.innerHTML = '';
+                    [...gameState.attemptsHistory].reverse().forEach(a => {
+                        const r = document.createElement('tr');
+                        r.innerHTML = `<td class="attempt-number">${a.attemptNumber}</td><td>${a.attempts}</td><td><span class="attempt-result ${a.result}">${a.result === 'win' ? 'فوز ✓' : 'خسارة ✗'}</span></td>`;
+                        body.appendChild(r);
                     });
-                } else {
-                    noAttemptsMessage.classList.remove('hidden');
-                    tableElement.classList.add('hidden');
-                }
+                } else { noMsg.classList.remove('hidden'); table.classList.add('hidden'); }
             }
 
-            // إعداد مستمعي الأحداث
             function setupEventListeners() {
                 document.addEventListener('keydown', (e) => {
                     if (e.ctrlKey || e.metaKey || e.altKey) return;
-
-                    if (e.key === 'Enter') {
-                        handleInput('Enter');
-                    } else if (e.key === 'Backspace') {
-                        handleInput('Backspace');
-                    } else if (/^[\u0600-\u06FF]$/.test(e.key)) {
-                        handleInput(e.key);
-                    }
+                    if (e.key === 'Enter') handleInput('Enter');
+                    else if (e.key === 'Backspace') handleInput('Backspace');
+                    else if (/^[\u0600-\u06FF]$/.test(e.key)) handleInput(e.key);
                 });
 
-                // قائمة الصعوبة المنسدلة
-                const difficultyToggle = document.getElementById('difficultyToggle');
-                const difficultyMenu = document.getElementById('difficultyMenu');
-                const difficultyDropdown = document.querySelector('.difficulty-dropdown');
+                const diffToggle = document.getElementById('difficultyToggle');
+                const diffMenu = document.getElementById('difficultyMenu');
+                diffToggle.addEventListener('click', (e) => { e.stopPropagation(); diffMenu.classList.toggle('show'); });
+                document.addEventListener('click', () => { diffMenu.classList.remove('show'); });
 
-                difficultyToggle.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    difficultyMenu.classList.toggle('show');
-                    difficultyDropdown.classList.toggle('open');
+                document.querySelectorAll('.difficulty-option').forEach(opt => {
+                    opt.addEventListener('click', function() { changeDifficulty(this.dataset.difficulty); });
                 });
 
-                document.addEventListener('click', function(e) {
-                    if (!difficultyDropdown.contains(e.target)) {
-                        difficultyMenu.classList.remove('show');
-                        difficultyDropdown.classList.remove('open');
-                    }
-                });
-
-                // اختيار مستوى الصعوبة
-                document.querySelectorAll('.difficulty-option').forEach(option => {
-                    option.addEventListener('click', function() {
-                        const difficulty = this.dataset.difficulty;
-                        changeDifficulty(difficulty);
-                        difficultyMenu.classList.remove('show');
-                        difficultyDropdown.classList.remove('open');
-                    });
-                });
-
-                document.getElementById('helpBtn').addEventListener('click', () => {
-                    document.getElementById('helpModal').classList.remove('hidden');
-                });
-
-                document.getElementById('statsBtn').addEventListener('click', () => {
-                    showStats(gameState.gameWon);
-                });
-
-                document.getElementById('newGameHeaderBtn').addEventListener('click', () => {
-                    startNewGame();
-                });
+                document.getElementById('helpBtn').addEventListener('click', () => document.getElementById('helpModal').classList.remove('hidden'));
+                document.getElementById('statsBtn').addEventListener('click', () => showStats(gameState.gameWon));
+                document.getElementById('newGameHeaderBtn').addEventListener('click', startNewGame);
 
                 document.getElementById('themeToggle').addEventListener('click', () => {
-                    // تبديل بين الوضع الليلي (الأساسي) والوضع النهاري
-                    if (document.body.classList.contains('light-mode')) {
-                        // الانتقال إلى الوضع الليلي (الأساسي)
-                        document.body.classList.remove('light-mode');
-                        const icon = document.querySelector('#themeToggle i');
-                        icon.className = 'fas fa-sun text-lg';
-                        localStorage.setItem(THEME_KEY, 'true'); // الليلي هو الأساسي
-                    } else {
-                        // الانتقال إلى الوضع النهاري
-                        document.body.classList.add('light-mode');
-                        const icon = document.querySelector('#themeToggle i');
-                        icon.className = 'fas fa-moon text-lg';
-                        localStorage.setItem(THEME_KEY, 'false'); // النهاري
-                    }
+                    const isLight = document.body.classList.toggle('light-mode');
+                    document.querySelector('#themeToggle i').className = isLight ? 'fas fa-moon text-lg' : 'fas fa-sun text-lg';
+                    localStorage.setItem(THEME_KEY, !isLight);
                 });
 
-                document.getElementById('newGameFromStats').addEventListener('click', () => {
-                    document.getElementById('statsModal').classList.add('hidden');
-                    startNewGame();
-                });
-
-                document.getElementById('startGameBtn').addEventListener('click', () => {
-                    document.getElementById('helpModal').classList.add('hidden');
-                    startNewGame();
-                });
-
-                document.getElementById('closeHelp').addEventListener('click', () => {
-                    document.getElementById('helpModal').classList.add('hidden');
-                });
-
-                document.getElementById('closeStats').addEventListener('click', () => {
-                    document.getElementById('statsModal').classList.add('hidden');
-                });
-
-                // أحداث نافذة نتائج اللعبة
-                document.getElementById('closeGameResult').addEventListener('click', () => {
-                    document.getElementById('gameResultModal').classList.add('hidden');
-                });
-
-                document.getElementById('playAgainBtn').addEventListener('click', () => {
-                    document.getElementById('gameResultModal').classList.add('hidden');
-                    startNewGame();
-                });
-
-                document.getElementById('viewStatsBtn').addEventListener('click', () => {
-                    document.getElementById('gameResultModal').classList.add('hidden');
-                    showStats(gameState.gameWon);
-                });
-
-                document.querySelectorAll('.modal-overlay').forEach(modal => {
-                    modal.addEventListener('click', (e) => {
-                        if (e.target === modal) {
-                            modal.classList.add('hidden');
-                        }
-                    });
-                });
+                document.getElementById('newGameFromStats').addEventListener('click', startNewGame);
+                document.getElementById('startGameBtn').addEventListener('click', () => { document.getElementById('helpModal').classList.add('hidden'); startNewGame(); });
+                document.getElementById('closeHelp').addEventListener('click', () => document.getElementById('helpModal').classList.add('hidden'));
+                document.getElementById('closeStats').addEventListener('click', () => document.getElementById('statsModal').classList.add('hidden'));
+                document.getElementById('closeGameResult').addEventListener('click', () => document.getElementById('gameResultModal').classList.add('hidden'));
+                document.getElementById('playAgainBtn').addEventListener('click', startNewGame);
+                document.getElementById('viewStatsBtn').addEventListener('click', () => { document.getElementById('gameResultModal').classList.add('hidden'); showStats(gameState.gameWon); });
             }
 
             window.addEventListener('load', init);
