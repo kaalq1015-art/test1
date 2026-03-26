@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- إضافة مكتبة Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- تحميل قائمة الكلمات من ملف خارجي -->
     <script src="words.js"></script>
     <script>
         document.addEventListener('contextmenu', event => event.preventDefault());
@@ -516,7 +514,6 @@
         .difficulty-icon { font-size: 0.8rem; transition: transform 0.3s ease; }
         .difficulty-dropdown.open .difficulty-icon { transform: rotate(180deg); }
 
-        /* تنسيق أزرار الإضافة والتبليغ */
         .suggest-btn {
             background-color: #2980b9;
             color: white;
@@ -687,7 +684,6 @@
                         <div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div>
                     </div>
                 </div>
-                <!-- زر التبليغ عن كلمة صعبة -->
                 <button id="reportHardBtn" class="hard-word-btn">الكلمة صعبة! بلغنا</button>
                 <div class="result-buttons">
                     <button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90">
@@ -702,8 +698,7 @@
     </div>
 
     <script>
-        // ==================== إعدادات Supabase ====================
-        // المفاتيح الخاصة بالمشروع (يمكنك تغييرها حسب مشروعك)
+        // Supabase configuration
         const SUPABASE_URL = 'https://fgqpxberckadkbwybecp.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_9owboLLUIPUApmjLfs4gmQ_N7VNiwGd';
         let supabaseClient = null;
@@ -714,7 +709,6 @@
             }
         } catch(e) { console.warn("Supabase init error", e); }
 
-        // دالة آمنة للإرسال (لا تؤثر على اللعبة)
         async function reportToSupabase(word, type) {
             if (!supabaseClient) {
                 throw new Error("Supabase غير مهيأ");
@@ -724,7 +718,6 @@
             return true;
         }
 
-        // دالة مساعدة لعرض رسالة مؤقتة دون فقدان المحتوى الحالي للرسالة
         let tempMsgTimeout = null;
         function showTemporaryMessage(msg, duration = 3000) {
             const msgDiv = document.getElementById('message');
@@ -739,15 +732,12 @@
             }, duration);
         }
 
-        // باقي منطق اللعبة (يستخدم WORD_LIST و DICTIONARY من ملف words.js)
         const HELP_SEEN_KEY = 'kalima_help_seen_v10';
         const STATS_KEY = 'kalima_stats_v10';
         const THEME_KEY = 'kalima_dark_v10';
         const ATTEMPTS_KEY = 'kalima_attempts_v10';
         const ATTEMPT_MATRICES_KEY = 'kalima_attempt_matrices_v6';
         const DIFFICULTY_KEY = 'kalima_difficulty_v4';
-
-        // ملاحظة: WORD_LIST و DICTIONARY تأتي من ملف words.js
 
         const gameState = {
             targetWord: "",
@@ -768,7 +758,6 @@
         };
 
         function init() {
-            // التأكد من وجود WORD_LIST و DICTIONARY
             if (typeof WORD_LIST === 'undefined' || typeof DICTIONARY === 'undefined') {
                 console.error("ملف words.js لم يتم تحميله بشكل صحيح");
                 return;
@@ -989,9 +978,8 @@
             if (gameState.isProcessing) return;
             if (gameState.currentGuess.length !== 5) { showMessage('الكلمة يجب أن تكون 5 أحرف'); shakeRow(); return; }
             if (!isValidWord(gameState.currentGuess)) {
-                // عرض زر الإضافة
                 const msgDiv = document.getElementById('message');
-                msgDiv.innerHTML = ''; // مسح أي رسالة سابقة
+                msgDiv.innerHTML = '';
                 const textSpan = document.createElement('span');
                 textSpan.textContent = 'الكلمة غير موجودة.. ';
                 const btn = document.createElement('button');
@@ -1000,14 +988,12 @@
                 msgDiv.appendChild(textSpan);
                 msgDiv.appendChild(btn);
 
-                // مؤقت للإزالة التلقائية بعد 5 ثوانٍ
                 let autoRemoveTimer = setTimeout(() => {
                     if (msgDiv.contains(btn)) {
                         msgDiv.innerHTML = '';
                     }
                 }, 5000);
 
-                // عند الضغط على الزر
                 btn.onclick = async (e) => {
                     e.stopPropagation();
                     clearTimeout(autoRemoveTimer);
@@ -1274,7 +1260,6 @@
             document.getElementById('playAgainBtn').addEventListener('click', startNewGame);
             document.getElementById('viewStatsBtn').addEventListener('click', () => { document.getElementById('gameResultModal').classList.add('hidden'); showStats(gameState.gameWon); });
 
-            // تفعيل زر التبليغ عن الكلمة الصعبة
             const reportBtn = document.getElementById('reportHardBtn');
             if (reportBtn) {
                 reportBtn.onclick = () => {
