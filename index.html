@@ -643,7 +643,7 @@
                         <div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div>
                     </div>
                 </div>
-                <button id="reportHardBtn" class="hard-word-btn">الكلمة صعبة! بلّغ عنها</button>
+                <button id="reportHardBtn" class="hard-word-btn">الكلمة صعبة ؟</button>
                 <div class="result-buttons">
                     <button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90">
                         <i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى
@@ -1189,7 +1189,7 @@
                                 reportBtn.innerText = 'تم التبليغ بنجاح ✅';
                                 reportBtn.disabled = true;
                                 setTimeout(() => {
-                                    reportBtn.innerText = 'الكلمة صعبة! بلّغ عنها';
+                                    reportBtn.innerText = 'الكلمة صعبة ؟';
                                     reportBtn.disabled = false;
                                 }, 3000);
                             })
