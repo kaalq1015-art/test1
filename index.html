@@ -84,51 +84,33 @@
             touch-action: manipulation;
         }
 
-        /* تثبيت الكيبورد في الأسفل */
-        main {
+        /* تخطيط الصفحة */
+        .game-container {
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
-            padding: 10px 5px;
+            padding: 10px;
         }
 
-        #grid {
-            margin-bottom: 15px;
-        }
-
-        #keyboard {
-            padding: 8px;
-            width: 100%;
-            margin-top: auto;  /* يدفع الكيبورد للأسفل */
-        }
-
+        /* المربعات باستخدام aspect-ratio وحجم مرن */
         .tile {
-            width: clamp(40px, 10vw, 60px);
-            height: clamp(40px, 10vw, 60px);
+            width: 13vw;
+            max-width: 70px;
+            min-width: 40px;
+            aspect-ratio: 1 / 1;
             border: 2px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(1.4rem, 5vw, 2.2rem);
+            font-size: clamp(1.2rem, 5vw, 2rem);
             font-weight: bold;
             user-select: none;
             transition: all 0.3s ease;
             border-radius: 4px;
-        }
-
-        @media (max-width: 400px) {
-            .tile {
-                width: clamp(35px, 12vw, 45px);
-                height: clamp(35px, 12vw, 45px);
-                font-size: clamp(1.2rem, 5vw, 1.6rem);
-            }
-            .grid-row {
-                gap: clamp(3px, 1vw, 5px);
-            }
         }
 
         .tile.filled {
@@ -296,7 +278,7 @@
         .grid-row {
             display: flex;
             justify-content: center;
-            gap: clamp(4px, 1vw, 8px);
+            gap: 6px;
             margin-bottom: 6px;
         }
 
@@ -552,11 +534,11 @@
         </div>
     </header>
 
-    <main>
+    <div class="game-container">
         <div id="message" class="text-center font-bold"></div>
         <div id="grid" class="mb-4"></div>
         <div id="keyboard" class="w-full px-2 space-y-2 max-w-xl"></div>
-    </main>
+    </div>
 
     <div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
         <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
