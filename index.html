@@ -81,7 +81,7 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
-            overflow-y: auto; /* يسمح بالتمرير عند زيادة المحتوى */
+            overflow-y: auto;
             touch-action: manipulation;
         }
 
@@ -94,24 +94,45 @@
             max-width: 600px;
             margin: 0 auto;
             padding: 10px;
-            flex-shrink: 0; /* يمنع ضغط المحتوى */
-            min-height: 0;  /* يسمح بالتمرير داخل الحاوية إذا لزم */
+            flex-shrink: 0;
+            min-height: 0;
+        }
+
+        /* للشاشات الكبيرة */
+        @media (min-width: 768px) {
+            .game-container {
+                max-width: 800px;
+            }
         }
 
         .tile {
-            width: 13vw;
-            max-width: 70px;
-            min-width: 40px;
-            aspect-ratio: 1 / 1;
+            width: clamp(45px, 8vw, 80px);
+            height: clamp(45px, 8vw, 80px);
             border: 2px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(1.4rem, 6vw, 2.4rem);
+            font-size: clamp(1.6rem, 5vw, 2.5rem);
             font-weight: bold;
             user-select: none;
             transition: all 0.3s ease;
             border-radius: 4px;
+        }
+
+        @media (max-width: 640px) {
+            .tile {
+                width: clamp(40px, 12vw, 55px);
+                height: clamp(40px, 12vw, 55px);
+                font-size: clamp(1.2rem, 5vw, 1.8rem);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tile {
+                width: clamp(35px, 13vw, 48px);
+                height: clamp(35px, 13vw, 48px);
+                font-size: clamp(1.1rem, 5vw, 1.6rem);
+            }
         }
 
         .tile.filled {
@@ -596,7 +617,7 @@
                                 <th>#</th>
                                 <th>المحاولة</th>
                                 <th>النتيجة</th>
-                            </tr>
+                             </tr>
                         </thead>
                         <tbody id="attemptsTableBody"></tbody>
                     </table>
@@ -643,7 +664,7 @@
                         <div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div>
                     </div>
                 </div>
-                <button id="reportHardBtn" class="hard-word-btn">الكلمة صعبة ؟</button>
+                <button id="reportHardBtn" class="hard-word-btn">الكلمة صعبة! بلّغ عنها</button>
                 <div class="result-buttons">
                     <button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90">
                         <i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى
@@ -1189,7 +1210,7 @@
                                 reportBtn.innerText = 'تم التبليغ بنجاح ✅';
                                 reportBtn.disabled = true;
                                 setTimeout(() => {
-                                    reportBtn.innerText = 'الكلمة صعبة ؟';
+                                    reportBtn.innerText = 'الكلمة صعبة! بلّغ عنها';
                                     reportBtn.disabled = false;
                                 }, 3000);
                             })
