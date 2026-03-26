@@ -887,18 +887,22 @@
         }
 
         function createKeyboard() {
-            const keyboard = document.getElementById('keyboard');
-            const layout = [["ج", "ح", "خ", "ه", "ع", "غ", "ف", "ق", "ث", "ص", "ض"], ["ة", "ك", "م", "ن", "ت", "ا", "ل", "ب", "ي", "س", "ش"], ["ى", "و", "ر", "ز", "د", "ذ", "ط", "ظ", "ء", "أ"]];
-            keyboard.innerHTML = '';
-            layout.forEach((row, index) => {
-                const rowDiv = document.createElement('div');
-                rowDiv.className = 'keyboard-row';
-                if (index === 2) rowDiv.appendChild(createKey('Enter', 'Enter', 'wide enter'));
-                for (const char of row) rowDiv.appendChild(createKey(char, char));
-                if (index === 2) rowDiv.appendChild(createKey('⌫', 'Backspace', 'wide backspace'));
-                keyboard.appendChild(rowDiv);
-            });
-        }
+    const keyboard = document.getElementById('keyboard');
+    const layout = [
+        ["ج", "ح", "خ", "ه", "ع", "غ", "ف", "ق", "ث", "ص", "ض"],
+        ["ة", "ك", "م", "ن", "ت", "ل", "ب", "ي", "س", "ش"],
+        ["ر", "ز", "د", "ذ", "ط", "ظ"]
+    ];
+    keyboard.innerHTML = '';
+    layout.forEach((row, index) => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'keyboard-row';
+        if (index === 2) rowDiv.appendChild(createKey('Enter', 'Enter', 'wide enter'));
+        for (const char of row) rowDiv.appendChild(createKey(char, char));
+        if (index === 2) rowDiv.appendChild(createKey('⌫', 'Backspace', 'wide backspace'));
+        keyboard.appendChild(rowDiv);
+    });
+}
 
         function createKey(text, value, extraClass='') {
             const key = document.createElement('button');
