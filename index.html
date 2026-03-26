@@ -83,72 +83,27 @@
         }
 
         .tile {
-            width: 50px;
-            height: 50px;
+            width: clamp(40px, 10vw, 60px);
+            height: clamp(40px, 10vw, 60px);
             border: 2px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
+            font-size: clamp(1.4rem, 5vw, 2.2rem);
             font-weight: bold;
             user-select: none;
             transition: all 0.3s ease;
             border-radius: 4px;
         }
 
-        @media (max-width: 640px) {
+        @media (max-width: 400px) {
             .tile {
-                width: 48px;
-                height: 48px;
-                font-size: 1.7rem;
+                width: clamp(35px, 12vw, 45px);
+                height: clamp(35px, 12vw, 45px);
+                font-size: clamp(1.2rem, 5vw, 1.6rem);
             }
-        }
-
-        @media (max-width: 480px) {
-            .tile {
-                width: 44px;
-                height: 44px;
-                font-size: 1.6rem;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .tile {
-                width: 40px;
-                height: 40px;
-                font-size: 1.5rem;
-            }
-        }
-
-        @media (max-width: 340px) {
-            .tile {
-                width: 38px;
-                height: 38px;
-                font-size: 1.4rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .tile {
-                width: 55px;
-                height: 55px;
-                font-size: 2rem;
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .tile {
-                width: 58px;
-                height: 58px;
-                font-size: 2.1rem;
-            }
-        }
-
-        @media (min-width: 1280px) {
-            .tile {
-                width: 60px;
-                height: 60px;
-                font-size: 2.2rem;
+            .grid-row {
+                gap: clamp(3px, 1vw, 5px);
             }
         }
 
@@ -249,6 +204,7 @@
         .key.wide { min-width: 60px; }
 
         @media (max-width: 640px) { .key.wide { min-width: 50px; } }
+        @media (max-width: 480px) { .key.wide { min-width: 45px; } }
 
         .key.correct { background-color: var(--correct-color); color: white; }
         .key.present { background-color: var(--present-color); color: white; }
@@ -311,8 +267,8 @@
             margin: 0 auto;
         }
 
-        #grid { gap: 6px; margin-bottom: 15px; }
-        #keyboard { padding: 8px; gap: 6px; width: 100%; }
+        #grid { margin-bottom: 15px; }
+        #keyboard { padding: 8px; width: 100%; }
 
         .keyboard-row {
             display: flex;
@@ -320,6 +276,23 @@
             gap: 4px;
             margin-bottom: 6px;
             width: 100%;
+        }
+
+        @media (max-width: 640px) {
+            .keyboard-row { gap: 3px; }
+            .key { margin: 0 1px; padding: 0 2px; font-size: 0.9rem; }
+        }
+
+        @media (max-width: 480px) {
+            .keyboard-row { gap: 2px; }
+            .key { margin: 0 1px; padding: 0 1px; font-size: 0.85rem; }
+        }
+
+        .grid-row {
+            display: flex;
+            justify-content: center;
+            gap: clamp(4px, 1vw, 8px);
+            margin-bottom: 6px;
         }
 
         #message {
@@ -416,7 +389,6 @@
             50% { transform: scale(1.05); }
         }
 
-        .grid-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 6px; }
         .no-attempts-message { text-align: center; padding: 15px; color: var(--absent-color); font-style: italic; font-size: 0.95rem; }
 
         .attempt-matrix-container {
@@ -698,7 +670,6 @@
     </div>
 
     <script>
-        // Supabase configuration
         const SUPABASE_URL = 'https://fgqpxberckadkbwybecp.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_9owboLLUIPUApmjLfs4gmQ_N7VNiwGd';
         let supabaseClient = null;
@@ -887,22 +858,22 @@
         }
 
         function createKeyboard() {
-    const keyboard = document.getElementById('keyboard');
-    const layout = [
-        ["ج", "ح", "خ", "ه", "ع", "غ", "ف", "ق", "ث", "ص"],
-        ["ة", "ك", "م", "ن", "ت", "ل", "ب", "ي", "س", "ش"],
-        ["ض", "ر", "ز", "د", "ذ", "ط", "ظ"]
-    ];
-    keyboard.innerHTML = '';
-    layout.forEach((row, index) => {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'keyboard-row';
-        if (index === 2) rowDiv.appendChild(createKey('Enter', 'Enter', 'wide enter'));
-        for (const char of row) rowDiv.appendChild(createKey(char, char));
-        if (index === 2) rowDiv.appendChild(createKey('⌫', 'Backspace', 'wide backspace'));
-        keyboard.appendChild(rowDiv);
-    });
-}
+            const keyboard = document.getElementById('keyboard');
+            const layout = [
+                ["ج", "ح", "خ", "ه", "ع", "غ", "ف", "ق", "ث", "ص"],
+                ["ة", "ك", "م", "ن", "ت", "ا", "ل", "ب", "ي", "س", "ش"],
+                ["ض", "ر", "ز", "د", "ذ", "ط", "ظ"]
+            ];
+            keyboard.innerHTML = '';
+            layout.forEach((row, index) => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'keyboard-row';
+                if (index === 2) rowDiv.appendChild(createKey('Enter', 'Enter', 'wide enter'));
+                for (const char of row) rowDiv.appendChild(createKey(char, char));
+                if (index === 2) rowDiv.appendChild(createKey('⌫', 'Backspace', 'wide backspace'));
+                keyboard.appendChild(rowDiv);
+            });
+        }
 
         function createKey(text, value, extraClass='') {
             const key = document.createElement('button');
