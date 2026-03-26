@@ -84,51 +84,42 @@
             touch-action: manipulation;
         }
 
-        main {
+        .game-wrapper {
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            justify-content: space-between;
             width: 100%;
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 10px;
         }
 
-        @media (min-width: 768px) {
-            main {
-                max-width: 800px;
+        @media (max-width: 768px) {
+            .game-wrapper {
+                max-width: 600px;
             }
         }
 
         .tile {
-            width: clamp(45px, 8vw, 80px);
-            height: clamp(45px, 8vw, 80px);
+            width: clamp(50px, 10vw, 80px);
+            height: clamp(50px, 10vw, 80px);
             border: 2px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(1.6rem, 5vw, 2.5rem);
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
             font-weight: bold;
             user-select: none;
             transition: all 0.3s ease;
             border-radius: 4px;
         }
 
-        @media (max-width: 640px) {
-            .tile {
-                width: clamp(40px, 12vw, 55px);
-                height: clamp(40px, 12vw, 55px);
-                font-size: clamp(1.2rem, 5vw, 1.8rem);
-            }
-        }
-
         @media (max-width: 480px) {
             .tile {
-                width: clamp(35px, 13vw, 48px);
-                height: clamp(35px, 13vw, 48px);
-                font-size: clamp(1.1rem, 5vw, 1.6rem);
+                width: clamp(45px, 12vw, 55px);
+                height: clamp(45px, 12vw, 55px);
+                font-size: clamp(1.4rem, 6vw, 1.8rem);
             }
         }
 
@@ -172,14 +163,14 @@
         }
 
         .key {
-            height: clamp(45px, 8vw, 55px);
-            min-width: clamp(28px, 6vw, 40px);
+            height: clamp(50px, 8vw, 65px);
+            min-width: clamp(32px, 6vw, 45px);
             background-color: var(--key-bg);
             color: var(--key-text);
             border: none;
             border-radius: 4px;
             font-weight: bold;
-            font-size: clamp(0.85rem, 3.5vw, 1rem);
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -195,7 +186,7 @@
         .key.enter {
             background-color: var(--enter-color);
             color: white;
-            font-size: clamp(0.75rem, 3vw, 0.85rem);
+            font-size: clamp(0.9rem, 3vw, 1rem);
         }
 
         .key.backspace {
@@ -205,31 +196,31 @@
 
         @media (max-width: 640px) {
             .key {
-                height: clamp(42px, 7vw, 48px);
-                min-width: clamp(24px, 5vw, 32px);
-                font-size: clamp(0.8rem, 3.2vw, 0.95rem);
+                height: clamp(45px, 7vw, 52px);
+                min-width: clamp(28px, 5vw, 35px);
+                font-size: clamp(0.9rem, 3vw, 1rem);
                 margin: 0 2px;
                 padding: 0 3px;
             }
-            .key.enter { font-size: clamp(0.7rem, 2.8vw, 0.8rem); }
+            .key.enter { font-size: clamp(0.8rem, 2.8vw, 0.9rem); }
         }
 
         @media (max-width: 480px) {
             .key {
-                height: clamp(38px, 7vw, 45px);
-                min-width: clamp(22px, 4.5vw, 28px);
-                font-size: clamp(0.75rem, 3vw, 0.9rem);
+                height: clamp(42px, 7vw, 48px);
+                min-width: clamp(26px, 4.5vw, 32px);
+                font-size: clamp(0.85rem, 3vw, 0.95rem);
                 margin: 0 1.5px;
                 padding: 0 2px;
             }
-            .key.enter { font-size: clamp(0.65rem, 2.5vw, 0.75rem); }
+            .key.enter { font-size: clamp(0.75rem, 2.5vw, 0.85rem); }
         }
 
         .key:hover { opacity: 0.9; }
-        .key.wide { min-width: 60px; }
+        .key.wide { min-width: 70px; }
 
-        @media (max-width: 640px) { .key.wide { min-width: 50px; } }
-        @media (max-width: 480px) { .key.wide { min-width: 45px; } }
+        @media (max-width: 640px) { .key.wide { min-width: 60px; } }
+        @media (max-width: 480px) { .key.wide { min-width: 55px; } }
 
         .key.correct { background-color: var(--correct-color); color: white; }
         .key.present { background-color: var(--present-color); color: white; }
@@ -297,8 +288,8 @@
         .grid-row {
             display: flex;
             justify-content: center;
-            gap: 6px;
-            margin-bottom: 6px;
+            gap: 8px;
+            margin-bottom: 8px;
         }
 
         #message {
@@ -553,13 +544,12 @@
         </div>
     </header>
 
-    <main>
+    <div class="game-wrapper">
         <div id="message" class="text-center font-bold"></div>
         <div id="grid" class="mb-4"></div>
         <div id="keyboard" class="w-full px-2 space-y-2 max-w-xl"></div>
-    </main>
+    </div>
 
-    <!-- باقي النوافذ كما هي -->
     <div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
         <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
             <div class="p-5">
@@ -615,10 +605,10 @@
                                 <th>#</th>
                                 <th>المحاولة</th>
                                 <th>النتيجة</th>
-                             </tr>
+                              </tr>
                         </thead>
                         <tbody id="attemptsTableBody"></tbody>
-                    </table>
+                     </table>
                 </div>
                 <div class="flex justify-around mb-6">
                     <div class="text-center">
