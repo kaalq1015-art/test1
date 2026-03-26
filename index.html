@@ -89,50 +89,28 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: center;
+            align-items: center;
             width: 100%;
-            max-width: 600px;
+            max-width: 500px;
             margin: 0 auto;
             padding: 10px;
-            flex-shrink: 0;
-            min-height: 0;
-        }
-
-        /* للشاشات الكبيرة */
-        @media (min-width: 768px) {
-            .game-container {
-                max-width: 800px;
-            }
+            gap: 15px;
         }
 
         .tile {
-            width: clamp(45px, 8vw, 80px);
-            height: clamp(45px, 8vw, 80px);
+            width: clamp(52px, 16vw, 62px);
+            height: clamp(52px, 16vw, 62px);
             border: 2px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(1.6rem, 5vw, 2.5rem);
+            font-size: clamp(1.8rem, 6vw, 2.2rem);
             font-weight: bold;
             user-select: none;
             transition: all 0.3s ease;
             border-radius: 4px;
-        }
-
-        @media (max-width: 640px) {
-            .tile {
-                width: clamp(40px, 12vw, 55px);
-                height: clamp(40px, 12vw, 55px);
-                font-size: clamp(1.2rem, 5vw, 1.8rem);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .tile {
-                width: clamp(35px, 13vw, 48px);
-                height: clamp(35px, 13vw, 48px);
-                font-size: clamp(1.1rem, 5vw, 1.6rem);
-            }
+            text-transform: uppercase;
         }
 
         .tile.filled {
@@ -175,14 +153,14 @@
         }
 
         .key {
-            height: clamp(45px, 8vw, 55px);
-            min-width: clamp(28px, 6vw, 40px);
+            height: clamp(48px, 12vw, 58px);
+            min-width: clamp(30px, 8vw, 42px);
             background-color: var(--key-bg);
             color: var(--key-text);
             border: none;
             border-radius: 4px;
             font-weight: bold;
-            font-size: clamp(0.85rem, 3.5vw, 1rem);
+            font-size: clamp(0.9rem, 4vw, 1.1rem);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -190,50 +168,25 @@
             user-select: none;
             transition: all 0.2s ease;
             flex: 1;
-            margin: 0 3px;
-            padding: 0 4px;
+            margin: 0 2px;
             touch-action: manipulation;
         }
 
         .key.enter {
             background-color: var(--enter-color);
             color: white;
-            font-size: clamp(0.75rem, 3vw, 0.85rem);
+            font-size: clamp(0.75rem, 3vw, 0.9rem);
+            min-width: clamp(55px, 15vw, 75px);
         }
 
         .key.backspace {
             background-color: var(--backspace-color);
             color: white;
-        }
-
-        @media (max-width: 640px) {
-            .key {
-                height: clamp(42px, 7vw, 48px);
-                min-width: clamp(24px, 5vw, 32px);
-                font-size: clamp(0.8rem, 3.2vw, 0.95rem);
-                margin: 0 2px;
-                padding: 0 3px;
-            }
-            .key.enter { font-size: clamp(0.7rem, 2.8vw, 0.8rem); }
-        }
-
-        @media (max-width: 480px) {
-            .key {
-                height: clamp(38px, 7vw, 45px);
-                min-width: clamp(22px, 4.5vw, 28px);
-                font-size: clamp(0.75rem, 3vw, 0.9rem);
-                margin: 0 1.5px;
-                padding: 0 2px;
-            }
-            .key.enter { font-size: clamp(0.65rem, 2.5vw, 0.75rem); }
+            min-width: clamp(45px, 12vw, 60px);
         }
 
         .key:hover { opacity: 0.9; }
-        .key.wide { min-width: 60px; }
-
-        @media (max-width: 640px) { .key.wide { min-width: 50px; } }
-        @media (max-width: 480px) { .key.wide { min-width: 45px; } }
-
+        
         .key.correct { background-color: var(--correct-color); color: white; }
         .key.present { background-color: var(--present-color); color: white; }
         .key.absent { background-color: var(--absent-color); color: white; }
@@ -257,44 +210,16 @@
         }
 
         header {
-            padding: 8px 12px;
+            padding: 10px 15px;
             border-bottom: 1px solid var(--border-color);
         }
-
-        h1 { font-size: 1.6rem; text-align: center; }
-
-        #newGameHeaderBtn {
-            background-color: var(--newgame-color);
-            color: white;
-            transition: background-color 0.2s ease;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        @media (max-width: 480px) {
-            #newGameHeaderBtn { width: 40px; height: 40px; }
-        }
-
-        #newGameHeaderBtn:hover { background-color: var(--newgame-hover); }
-        #newGameHeaderBtn:active { transform: scale(0.95); }
 
         .keyboard-row {
             display: flex;
             justify-content: center;
             gap: 4px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             width: 100%;
-        }
-
-        @media (max-width: 640px) {
-            .keyboard-row { gap: 3px; }
-        }
-        @media (max-width: 480px) {
-            .keyboard-row { gap: 2px; }
         }
 
         .grid-row {
@@ -306,8 +231,8 @@
 
         #message {
             font-size: 1rem;
-            min-height: 40px;
-            margin-bottom: 12px;
+            min-height: 42px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -370,8 +295,6 @@
         .color-box.present { background-color: var(--present-color); border-color: var(--present-color); color: white; }
         .color-box.absent { background-color: var(--absent-color); border-color: var(--absent-color); color: white; }
 
-        .color-description { flex: 1; font-size: 0.95rem; }
-
         .attempts-table-container {
             max-height: 250px;
             overflow-y: auto;
@@ -385,20 +308,6 @@
         .attempts-table th { background-color: var(--default-color); padding: 8px; text-align: center; border-bottom: 2px solid var(--border-color); }
         .attempts-table td { padding: 6px; text-align: center; border-bottom: 1px solid var(--border-color); }
 
-        .attempt-number { font-weight: bold; color: var(--correct-color); }
-        .attempt-result { font-size: 1.1rem; font-weight: bold; }
-        .attempt-result.win { color: var(--correct-color); }
-        .attempt-result.loss { color: var(--absent-color); }
-        .attempts-title { font-size: 1.2rem; font-weight: bold; margin: 12px 0 8px 0; text-align: center; color: var(--text-color); }
-
-        .win-celebration { animation: winCelebration 2s ease infinite; }
-        @keyframes winCelebration {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .no-attempts-message { text-align: center; padding: 15px; color: var(--absent-color); font-style: italic; font-size: 0.95rem; }
-
         .attempt-matrix-container {
             margin: 20px 0;
             padding: 15px;
@@ -407,58 +316,32 @@
             background-color: rgba(129, 131, 132, 0.05);
         }
 
-        .matrix-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; text-align: center; color: var(--text-color); }
         .matrix-grid { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 15px; }
         .matrix-row { display: flex; justify-content: center; gap: 6px; }
 
         .matrix-tile {
             width: 24px;
             height: 24px;
-            border: 1px solid transparent;
             border-radius: 3px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            user-select: none;
-            transition: all 0.3s ease;
-            cursor: pointer;
         }
 
-        .matrix-tile.correct { background-color: var(--correct-color); border-color: var(--correct-color); }
-        .matrix-tile.present { background-color: var(--present-color); border-color: var(--present-color); }
-        .matrix-tile.absent { background-color: var(--absent-color); border-color: var(--absent-color); }
-
-        .matrix-legend { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
-        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; }
-        .legend-color { width: 16px; height: 16px; border-radius: 3px; }
-        .legend-color.correct { background-color: var(--correct-color); }
-        .legend-color.present { background-color: var(--present-color); }
-        .legend-color.absent { background-color: var(--absent-color); }
-
-        .result-buttons { display: flex; gap: 10px; margin-top: 20px; }
-        .result-buttons button { flex: 1; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; transition: all 0.2s ease; }
-
-        @media (max-width: 480px) {
-            .result-buttons { flex-direction: column; gap: 8px; }
-        }
+        .matrix-tile.correct { background-color: var(--correct-color); }
+        .matrix-tile.present { background-color: var(--present-color); }
+        .matrix-tile.absent { background-color: var(--absent-color); }
 
         .difficulty-dropdown { position: relative; display: inline-block; }
         .difficulty-toggle {
-            padding: 8px 16px;
+            padding: 6px 12px;
             border-radius: 6px;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
-            transition: all 0.3s ease;
             border: 2px solid var(--border-color);
             background-color: var(--bg-color);
             color: var(--text-color);
             display: flex;
             align-items: center;
-            gap: 8px;
-            min-width: 120px;
-            justify-content: center;
+            gap: 6px;
         }
 
         .difficulty-menu {
@@ -471,7 +354,6 @@
             border: 2px solid var(--border-color);
             border-radius: 6px;
             z-index: 100;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             display: none;
         }
 
@@ -479,20 +361,16 @@
 
         .difficulty-option {
             width: 100%;
-            padding: 12px 16px;
+            padding: 10px;
             text-align: center;
-            border: none;
             background: none;
             color: var(--text-color);
-            font-size: 0.9rem;
             cursor: pointer;
             display: block;
             border-bottom: 1px solid var(--border-color);
         }
 
         .difficulty-option.active { color: var(--correct-color); font-weight: bold; }
-        .difficulty-icon { font-size: 0.8rem; transition: transform 0.3s ease; }
-        .difficulty-dropdown.open .difficulty-icon { transform: rotate(180deg); }
 
         .suggest-btn {
             background-color: #2980b9;
@@ -503,10 +381,7 @@
             margin-right: 8px;
             cursor: pointer;
             border: none;
-            transition: 0.2s;
         }
-        .suggest-btn:hover { background-color: #1f6392; }
-        .suggest-btn.disabled, .suggest-btn:disabled { opacity: 0.6; cursor: not-allowed; }
         .hard-word-btn {
             background-color: #e67e22;
             color: white;
@@ -517,84 +392,81 @@
             margin-top: 15px;
             cursor: pointer;
             border: none;
-            transition: background 0.2s;
         }
-        .hard-word-btn:hover { background-color: #d35400; }
-        .hard-word-btn.disabled, .hard-word-btn:disabled { opacity: 0.6; cursor: not-allowed; }
     </style>
 </head>
 <body>
-    <header class="grid grid-cols-3 items-center px-2 py-3 border-b border-[var(--border-color)] min-h-[60px]">
-        <div class="flex items-center gap-1">
-            <button id="helpBtn" class="p-1.5 hover:bg-[var(--default-color)] rounded-full">
-                <i class="fas fa-question-circle text-lg"></i>
+    <header class="grid grid-cols-3 items-center px-4 py-3 border-b border-[var(--border-color)]">
+        <div class="flex items-center gap-2">
+            <button id="helpBtn" class="p-2 hover:bg-[var(--default-color)] rounded-full">
+                <i class="fas fa-question-circle text-xl"></i>
             </button>
-            <button id="statsBtn" class="p-1.5 hover:bg-[var(--default-color)] rounded-full">
-                <i class="fas fa-chart-bar text-lg"></i>
+            <button id="statsBtn" class="p-2 hover:bg-[var(--default-color)] rounded-full">
+                <i class="fas fa-chart-bar text-xl"></i>
             </button>
         </div>
         <div class="flex justify-center">
-            <h1 class="font-bold text-lg sm:text-xl whitespace-nowrap">كلمة</h1>
+            <h1 class="font-bold text-2xl tracking-wider">كلمة</h1>
         </div>
-        <div class="flex items-center justify-end gap-1 sm:gap-2">
+        <div class="flex items-center justify-end gap-2">
             <div class="difficulty-dropdown">
-                <button id="difficultyToggle" class="flex items-center gap-1 px-1.5 py-1 sm:px-2 sm:py-1.5 border-2 border-[var(--border-color)] rounded-lg bg-[var(--bg-color)]">
-                    <span class="text-[10px] sm:text-sm font-bold">الصعوبة</span>
-                    <i class="fas fa-chevron-down text-[8px] sm:text-[10px]"></i>
+                <button id="difficultyToggle" class="difficulty-toggle">
+                    <span class="text-xs font-bold">الصعوبة</span>
+                    <i class="fas fa-chevron-down text-[10px]"></i>
                 </button>
-                <div id="difficultyMenu" class="difficulty-menu text-xs sm:text-sm">
+                <div id="difficultyMenu" class="difficulty-menu text-sm">
                     <button data-difficulty="hard" class="difficulty-option active">صعب</button>
                     <button data-difficulty="easy" class="difficulty-option">سهل</button>
                 </div>
             </div>
-            <button id="newGameHeaderBtn" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center bg-[var(--newgame-color)] text-white rounded-full shrink-0">
-                <i class="fas fa-redo-alt text-xs sm:text-sm"></i>
+            <button id="newGameHeaderBtn" class="w-9 h-9 flex items-center justify-center bg-[var(--newgame-color)] text-white rounded-full">
+                <i class="fas fa-redo-alt text-sm"></i>
             </button>
-            <button id="themeToggle" class="p-1.5 hover:bg-[var(--default-color)] rounded-full shrink-0">
-                <i class="fas fa-sun text-lg"></i>
+            <button id="themeToggle" class="p-2 hover:bg-[var(--default-color)] rounded-full">
+                <i class="fas fa-sun text-xl"></i>
             </button>
         </div>
     </header>
 
     <div class="game-container">
-        <div id="message" class="text-center font-bold"></div>
-        <div id="grid" class="mb-4"></div>
-        <div id="keyboard" class="w-full px-2 space-y-2 max-w-xl"></div>
+        <div id="message" class="font-bold"></div>
+        <div id="grid"></div>
+        <div id="keyboard" class="w-full"></div>
     </div>
 
     <div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
         <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
-            <div class="p-5">
+            <div class="p-6">
                 <div class="flex justify-between items-center mb-5">
                     <h2 class="text-xl font-bold">طريقة اللعب</h2>
-                    <button id="closeHelp" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
+                    <button id="closeHelp" class="text-2xl">&times;</button>
                 </div>
                 <div class="mb-6">
                     <p class="text-base mb-5 text-center" id="helpAttemptsText">خمّن الكلمة في 6 محاولات.</p>
                     <div class="color-example">
                         <div class="color-box correct"></div>
                         <div class="color-description">
-                            <h3 class="font-bold mb-1">اللون الأخضر</h3>
+                            <h3 class="font-bold">اللون الأخضر</h3>
                             <p>الحرف صحيح وفي المكان الصحيح.</p>
                         </div>
                     </div>
                     <div class="color-example">
                         <div class="color-box present"></div>
                         <div class="color-description">
-                            <h3 class="font-bold mb-1">اللون الأصفر</h3>
+                            <h3 class="font-bold">اللون الأصفر</h3>
                             <p>الحرف صحيح ولكن في المكان الخطأ.</p>
                         </div>
                     </div>
                     <div class="color-example">
                         <div class="color-box absent"></div>
                         <div class="color-description">
-                            <h3 class="font-bold mb-1">اللون الرمادي</h3>
+                            <h3 class="font-bold">اللون الرمادي</h3>
                             <p>الحرف غير موجود في الكلمة.</p>
                         </div>
                     </div>
                 </div>
-                <div class="text-center mt-5">
-                    <button id="startGameBtn" class="bg-[var(--correct-color)] text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 text-base">فهمت، ابدأ اللعب</button>
+                <div class="text-center">
+                    <button id="startGameBtn" class="bg-[var(--correct-color)] text-white px-8 py-3 rounded-lg font-bold">ابدأ اللعب</button>
                 </div>
             </div>
         </div>
@@ -602,26 +474,12 @@
 
     <div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
         <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
-            <div class="p-5">
+            <div class="p-6">
                 <div class="flex justify-between items-center mb-5">
                     <h2 class="text-xl font-bold">الإحصائيات</h2>
-                    <button id="closeStats" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
+                    <button id="closeStats" class="text-2xl">&times;</button>
                 </div>
-                <div id="gameResultInfo" class="mb-4"></div>
-                <div id="attemptsTableContainer" class="attempts-table-container">
-                    <div class="attempts-title">سجل المحاولات</div>
-                    <div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة. ابدأ اللعب الآن!</div>
-                    <table class="attempts-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>المحاولة</th>
-                                <th>النتيجة</th>
-                             </tr>
-                        </thead>
-                        <tbody id="attemptsTableBody"></tbody>
-                    </table>
-                </div>
+                <div id="gameResultInfo"></div>
                 <div class="flex justify-around mb-6">
                     <div class="text-center">
                         <div id="playedCount" class="text-2xl font-bold">0</div>
@@ -635,43 +493,27 @@
                         <div id="currentStreak" class="text-2xl font-bold">0</div>
                         <div class="text-xs">تتابع</div>
                     </div>
-                    <div class="text-center">
-                        <div id="maxStreak" class="text-2xl font-bold">0</div>
-                        <div class="text-xs">أعلى تتابع</div>
-                    </div>
                 </div>
-                <div class="space-y-2">
-                    <button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-2.5 rounded font-bold hover:bg-[var(--default-color)] text-sm">لعبة جديدة</button>
-                </div>
+                <button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-3 rounded font-bold">لعبة جديدة</button>
             </div>
         </div>
     </div>
 
     <div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
         <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
-            <div class="p-5">
+            <div class="p-6">
                 <div class="flex justify-between items-center mb-5">
                     <h2 class="text-xl font-bold" id="resultModalTitle">نتيجة اللعبة</h2>
-                    <button id="closeGameResult" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
+                    <button id="closeGameResult" class="text-2xl">&times;</button>
                 </div>
                 <div id="gameResultDetails" class="text-center mb-4"></div>
                 <div id="attemptMatrixContainer" class="attempt-matrix-container">
-                    <h3 class="matrix-title">خريطة رحلتك في التفكير</h3>
+                    <h3 class="text-center mb-3 font-bold">خريطة التفكير</h3>
                     <div id="matrixGrid" class="matrix-grid"></div>
-                    <div class="matrix-legend">
-                        <div class="legend-item"><div class="legend-color correct"></div><span>صحيح</span></div>
-                        <div class="legend-item"><div class="legend-color present"></div><span>موجود بموقع آخر</span></div>
-                        <div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div>
-                    </div>
                 </div>
                 <button id="reportHardBtn" class="hard-word-btn">الكلمة صعبة! بلّغ عنها</button>
-                <div class="result-buttons">
-                    <button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90">
-                        <i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى
-                    </button>
-                    <button id="viewStatsBtn" class="border border-[var(--border-color)] hover:bg-[var(--default-color)]">
-                        <i class="fas fa-chart-bar ml-2"></i>عرض الإحصائيات
-                    </button>
+                <div class="flex gap-2 mt-4">
+                    <button id="playAgainBtn" class="flex-1 bg-[var(--correct-color)] text-white py-3 rounded-lg font-bold">العب مرة أخرى</button>
                 </div>
             </div>
         </div>
@@ -684,7 +526,6 @@
         try {
             if (typeof supabase !== 'undefined' && supabase.createClient) {
                 supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                console.log("Supabase client initialized");
             }
         } catch(e) { console.warn("Supabase init error", e); }
 
@@ -814,10 +655,10 @@
             const icon = document.querySelector('#themeToggle i');
             if (saved === 'false') {
                 document.body.classList.add('light-mode');
-                icon.className = 'fas fa-moon text-lg';
+                icon.className = 'fas fa-moon text-xl';
             } else {
                 document.body.classList.remove('light-mode');
-                icon.className = 'fas fa-sun text-lg';
+                icon.className = 'fas fa-sun text-xl';
             }
         }
 
@@ -856,9 +697,9 @@
             layout.forEach((row, index) => {
                 const rowDiv = document.createElement('div');
                 rowDiv.className = 'keyboard-row';
-                if (index === 2) rowDiv.appendChild(createKey('Enter', 'Enter', 'wide enter'));
+                if (index === 2) rowDiv.appendChild(createKey('دخول', 'Enter', 'enter'));
                 for (const char of row) rowDiv.appendChild(createKey(char, char));
-                if (index === 2) rowDiv.appendChild(createKey('⌫', 'Backspace', 'wide backspace'));
+                if (index === 2) rowDiv.appendChild(createKey('⌫', 'Backspace', 'backspace'));
                 keyboard.appendChild(rowDiv);
             });
         }
@@ -941,7 +782,7 @@
                 textSpan.textContent = 'الكلمة غير موجودة.. ';
                 const btn = document.createElement('button');
                 btn.className = 'suggest-btn';
-                btn.textContent = 'إضافة للقاموس؟';
+                btn.textContent = 'إضافة؟';
                 msgDiv.appendChild(textSpan);
                 msgDiv.appendChild(btn);
 
@@ -957,14 +798,8 @@
                     try {
                         await reportToSupabase(gameState.currentGuess, 'new_word');
                         msgDiv.innerHTML = '✅ تم إرسال طلبك للقاموس';
-                        setTimeout(() => {
-                            if (msgDiv.innerHTML === '✅ تم إرسال طلبك للقاموس') msgDiv.innerHTML = '';
-                        }, 2000);
                     } catch(err) {
-                        msgDiv.innerHTML = '❌ حدث خطأ أثناء الإرسال';
-                        setTimeout(() => {
-                            if (msgDiv.innerHTML === '❌ حدث خطأ أثناء الإرسال') msgDiv.innerHTML = '';
-                        }, 2000);
+                        msgDiv.innerHTML = '❌ حدث خطأ';
                     }
                 };
                 shakeRow();
@@ -1066,26 +901,20 @@
                 matrix.push(row);
             }
             gameState.attemptMatrices.unshift({ matrix, result:'win', attempts:gameState.currentRow+1, difficulty:gameState.difficulty, word:gameState.targetWord });
-            if (gameState.attemptMatrices.length>50) gameState.attemptMatrices.pop();
             saveAttemptMatrices();
-
             gameState.attemptsHistory.unshift({ attemptNumber: gameState.attemptsHistory.length+1, attempts:gameState.currentRow+1, result:'win', difficulty:gameState.difficulty, word:gameState.targetWord });
-            if (gameState.attemptsHistory.length>100) gameState.attemptsHistory.pop();
             saveAttemptsHistory();
-
             gameState.stats.played++;
             gameState.stats.wins++;
             gameState.stats.currentStreak++;
             gameState.stats.maxStreak = Math.max(gameState.stats.maxStreak, gameState.stats.currentStreak);
             saveStats();
             updateStatsDisplay();
-            setTimeout(() => document.querySelectorAll('.grid-row')[gameState.currentRow]?.classList.add('win-celebration'), 2000);
-            setTimeout(() => showGameResultModal(true), 2500);
+            setTimeout(() => showGameResultModal(true), 1500);
         }
 
         function handleLoss() {
-            gameState.gameDuration = Math.floor((new Date() - gameState.startTime)/1000);
-            showMessage(`💔 انتهت المحاولات! الكلمة الصحيحة: ${gameState.targetWord}`);
+            showMessage(`💔 الكلمة: ${gameState.targetWord}`);
             const matrix = [];
             for (let r=0; r<gameState.maxRows; r++) {
                 const row = [];
@@ -1122,15 +951,12 @@
             const m = document.getElementById('gameResultModal');
             const t = document.getElementById('resultModalTitle');
             const d = document.getElementById('gameResultDetails');
-            t.textContent = isWin ? '🎉 مبروك! فزت!' : '💔 انتهت المحاولات!';
+            t.textContent = isWin ? '🎉 مبروك! فزت!' : '💔 خسارة!';
             d.innerHTML = `
-                <div class="${isWin ? 'text-green-600' : 'text-red-600'} font-bold text-lg mb-2">${isWin ? 'لقد فزت في المحاولة '+(gameState.currentRow+1) : 'انتهت محاولاتك!'}</div>
-                <div class="text-gray-600 dark:text-gray-400 mb-3">الكلمة الصحيحة:</div>
                 <div class="correct-word">${gameState.targetWord}</div>
             `;
             renderAttemptMatrix();
             m.classList.remove('hidden');
-            setTimeout(() => { m.style.opacity = '1'; m.style.transform = 'scale(1)'; }, 10);
         }
 
         function showStats(isWin=false) { updateStatsDisplay(isWin); document.getElementById('statsModal').classList.remove('hidden'); }
@@ -1138,32 +964,11 @@
             document.getElementById('playedCount').textContent = gameState.stats.played;
             document.getElementById('winPercent').textContent = gameState.stats.played ? Math.round((gameState.stats.wins/gameState.stats.played)*100)+'%' : '0%';
             document.getElementById('currentStreak').textContent = gameState.stats.currentStreak;
-            document.getElementById('maxStreak').textContent = gameState.stats.maxStreak;
             const info = document.getElementById('gameResultInfo');
             info.innerHTML = '';
             if (gameState.gameOver) {
-                const div = document.createElement('div');
-                div.className = 'text-center mb-4';
-                div.innerHTML = `<div class="${isWin?'text-green-600':'text-red-600'} font-bold text-base mb-2">${isWin?'🎉 مبروك! فزت!':'💔 خسارة!'}</div><div class="correct-word">${gameState.targetWord}</div>`;
-                info.appendChild(div);
+                info.innerHTML = `<div class="correct-word">${gameState.targetWord}</div>`;
             }
-            updateAttemptsTable();
-        }
-
-        function updateAttemptsTable() {
-            const body = document.getElementById('attemptsTableBody');
-            const noMsg = document.getElementById('noAttemptsMessage');
-            const table = document.querySelector('.attempts-table');
-            if (gameState.attemptsHistory.length > 0) {
-                noMsg.classList.add('hidden');
-                table.classList.remove('hidden');
-                body.innerHTML = '';
-                [...gameState.attemptsHistory].reverse().forEach(a => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<td class="attempt-number">${a.attemptNumber}</td><td>${a.attempts}</td><td><span class="attempt-result ${a.result}">${a.result==='win'?'فوز ✓':'خسارة ✗'}</span></td>`;
-                    body.appendChild(tr);
-                });
-            } else { noMsg.classList.remove('hidden'); table.classList.add('hidden'); }
         }
 
         function setupEventListeners() {
@@ -1189,7 +994,7 @@
 
             document.getElementById('themeToggle').addEventListener('click', () => {
                 const isLight = document.body.classList.toggle('light-mode');
-                document.querySelector('#themeToggle i').className = isLight ? 'fas fa-moon text-lg' : 'fas fa-sun text-lg';
+                document.querySelector('#themeToggle i').className = isLight ? 'fas fa-moon text-xl' : 'fas fa-sun text-xl';
                 localStorage.setItem(THEME_KEY, !isLight);
             });
 
@@ -1199,7 +1004,6 @@
             document.getElementById('closeStats').addEventListener('click', () => document.getElementById('statsModal').classList.add('hidden'));
             document.getElementById('closeGameResult').addEventListener('click', () => document.getElementById('gameResultModal').classList.add('hidden'));
             document.getElementById('playAgainBtn').addEventListener('click', startNewGame);
-            document.getElementById('viewStatsBtn').addEventListener('click', () => { document.getElementById('gameResultModal').classList.add('hidden'); showStats(gameState.gameWon); });
 
             const reportBtn = document.getElementById('reportHardBtn');
             if (reportBtn) {
@@ -1207,16 +1011,10 @@
                     if (gameState.targetWord && gameState.gameOver) {
                         reportToSupabase(gameState.targetWord, 'hard_word')
                             .then(() => {
-                                reportBtn.innerText = 'تم التبليغ بنجاح ✅';
+                                reportBtn.innerText = 'تم التبليغ ✅';
                                 reportBtn.disabled = true;
-                                setTimeout(() => {
-                                    reportBtn.innerText = 'الكلمة صعبة! بلّغ عنها';
-                                    reportBtn.disabled = false;
-                                }, 3000);
                             })
                             .catch(() => showTemporaryMessage('❌ فشل التبليغ', 2000));
-                    } else {
-                        showTemporaryMessage('يمكنك التبليغ بعد انتهاء اللعبة فقط', 2000);
                     }
                 };
             }
