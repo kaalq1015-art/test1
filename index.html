@@ -234,9 +234,29 @@
         @media (max-width: 640px) { .key.wide { min-width: 56px; } }
         @media (max-width: 480px) { .key.wide { min-width: 50px; } }
 
+        /* تصحيح ألوان لوحة المفاتيح: الحروف غير الصحيحة (absent) تصبح رمادي فاتح */
         .key.correct { background-color: var(--correct-color); color: white; box-shadow: 0 0 8px var(--correct-glow, rgba(74,158,82,0.3)); }
         .key.present { background-color: var(--present-color); color: white; box-shadow: 0 0 8px var(--present-glow, rgba(201,162,39,0.3)); }
-        .key.absent { background-color: var(--absent-color); color: white; }
+        
+        /* اللون الافتراضي للمفاتيح التي لم تُستخدم بعد (رمادي غامق في الدارك، فاتح في اللايت) */
+        .key { background-color: var(--key-bg); color: var(--key-text); }
+        
+        /* الحرف الغير صحيح (absent) يصبح رمادي فاتح مميز */
+        .key.absent {
+            background-color: #b0b0b0 !important;
+            color: #1e1e1f !important;
+            box-shadow: none;
+        }
+        /* في الوضع الليلي نعطيه لون رمادي فاتح مناسب */
+        body:not(.light-mode) .key.absent {
+            background-color: #6a6a6c !important;
+            color: #f5f5f5 !important;
+        }
+        /* في الوضع الفاتح نعطيه لون أفتح من الخلفية */
+        .light-mode .key.absent {
+            background-color: #d6d8db !important;
+            color: #1a1a1b !important;
+        }
 
         .shake { animation: shake 0.5s ease; }
         @keyframes shake {
@@ -613,7 +633,7 @@
                                 <th>#</th>
                                 <th>المحاولة</th>
                                 <th>النتيجة</th>
-                              </tr>
+                               </tr>
                         </thead>
                         <tbody id="attemptsTableBody"></tbody>
                     </table>
@@ -827,15 +847,14 @@
         function updateGridTileSize() {
             const headerH = document.querySelector('header')?.offsetHeight || 60;
             const keyboardH = document.getElementById('keyboard')?.offsetHeight || 180;
-            const msgH = 44; // ارتفاع ثابت للرسالة
+            const msgH = 44;
             const padding = 24;
-            const gridGaps = (gameState.maxRows - 1) * 5; // مسافات بين الصفوف
+            const gridGaps = (gameState.maxRows - 1) * 5;
             const availableH = window.innerHeight - headerH - keyboardH - msgH - padding - gridGaps;
             const tileByHeight = Math.floor(availableH / gameState.maxRows);
             const tileByWidth = Math.floor((Math.min(window.innerWidth, 480) - 60) / 5);
             const tileSize = Math.min(tileByHeight, tileByWidth, 75);
-            const finalSize = Math.max(tileSize, 32); // حد أدنى 32px
-            // طبّق الحجم على كل خانة مباشرة
+            const finalSize = Math.max(tileSize, 32);
             document.querySelectorAll('.tile').forEach(tile => {
                 tile.style.setProperty('--tile-size', finalSize + 'px');
             });
@@ -875,7 +894,6 @@
                 if (index === 2) rowDiv.appendChild(createKey('⌫', 'Backspace', 'wide backspace'));
                 keyboard.appendChild(rowDiv);
             });
-            // أعد حساب حجم الخانات بعد رسم الكيبورد
             requestAnimationFrame(updateGridTileSize);
         }
 
@@ -1190,7 +1208,6 @@
                 else if (/^[\u0600-\u06FF]$/.test(e.key)) handleInput(e.key);
             });
 
-            // أعد حساب حجم الخانات عند تغيير حجم النافذة
             window.addEventListener('resize', () => requestAnimationFrame(updateGridTileSize));
 
             const diffToggle = document.getElementById('difficultyToggle');
