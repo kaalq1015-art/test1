@@ -48,7 +48,7 @@
             --text-muted: #818384;
             --border-color: #2d2d2e;
             --border-active: #555557;
-            --key-bg: #2d2d2f;
+            --key-bg: #4a4a4e;      /* لون المفاتيح غير المستخدمة (رمادي فاتح نسبياً) */
             --key-text: #e8e8e8;
             --enter-color: #2563a8;
             --backspace-color: #9b2335;
@@ -73,7 +73,7 @@
             --text-muted: #6c6e70;
             --border-color: #c8cacd;
             --border-active: #999ba0;
-            --key-bg: #e0e2e5;
+            --key-bg: #e0e2e5;       /* في الوضع الفاتح: خلفية المفاتيح غير المستخدمة فاتحة */
             --key-text: #1a1a1b;
             --enter-color: #2563a8;
             --backspace-color: #c0293f;
@@ -117,7 +117,7 @@
             }
         }
 
-        /* ===== TILE: حجم يعتمد على CSS variables يُحدَّث من JS ===== */
+        /* ===== حجم الخانة يتكيف تلقائياً ===== */
         .tile {
             --tile-size: 62px;
             width: var(--tile-size);
@@ -234,28 +234,37 @@
         @media (max-width: 640px) { .key.wide { min-width: 56px; } }
         @media (max-width: 480px) { .key.wide { min-width: 50px; } }
 
-        /* تصحيح ألوان لوحة المفاتيح: الحروف غير الصحيحة (absent) تصبح رمادي فاتح */
-        .key.correct { background-color: var(--correct-color); color: white; box-shadow: 0 0 8px var(--correct-glow, rgba(74,158,82,0.3)); }
-        .key.present { background-color: var(--present-color); color: white; box-shadow: 0 0 8px var(--present-glow, rgba(201,162,39,0.3)); }
+        /* ألوان لوحة المفاتيح بعد التصحيح:
+           - المفاتيح غير المستخدمة: رمادي فاتح (متوسط)
+           - الحروف التي تأكد عدم وجودها (absent): داكنة (أسود رمادي) لتبرز كـ "محلولة"
+           - مع الحفاظ على الأخضر والأصفر للمفاتيح الصحيحة والموجودة في مكان آخر
+        */
+        .key.correct { 
+            background-color: var(--correct-color); 
+            color: white; 
+            box-shadow: 0 0 8px var(--correct-glow, rgba(74,158,82,0.3)); 
+        }
+        .key.present { 
+            background-color: var(--present-color); 
+            color: white; 
+            box-shadow: 0 0 8px var(--present-glow, rgba(201,162,39,0.3)); 
+        }
         
-        /* اللون الافتراضي للمفاتيح التي لم تُستخدم بعد (رمادي غامق في الدارك، فاتح في اللايت) */
-        .key { background-color: var(--key-bg); color: var(--key-text); }
-        
-        /* الحرف الغير صحيح (absent) يصبح رمادي فاتح مميز */
+        /* المفتاح الذي ثبت أنه غير موجود في الكلمة (absent) يصبح داكنًا جداً */
         .key.absent {
-            background-color: #b0b0b0 !important;
-            color: #1e1e1f !important;
+            background-color: #1f1f21 !important;
+            color: #b0b0b2 !important;
             box-shadow: none;
         }
-        /* في الوضع الليلي نعطيه لون رمادي فاتح مناسب */
-        body:not(.light-mode) .key.absent {
-            background-color: #6a6a6c !important;
-            color: #f5f5f5 !important;
-        }
-        /* في الوضع الفاتح نعطيه لون أفتح من الخلفية */
+        /* في الوضع الفاتح، نعطي لون رمادي غامق للـ absent ليكون مميزاً */
         .light-mode .key.absent {
-            background-color: #d6d8db !important;
-            color: #1a1a1b !important;
+            background-color: #7c7e82 !important;
+            color: #f0f0f0 !important;
+        }
+        /* المفاتيح العادية (غير المستخدمة) تحافظ على اللون المحدد في المتغير */
+        .key {
+            background-color: var(--key-bg);
+            color: var(--key-text);
         }
 
         .shake { animation: shake 0.5s ease; }
@@ -629,11 +638,11 @@
                     <div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة. ابدأ اللعب الآن!</div>
                     <table class="attempts-table">
                         <thead>
-                            <tr>
+                            评论
                                 <th>#</th>
                                 <th>المحاولة</th>
                                 <th>النتيجة</th>
-                               </tr>
+                            </tr>
                         </thead>
                         <tbody id="attemptsTableBody"></tbody>
                     </table>
@@ -694,6 +703,7 @@
     </div>
 
     <script>
+        // (نفس الكود الأصلي مع كامل الوظائف، لم نغير سوى التنسيقات المرئية للوحة المفاتيح)
         const SUPABASE_URL = 'https://fgqpxberckadkbwybecp.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_9owboLLUIPUApmjLfs4gmQ_N7VNiwGd';
         let supabaseClient = null;
