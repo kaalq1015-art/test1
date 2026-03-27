@@ -3,15 +3,14 @@
 <head>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="words.js"></script>
+    <script src="dictionary.js"></script>
     <script>
         document.addEventListener('contextmenu', event => event.preventDefault());
-
         document.onkeydown = function(e) {
             if(e.keyCode == 123) return false;
             if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) return false;
             if(e.ctrlKey && e.keyCode == 85) return false;
         }
-
         setInterval(function(){
             var start = new Date().getTime();
             debugger; 
@@ -30,10 +29,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
         
-        * {
-            font-family: 'Tajawal', sans-serif;
-            box-sizing: border-box;
-        }
+        * { font-family: 'Tajawal', sans-serif; box-sizing: border-box; }
 
         :root {
             --correct-color: #4a9e52;
@@ -48,7 +44,7 @@
             --text-muted: #818384;
             --border-color: #2d2d2e;
             --border-active: #555557;
-            --key-bg: #4a4a4e;      /* لون المفاتيح غير المستخدمة (رمادي فاتح نسبياً) */
+            --key-bg: #4a4a4e;
             --key-text: #e8e8e8;
             --enter-color: #2563a8;
             --backspace-color: #9b2335;
@@ -73,7 +69,7 @@
             --text-muted: #6c6e70;
             --border-color: #c8cacd;
             --border-active: #999ba0;
-            --key-bg: #e0e2e5;       /* في الوضع الفاتح: خلفية المفاتيح غير المستخدمة فاتحة */
+            --key-bg: #e0e2e5;
             --key-text: #1a1a1b;
             --enter-color: #2563a8;
             --backspace-color: #c0293f;
@@ -111,13 +107,8 @@
             min-height: 0;
         }
 
-        @media (max-width: 768px) {
-            .game-wrapper {
-                max-width: 600px;
-            }
-        }
+        @media (max-width: 768px) { .game-wrapper { max-width: 600px; } }
 
-        /* ===== حجم الخانة يتكيف تلقائياً ===== */
         .tile {
             --tile-size: 62px;
             width: var(--tile-size);
@@ -134,55 +125,17 @@
             flex-shrink: 0;
         }
 
-        .tile.filled {
-            border-color: #878a8c;
-            animation: pop 0.1s ease;
-        }
+        .tile.filled { border-color: #878a8c; animation: pop 0.1s ease; }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        @keyframes pop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
+        .tile.correct { background-color: var(--correct-color); border-color: var(--correct-color); color: white; box-shadow: 0 0 12px var(--correct-glow, rgba(74,158,82,0.3)); }
+        .tile.present { background-color: var(--present-color); border-color: var(--present-color); color: white; box-shadow: 0 0 12px var(--present-glow, rgba(201,162,39,0.3)); }
+        .tile.absent { background-color: var(--absent-color); border-color: var(--absent-color); color: white; }
 
-        .tile.correct {
-            background-color: var(--correct-color);
-            border-color: var(--correct-color);
-            color: white;
-            box-shadow: 0 0 12px var(--correct-glow, rgba(74,158,82,0.3));
-        }
+        .flip { animation: flip 0.6s ease; }
+        @keyframes flip { 0% { transform: rotateX(0); } 50% { transform: rotateX(90deg); } 100% { transform: rotateX(0); } }
 
-        .tile.present {
-            background-color: var(--present-color);
-            border-color: var(--present-color);
-            color: white;
-            box-shadow: 0 0 12px var(--present-glow, rgba(201,162,39,0.3));
-        }
-
-        .tile.absent {
-            background-color: var(--absent-color);
-            border-color: var(--absent-color);
-            color: white;
-        }
-
-        .flip {
-            animation: flip 0.6s ease;
-        }
-
-        @keyframes flip {
-            0% { transform: rotateX(0); }
-            50% { transform: rotateX(90deg); }
-            100% { transform: rotateX(0); }
-        }
-
-        .keyboard-row {
-            display: flex;
-            justify-content: center;
-            gap: 4px;
-            margin-bottom: 6px;
-            width: 100%;
-        }
-
+        .keyboard-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 6px; width: 100%; }
         .key {
             height: clamp(42px, 6vh, 58px);
             min-width: clamp(28px, 6vw, 43px);
@@ -203,257 +156,72 @@
             padding: 0 2px;
             touch-action: manipulation;
         }
-
-        .key.enter {
-            background-color: var(--enter-color);
-            color: white;
-            font-size: clamp(0.7rem, 2.5vw, 0.9rem);
-        }
-
-        .key.backspace {
-            background-color: var(--backspace-color);
-            color: white;
-        }
-
+        .key.enter { background-color: var(--enter-color); color: white; font-size: clamp(0.7rem, 2.5vw, 0.9rem); }
+        .key.backspace { background-color: var(--backspace-color); color: white; }
         @media (max-width: 480px) {
-            .key {
-                height: clamp(38px, 5.5vh, 50px);
-                min-width: clamp(24px, 5vw, 34px);
-                font-size: clamp(0.8rem, 2.8vw, 1rem);
-                margin: 0 1px;
-                padding: 0 1px;
-            }
+            .key { height: clamp(38px, 5.5vh, 50px); min-width: clamp(24px, 5vw, 34px); font-size: clamp(0.8rem, 2.8vw, 1rem); margin: 0 1px; padding: 0 1px; }
             .key.enter { font-size: clamp(0.65rem, 2.2vw, 0.8rem); }
             .keyboard-row { gap: 2px; margin-bottom: 5px; }
         }
-
         .key:hover { opacity: 0.85; transform: translateY(-1px); }
         .key:active { transform: translateY(0); opacity: 1; }
         .key.wide { min-width: 65px; }
-
         @media (max-width: 640px) { .key.wide { min-width: 56px; } }
         @media (max-width: 480px) { .key.wide { min-width: 50px; } }
 
-        /* ألوان لوحة المفاتيح بعد التصحيح:
-           - المفاتيح غير المستخدمة: رمادي فاتح (متوسط)
-           - الحروف التي تأكد عدم وجودها (absent): داكنة (أسود رمادي) لتبرز كـ "محلولة"
-           - مع الحفاظ على الأخضر والأصفر للمفاتيح الصحيحة والموجودة في مكان آخر
-        */
-        .key.correct { 
-            background-color: var(--correct-color); 
-            color: white; 
-            box-shadow: 0 0 8px var(--correct-glow, rgba(74,158,82,0.3)); 
-        }
-        .key.present { 
-            background-color: var(--present-color); 
-            color: white; 
-            box-shadow: 0 0 8px var(--present-glow, rgba(201,162,39,0.3)); 
-        }
-        
-        /* المفتاح الذي ثبت أنه غير موجود في الكلمة (absent) يصبح داكنًا جداً */
-        .key.absent {
-            background-color: #1f1f21 !important;
-            color: #b0b0b2 !important;
-            box-shadow: none;
-        }
-        /* في الوضع الفاتح، نعطي لون رمادي غامق للـ absent ليكون مميزاً */
-        .light-mode .key.absent {
-            background-color: #7c7e82 !important;
-            color: #f0f0f0 !important;
-        }
-        /* المفاتيح العادية (غير المستخدمة) تحافظ على اللون المحدد في المتغير */
-        .key {
-            background-color: var(--key-bg);
-            color: var(--key-text);
-        }
+        .key.correct { background-color: var(--correct-color); color: white; box-shadow: 0 0 8px var(--correct-glow, rgba(74,158,82,0.3)); }
+        .key.present { background-color: var(--present-color); color: white; box-shadow: 0 0 8px var(--present-glow, rgba(201,162,39,0.3)); }
+        .key.absent { background-color: #1f1f21 !important; color: #b0b0b2 !important; box-shadow: none; }
+        .light-mode .key.absent { background-color: #7c7e82 !important; color: #f0f0f0 !important; }
 
         .shake { animation: shake 0.5s ease; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); } 20%, 40%, 60%, 80% { transform: translateX(5px); } }
         .bounce { animation: bounce 0.5s ease; }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        .modal-overlay {
-            background-color: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(4px);
-        }
-
-        header {
-            padding: 8px 12px;
-            border-bottom: 1px solid var(--header-border);
-            background-color: var(--bg-color);
-        }
-
-        h1 {
-            font-size: 1.6rem;
-            text-align: center;
-            letter-spacing: 0.08em;
-            background: linear-gradient(135deg, var(--correct-color) 0%, var(--text-color) 50%, var(--present-color) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        #newGameHeaderBtn {
-            background-color: var(--newgame-color);
-            color: white;
-            transition: background-color 0.2s ease, transform 0.15s ease;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        @media (max-width: 480px) {
-            #newGameHeaderBtn { width: 40px; height: 40px; }
-        }
-
+        .modal-overlay { background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); }
+        header { padding: 8px 12px; border-bottom: 1px solid var(--header-border); background-color: var(--bg-color); }
+        h1 { font-size: 1.6rem; text-align: center; letter-spacing: 0.08em; background: linear-gradient(135deg, var(--correct-color) 0%, var(--text-color) 50%, var(--present-color) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        #newGameHeaderBtn { background-color: var(--newgame-color); color: white; transition: background-color 0.2s ease, transform 0.15s ease; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; }
+        @media (max-width: 480px) { #newGameHeaderBtn { width: 40px; height: 40px; } }
         #newGameHeaderBtn:hover { background-color: var(--newgame-hover); }
         #newGameHeaderBtn:active { transform: scale(0.92) rotate(-30deg); }
 
-        .grid-row {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            margin-bottom: 5px;
-        }
+        .grid-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 5px; }
+        #message { font-size: 1rem; min-height: 40px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; padding: 0 10px; text-align: center; gap: 8px; flex-wrap: wrap; }
+        .modal-content { width: 95%; max-width: 500px; max-height: 90vh; overflow-y: auto; margin: 10px; }
 
-        #message {
-            font-size: 1rem;
-            min-height: 40px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 10px;
-            text-align: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
+        .correct-word { background: linear-gradient(135deg, var(--correct-color), #2d7a34); color: white; padding: 14px 20px; border-radius: 10px; margin: 12px 0; text-align: center; font-size: 1.6rem; font-weight: bold; letter-spacing: 0.15em; animation: pulse 2s infinite; box-shadow: 0 4px 20px var(--correct-glow, rgba(74,158,82,0.35)); }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-        .modal-content {
-            width: 95%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            margin: 10px;
-        }
-
-        .correct-word {
-            background: linear-gradient(135deg, var(--correct-color), #2d7a34);
-            color: white;
-            padding: 14px 20px;
-            border-radius: 10px;
-            margin: 12px 0;
-            text-align: center;
-            font-size: 1.6rem;
-            font-weight: bold;
-            letter-spacing: 0.15em;
-            animation: pulse 2s infinite;
-            box-shadow: 0 4px 20px var(--correct-glow, rgba(74,158,82,0.35));
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .color-example {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 15px;
-            padding: 10px;
-            border-radius: 8px;
-            background-color: rgba(129, 131, 132, 0.1);
-        }
-
-        .color-box {
-            width: 45px;
-            height: 45px;
-            border: 2px solid var(--border-color);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-
+        .color-example { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; padding: 10px; border-radius: 8px; background-color: rgba(129, 131, 132, 0.1); }
+        .color-box { width: 45px; height: 45px; border: 2px solid var(--border-color); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: bold; flex-shrink: 0; }
         .color-box.correct { background-color: var(--correct-color); border-color: var(--correct-color); color: white; }
         .color-box.present { background-color: var(--present-color); border-color: var(--present-color); color: white; }
         .color-box.absent { background-color: var(--absent-color); border-color: var(--absent-color); color: white; }
-
         .color-description { flex: 1; font-size: 0.95rem; }
 
-        .attempts-table-container {
-            max-height: 250px;
-            overflow-y: auto;
-            margin: 15px 0;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 8px;
-        }
-
+        .attempts-table-container { max-height: 250px; overflow-y: auto; margin: 15px 0; border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; }
         .attempts-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
         .attempts-table th { background-color: var(--default-color); padding: 8px; text-align: center; border-bottom: 2px solid var(--border-color); }
         .attempts-table td { padding: 6px; text-align: center; border-bottom: 1px solid var(--border-color); }
-
         .attempt-number { font-weight: bold; color: var(--correct-color); }
         .attempt-result { font-size: 1.1rem; font-weight: bold; }
         .attempt-result.win { color: var(--correct-color); }
         .attempt-result.loss { color: var(--absent-color); }
         .attempts-title { font-size: 1.2rem; font-weight: bold; margin: 12px 0 8px 0; text-align: center; color: var(--text-color); }
-
         .win-celebration { animation: winCelebration 2s ease infinite; }
-        @keyframes winCelebration {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
+        @keyframes winCelebration { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         .no-attempts-message { text-align: center; padding: 15px; color: var(--absent-color); font-style: italic; font-size: 0.95rem; }
 
-        .attempt-matrix-container {
-            margin: 20px 0;
-            padding: 15px;
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            background-color: rgba(129, 131, 132, 0.05);
-        }
-
+        .attempt-matrix-container { margin: 20px 0; padding: 15px; border: 2px solid var(--border-color); border-radius: 10px; background-color: rgba(129, 131, 132, 0.05); }
         .matrix-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; text-align: center; color: var(--text-color); }
         .matrix-grid { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 15px; }
         .matrix-row { display: flex; justify-content: center; gap: 6px; }
-
-        .matrix-tile {
-            width: 24px;
-            height: 24px;
-            border: 1px solid transparent;
-            border-radius: 3px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            user-select: none;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
+        .matrix-tile { width: 24px; height: 24px; border: 1px solid transparent; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-weight: bold; user-select: none; transition: all 0.3s ease; cursor: pointer; }
         .matrix-tile.correct { background-color: var(--correct-color); border-color: var(--correct-color); }
         .matrix-tile.present { background-color: var(--present-color); border-color: var(--present-color); }
         .matrix-tile.absent { background-color: var(--absent-color); border-color: var(--absent-color); }
-
         .matrix-legend { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
         .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; }
         .legend-color { width: 16px; height: 16px; border-radius: 3px; }
@@ -463,87 +231,21 @@
 
         .result-buttons { display: flex; gap: 10px; margin-top: 20px; }
         .result-buttons button { flex: 1; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; transition: all 0.2s ease; }
-
-        @media (max-width: 480px) {
-            .result-buttons { flex-direction: column; gap: 8px; }
-        }
+        @media (max-width: 480px) { .result-buttons { flex-direction: column; gap: 8px; } }
 
         .difficulty-dropdown { position: relative; display: inline-block; }
-        .difficulty-toggle {
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid var(--border-color);
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            min-width: 120px;
-            justify-content: center;
-        }
-
-        .difficulty-menu {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            margin-top: 5px;
-            background-color: var(--bg-color);
-            border: 2px solid var(--border-color);
-            border-radius: 6px;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            display: none;
-        }
-
+        .difficulty-toggle { padding: 8px 16px; border-radius: 6px; font-weight: bold; font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease; border: 2px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); display: flex; align-items: center; gap: 8px; min-width: 120px; justify-content: center; }
+        .difficulty-menu { position: absolute; top: 100%; left: 0; right: 0; margin-top: 5px; background-color: var(--bg-color); border: 2px solid var(--border-color); border-radius: 6px; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none; }
         .difficulty-menu.show { display: block; }
-
-        .difficulty-option {
-            width: 100%;
-            padding: 12px 16px;
-            text-align: center;
-            border: none;
-            background: none;
-            color: var(--text-color);
-            font-size: 0.9rem;
-            cursor: pointer;
-            display: block;
-            border-bottom: 1px solid var(--border-color);
-        }
-
+        .difficulty-option { width: 100%; padding: 12px 16px; text-align: center; border: none; background: none; color: var(--text-color); font-size: 0.9rem; cursor: pointer; display: block; border-bottom: 1px solid var(--border-color); }
         .difficulty-option.active { color: var(--correct-color); font-weight: bold; }
         .difficulty-icon { font-size: 0.8rem; transition: transform 0.3s ease; }
         .difficulty-dropdown.open .difficulty-icon { transform: rotate(180deg); }
 
-        .suggest-btn {
-            background-color: #2980b9;
-            color: white;
-            padding: 2px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            margin-right: 8px;
-            cursor: pointer;
-            border: none;
-            transition: 0.2s;
-        }
+        .suggest-btn { background-color: #2980b9; color: white; padding: 2px 10px; border-radius: 4px; font-size: 0.8rem; margin-right: 8px; cursor: pointer; border: none; transition: 0.2s; }
         .suggest-btn:hover { background-color: #1f6392; }
         .suggest-btn.disabled, .suggest-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        .hard-word-btn {
-            background-color: #e67e22;
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: bold;
-            width: 100%;
-            margin-top: 15px;
-            cursor: pointer;
-            border: none;
-            transition: background 0.2s;
-        }
+        .hard-word-btn { background-color: #e67e22; color: white; padding: 10px; border-radius: 8px; font-weight: bold; width: 100%; margin-top: 15px; cursor: pointer; border: none; transition: background 0.2s; }
         .hard-word-btn:hover { background-color: #d35400; }
         .hard-word-btn.disabled, .hard-word-btn:disabled { opacity: 0.6; cursor: not-allowed; }
     </style>
@@ -551,16 +253,10 @@
 <body>
     <header class="grid grid-cols-3 items-center px-2 py-3 border-b border-[var(--border-color)] min-h-[60px]">
         <div class="flex items-center gap-1">
-            <button id="helpBtn" class="p-1.5 hover:bg-[var(--default-color)] rounded-full">
-                <i class="fas fa-question-circle text-lg"></i>
-            </button>
-            <button id="statsBtn" class="p-1.5 hover:bg-[var(--default-color)] rounded-full">
-                <i class="fas fa-chart-bar text-lg"></i>
-            </button>
+            <button id="helpBtn" class="p-1.5 hover:bg-[var(--default-color)] rounded-full"><i class="fas fa-question-circle text-lg"></i></button>
+            <button id="statsBtn" class="p-1.5 hover:bg-[var(--default-color)] rounded-full"><i class="fas fa-chart-bar text-lg"></i></button>
         </div>
-        <div class="flex justify-center">
-            <h1 class="font-bold text-lg sm:text-xl whitespace-nowrap">كلمة</h1>
-        </div>
+        <div class="flex justify-center"><h1 class="font-bold text-lg sm:text-xl whitespace-nowrap">كلمة</h1></div>
         <div class="flex items-center justify-end gap-1 sm:gap-2">
             <div class="difficulty-dropdown">
                 <button id="difficultyToggle" class="flex items-center gap-1 px-1.5 py-1 sm:px-2 sm:py-1.5 border-2 border-[var(--border-color)] rounded-lg bg-[var(--bg-color)]">
@@ -572,12 +268,8 @@
                     <button data-difficulty="easy" class="difficulty-option">سهل</button>
                 </div>
             </div>
-            <button id="newGameHeaderBtn" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center bg-[var(--newgame-color)] text-white rounded-full shrink-0">
-                <i class="fas fa-redo-alt text-xs sm:text-sm"></i>
-            </button>
-            <button id="themeToggle" class="p-1.5 hover:bg-[var(--default-color)] rounded-full shrink-0">
-                <i class="fas fa-sun text-lg"></i>
-            </button>
+            <button id="newGameHeaderBtn" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center bg-[var(--newgame-color)] text-white rounded-full shrink-0"><i class="fas fa-redo-alt text-xs sm:text-sm"></i></button>
+            <button id="themeToggle" class="p-1.5 hover:bg-[var(--default-color)] rounded-full shrink-0"><i class="fas fa-sun text-lg"></i></button>
         </div>
     </header>
 
@@ -590,37 +282,14 @@
     <div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
         <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
             <div class="p-5">
-                <div class="flex justify-between items-center mb-5">
-                    <h2 class="text-xl font-bold">طريقة اللعب</h2>
-                    <button id="closeHelp" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
-                </div>
+                <div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">طريقة اللعب</h2><button id="closeHelp" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div>
                 <div class="mb-6">
                     <p class="text-base mb-5 text-center" id="helpAttemptsText">خمّن الكلمة في 6 محاولات.</p>
-                    <div class="color-example">
-                        <div class="color-box correct"></div>
-                        <div class="color-description">
-                            <h3 class="font-bold mb-1">اللون الأخضر</h3>
-                            <p>الحرف صحيح وفي المكان الصحيح.</p>
-                        </div>
-                    </div>
-                    <div class="color-example">
-                        <div class="color-box present"></div>
-                        <div class="color-description">
-                            <h3 class="font-bold mb-1">اللون الأصفر</h3>
-                            <p>الحرف صحيح ولكن في المكان الخطأ.</p>
-                        </div>
-                    </div>
-                    <div class="color-example">
-                        <div class="color-box absent"></div>
-                        <div class="color-description">
-                            <h3 class="font-bold mb-1">اللون الرمادي</h3>
-                            <p>الحرف غير موجود في الكلمة.</p>
-                        </div>
-                    </div>
+                    <div class="color-example"><div class="color-box correct"></div><div class="color-description"><h3 class="font-bold mb-1">اللون الأخضر</h3><p>الحرف صحيح وفي المكان الصحيح.</p></div></div>
+                    <div class="color-example"><div class="color-box present"></div><div class="color-description"><h3 class="font-bold mb-1">اللون الأصفر</h3><p>الحرف صحيح ولكن في المكان الخطأ.</p></div></div>
+                    <div class="color-example"><div class="color-box absent"></div><div class="color-description"><h3 class="font-bold mb-1">اللون الرمادي</h3><p>الحرف غير موجود في الكلمة.</p></div></div>
                 </div>
-                <div class="text-center mt-5">
-                    <button id="startGameBtn" class="bg-[var(--correct-color)] text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 text-base">فهمت، ابدأ اللعب</button>
-                </div>
+                <div class="text-center mt-5"><button id="startGameBtn" class="bg-[var(--correct-color)] text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 text-base">فهمت، ابدأ اللعب</button></div>
             </div>
         </div>
     </div>
@@ -628,46 +297,20 @@
     <div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
         <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
             <div class="p-5">
-                <div class="flex justify-between items-center mb-5">
-                    <h2 class="text-xl font-bold">الإحصائيات</h2>
-                    <button id="closeStats" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
-                </div>
+                <div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">الإحصائيات</h2><button id="closeStats" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div>
                 <div id="gameResultInfo" class="mb-4"></div>
                 <div id="attemptsTableContainer" class="attempts-table-container">
                     <div class="attempts-title">سجل المحاولات</div>
                     <div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة. ابدأ اللعب الآن!</div>
-                    <table class="attempts-table">
-                        <thead>
-                            评论
-                                <th>#</th>
-                                <th>المحاولة</th>
-                                <th>النتيجة</th>
-                            </tr>
-                        </thead>
-                        <tbody id="attemptsTableBody"></tbody>
-                    </table>
+                    <table class="attempts-table"><thead><tr><th>#</th><th>المحاولة</th><th>النتيجة</th></tr></thead><tbody id="attemptsTableBody"></tbody></table>
                 </div>
                 <div class="flex justify-around mb-6">
-                    <div class="text-center">
-                        <div id="playedCount" class="text-2xl font-bold">0</div>
-                        <div class="text-xs">العب</div>
-                    </div>
-                    <div class="text-center">
-                        <div id="winPercent" class="text-2xl font-bold">0%</div>
-                        <div class="text-xs">فوز</div>
-                    </div>
-                    <div class="text-center">
-                        <div id="currentStreak" class="text-2xl font-bold">0</div>
-                        <div class="text-xs">تتابع</div>
-                    </div>
-                    <div class="text-center">
-                        <div id="maxStreak" class="text-2xl font-bold">0</div>
-                        <div class="text-xs">أعلى تتابع</div>
-                    </div>
+                    <div class="text-center"><div id="playedCount" class="text-2xl font-bold">0</div><div class="text-xs">العب</div></div>
+                    <div class="text-center"><div id="winPercent" class="text-2xl font-bold">0%</div><div class="text-xs">فوز</div></div>
+                    <div class="text-center"><div id="currentStreak" class="text-2xl font-bold">0</div><div class="text-xs">تتابع</div></div>
+                    <div class="text-center"><div id="maxStreak" class="text-2xl font-bold">0</div><div class="text-xs">أعلى تتابع</div></div>
                 </div>
-                <div class="space-y-2">
-                    <button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-2.5 rounded font-bold hover:bg-[var(--default-color)] text-sm">لعبة جديدة</button>
-                </div>
+                <div class="space-y-2"><button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-2.5 rounded font-bold hover:bg-[var(--default-color)] text-sm">لعبة جديدة</button></div>
             </div>
         </div>
     </div>
@@ -675,35 +318,20 @@
     <div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
         <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
             <div class="p-5">
-                <div class="flex justify-between items-center mb-5">
-                    <h2 class="text-xl font-bold" id="resultModalTitle">نتيجة اللعبة</h2>
-                    <button id="closeGameResult" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
-                </div>
+                <div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold" id="resultModalTitle">نتيجة اللعبة</h2><button id="closeGameResult" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div>
                 <div id="gameResultDetails" class="text-center mb-4"></div>
                 <div id="attemptMatrixContainer" class="attempt-matrix-container">
                     <h3 class="matrix-title">خريطة رحلتك في التفكير</h3>
                     <div id="matrixGrid" class="matrix-grid"></div>
-                    <div class="matrix-legend">
-                        <div class="legend-item"><div class="legend-color correct"></div><span>صحيح</span></div>
-                        <div class="legend-item"><div class="legend-color present"></div><span>موجود بموقع آخر</span></div>
-                        <div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div>
-                    </div>
+                    <div class="matrix-legend"><div class="legend-item"><div class="legend-color correct"></div><span>صحيح</span></div><div class="legend-item"><div class="legend-color present"></div><span>موجود بموقع آخر</span></div><div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div></div>
                 </div>
                 <button id="reportHardBtn" class="hard-word-btn">الكلمة صعبة! بلّغ عنها</button>
-                <div class="result-buttons">
-                    <button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90">
-                        <i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى
-                    </button>
-                    <button id="viewStatsBtn" class="border border-[var(--border-color)] hover:bg-[var(--default-color)]">
-                        <i class="fas fa-chart-bar ml-2"></i>عرض الإحصائيات
-                    </button>
-                </div>
+                <div class="result-buttons"><button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90"><i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى</button><button id="viewStatsBtn" class="border border-[var(--border-color)] hover:bg-[var(--default-color)]"><i class="fas fa-chart-bar ml-2"></i>عرض الإحصائيات</button></div>
             </div>
         </div>
     </div>
 
     <script>
-        // (نفس الكود الأصلي مع كامل الوظائف، لم نغير سوى التنسيقات المرئية للوحة المفاتيح)
         const SUPABASE_URL = 'https://fgqpxberckadkbwybecp.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_9owboLLUIPUApmjLfs4gmQ_N7VNiwGd';
         let supabaseClient = null;
@@ -760,7 +388,7 @@
 
         function init() {
             if (typeof WORD_LIST === 'undefined' || typeof DICTIONARY === 'undefined') {
-                console.error("ملف words.js لم يتم تحميله بشكل صحيح");
+                console.error("ملفات الكلمات غير محملة بشكل صحيح");
                 return;
             }
             loadDifficulty();
