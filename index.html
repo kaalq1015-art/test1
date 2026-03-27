@@ -104,155 +104,182 @@
             }
         }
 
-        .tile {
-            width: clamp(50px, 10vw, 80px);
-            height: clamp(50px, 10vw, 80px);
-            border: 2px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: clamp(1.8rem, 6vw, 2.5rem);
-            font-weight: bold;
-            user-select: none;
-            transition: all 0.3s ease;
-            border-radius: 4px;
-        }
-
-        @media (max-width: 480px) {
-            .tile {
-                width: clamp(40px, 11vw, 50px);
-                height: clamp(40px, 11vw, 50px);
-                font-size: clamp(1.2rem, 5vw, 1.5rem);
-            }
-            .grid-row {
-                gap: 4px;
-                margin-bottom: 4px;
-            }
-        }
-
-      
-body.easy-mode .tile {
-    width: clamp(45px, 9vw, 70px);
-    height: clamp(45px, 9vw, 70px);
-    font-size: clamp(1.4rem, 5vw, 2rem);
+       .tile {
+    width: 60px;
+    height: 60px;
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    user-select: none;
+    transition: all 0.3s ease;
+    border-radius: 4px;
 }
-       @media (max-width: 480px) {
-    body.easy-mode .tile {
-        width: clamp(40px, 11vw, 50px);
-        height: clamp(40px, 11vw, 50px);
-        font-size: clamp(1.2rem, 5vw, 1.5rem);
+
+@media (max-width: 1024px) {
+    .tile {
+        width: 55px;
+        height: 55px;
+        font-size: 1.8rem;
     }
 }
 
-        .tile.filled {
-            border-color: #878a8c;
-            animation: pop 0.1s ease;
-        }
+@media (max-width: 640px) {
+    .tile {
+        width: 48px;
+        height: 48px;
+        font-size: 1.6rem;
+    }
+}
 
-        @keyframes pop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
+@media (max-width: 480px) {
+    .tile {
+        width: 44px;
+        height: 44px;
+        font-size: 1.5rem;
+    }
+    .grid-row {
+        gap: 5px;
+        margin-bottom: 5px;
+    }
+}
 
-        .tile.correct {
-            background-color: var(--correct-color);
-            border-color: var(--correct-color);
-            color: white;
-        }
+body.easy-mode .tile {
+    width: 55px;
+    height: 55px;
+    font-size: 1.8rem;
+}
 
-        .tile.present {
-            background-color: var(--present-color);
-            border-color: var(--present-color);
-            color: white;
-        }
+@media (max-width: 1024px) {
+    body.easy-mode .tile {
+        width: 50px;
+        height: 50px;
+        font-size: 1.6rem;
+    }
+}
 
-        .tile.absent {
-            background-color: var(--absent-color);
-            border-color: var(--absent-color);
-            color: white;
-        }
+@media (max-width: 640px) {
+    body.easy-mode .tile {
+        width: 44px;
+        height: 44px;
+        font-size: 1.4rem;
+    }
+}
 
-        .flip {
-            animation: flip 0.6s ease;
-        }
+@media (max-width: 480px) {
+    body.easy-mode .tile {
+        width: 40px;
+        height: 40px;
+        font-size: 1.3rem;
+    }
+}
 
-        @keyframes flip {
-            0% { transform: rotateX(0); }
-            50% { transform: rotateX(90deg); }
-            100% { transform: rotateX(0); }
-        }
+.grid-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
 
-        .keyboard-row {
-            display: flex;
-            justify-content: center;
-            gap: 4px;
-            margin-bottom: 8px;
-            width: 100%;
-        }
+@media (max-width: 640px) {
+    .grid-row {
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+}
 
-        .key {
-            height: clamp(50px, 8vw, 65px);
-            min-width: clamp(32px, 6vw, 45px);
-            background-color: var(--key-bg);
-            color: var(--key-text);
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: clamp(1rem, 3.5vw, 1.2rem);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            user-select: none;
-            transition: all 0.2s ease;
-            flex: 1;
-            margin: 0 2px;
-            padding: 0 2px;
-            touch-action: manipulation;
-        }
+.key {
+    height: 58px;
+    min-width: 42px;
+    background-color: var(--key-bg);
+    color: var(--key-text);
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+    flex: 1;
+    margin: 0 3px;
+    padding: 0 4px;
+    touch-action: manipulation;
+}
 
-        .key.enter {
-            background-color: var(--enter-color);
-            color: white;
-            font-size: clamp(0.9rem, 3vw, 1rem);
-        }
+.key.enter {
+    background-color: var(--enter-color);
+    color: white;
+    font-size: 0.9rem;
+}
 
-        .key.backspace {
-            background-color: var(--backspace-color);
-            color: white;
-        }
+.key.backspace {
+    background-color: var(--backspace-color);
+    color: white;
+}
 
-        @media (max-width: 640px) {
-            .key {
-                height: clamp(45px, 7vw, 52px);
-                min-width: clamp(28px, 5vw, 35px);
-                font-size: clamp(0.9rem, 3vw, 1rem);
-                margin: 0 1px;
-                padding: 0 1px;
-            }
-            .key.enter { font-size: clamp(0.8rem, 2.8vw, 0.9rem); }
-            .keyboard-row { gap: 3px; }
-        }
+@media (max-width: 1024px) {
+    .key {
+        height: 54px;
+        min-width: 38px;
+        font-size: 1rem;
+    }
+    .key.enter {
+        font-size: 0.85rem;
+    }
+}
 
-        @media (max-width: 480px) {
-            .key {
-                height: clamp(42px, 7vw, 48px);
-                min-width: clamp(26px, 4.5vw, 32px);
-                font-size: clamp(0.85rem, 3vw, 0.95rem);
-                margin: 0 1px;
-                padding: 0 1px;
-            }
-            .key.enter { font-size: clamp(0.75rem, 2.5vw, 0.85rem); }
-            .keyboard-row { gap: 2px; }
-        }
+@media (max-width: 640px) {
+    .key {
+        height: 50px;
+        min-width: 32px;
+        font-size: 0.95rem;
+        margin: 0 2px;
+        padding: 0 3px;
+    }
+    .key.enter {
+        font-size: 0.8rem;
+    }
+    .keyboard-row {
+        gap: 4px;
+    }
+}
 
-        .key:hover { opacity: 0.9; }
-        .key.wide { min-width: 70px; }
+@media (max-width: 480px) {
+    .key {
+        height: 46px;
+        min-width: 28px;
+        font-size: 0.9rem;
+        margin: 0 1.5px;
+        padding: 0 2px;
+    }
+    .key.enter {
+        font-size: 0.75rem;
+    }
+    .keyboard-row {
+        gap: 3px;
+    }
+}
 
-        @media (max-width: 640px) { .key.wide { min-width: 60px; } }
-        @media (max-width: 480px) { .key.wide { min-width: 55px; } }
+.key.wide {
+    min-width: 70px;
+}
 
+@media (max-width: 640px) {
+    .key.wide {
+        min-width: 60px;
+    }
+}
+@media (max-width: 480px) {
+    .key.wide {
+        min-width: 55px;
+    }
+}
+        
         .key.correct { background-color: var(--correct-color); color: white; }
         .key.present { background-color: var(--present-color); color: white; }
         .key.absent { background-color: var(--absent-color); color: white; }
