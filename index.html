@@ -51,6 +51,7 @@
             --newgame-hover: #3498db;
             --easy-color: #4CAF50;
             --hard-color: #f44336;
+            --max-rows: 6;
         }
 
         .light-mode {
@@ -101,14 +102,19 @@
             }
         }
 
+        /* ===== TILE: حجم ديناميكي يعتمد على عدد الصفوف وحجم الشاشة ===== */
         .tile {
-            width: clamp(50px, 10vw, 80px);
-            height: clamp(50px, 10vw, 80px);
+            /* الحد الأقصى للحجم = المساحة المتاحة على الشاشة مقسومة على عدد الصفوف */
+            --tile-max-by-height: calc((var(--available-height, 55vh)) / var(--max-rows, 6) - 10px);
+            /* نختار أصغر قيمة بين الحجم بناءً على العرض والحجم بناءً على الارتفاع */
+            --tile-size: min(clamp(36px, 10vw, 75px), var(--tile-max-by-height));
+            width: var(--tile-size);
+            height: var(--tile-size);
             border: 2px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            font-size: calc(var(--tile-size) * 0.52);
             font-weight: bold;
             user-select: none;
             transition: all 0.3s ease;
@@ -117,9 +123,8 @@
 
         @media (max-width: 480px) {
             .tile {
-                width: clamp(45px, 12vw, 55px);
-                height: clamp(45px, 12vw, 55px);
-                font-size: clamp(1.4rem, 6vw, 1.8rem);
+                --tile-max-by-height: calc((var(--available-height, 50vh)) / var(--max-rows, 6) - 8px);
+                --tile-size: min(clamp(34px, 12vw, 55px), var(--tile-max-by-height));
             }
         }
 
@@ -280,11 +285,12 @@
         #newGameHeaderBtn:hover { background-color: var(--newgame-hover); }
         #newGameHeaderBtn:active { transform: scale(0.95); }
 
+        /* ===== GRID ROW: مسافة ديناميكية بين الصفوف ===== */
         .grid-row {
             display: flex;
             justify-content: center;
-            gap: 8px;
-            margin-bottom: 8px;
+            gap: clamp(4px, 1vw, 8px);
+            margin-bottom: clamp(3px, min(1vh, calc(8vh / var(--max-rows, 6))), 8px);
         }
 
         #message {
@@ -600,8 +606,8 @@
                                 <th>#</th>
                                 <th>المحاولة</th>
                                 <th>النتيجة</th>
-                               ..
-                            </thead>
+                              </tr>
+                        </thead>
                         <tbody id="attemptsTableBody"></tbody>
                     </table>
                 </div>
@@ -647,7 +653,7 @@
                         <div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div>
                     </div>
                 </div>
-                <button id="reportHardBtn" class="hard-word-btn">الكلمة صعبة؟</button>
+                <button id="reportHardBtn" class="hard-word-btn">الكلمة صعبة! بلّغ عنها</button>
                 <div class="result-buttons">
                     <button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90">
                         <i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى
@@ -811,9 +817,25 @@
             }
         }
 
+        function updateGridTileSize() {
+            // احسب المساحة المتاحة للشبكة بعد خصم الهيدر والكيبورد والرسائل
+            const headerH = document.querySelector('header')?.offsetHeight || 60;
+            const keyboardH = document.getElementById('keyboard')?.offsetHeight || 220;
+            const msgH = document.getElementById('message')?.offsetHeight || 40;
+            const padding = 40;
+            const available = window.innerHeight - headerH - keyboardH - msgH - padding;
+            const grid = document.getElementById('grid');
+            if (grid) {
+                grid.style.setProperty('--max-rows', gameState.maxRows);
+                grid.style.setProperty('--available-height', Math.max(available, 200) + 'px');
+            }
+        }
+
         function createGrid() {
             const grid = document.getElementById('grid');
             grid.innerHTML = '';
+            // ضبط المتغيرات قبل رسم الخانات
+            grid.style.setProperty('--max-rows', gameState.maxRows);
             for (let row = 0; row < gameState.maxRows; row++) {
                 const rowDiv = document.createElement('div');
                 rowDiv.className = 'grid-row';
@@ -826,6 +848,8 @@
                 }
                 grid.appendChild(rowDiv);
             }
+            // احسب الحجم الفعلي بعد رسم الشبكة
+            requestAnimationFrame(updateGridTileSize);
         }
 
         function createKeyboard() {
@@ -844,6 +868,8 @@
                 if (index === 2) rowDiv.appendChild(createKey('⌫', 'Backspace', 'wide backspace'));
                 keyboard.appendChild(rowDiv);
             });
+            // أعد حساب حجم الخانات بعد رسم الكيبورد
+            requestAnimationFrame(updateGridTileSize);
         }
 
         function createKey(text, value, extraClass='') {
@@ -1157,6 +1183,9 @@
                 else if (/^[\u0600-\u06FF]$/.test(e.key)) handleInput(e.key);
             });
 
+            // أعد حساب حجم الخانات عند تغيير حجم النافذة
+            window.addEventListener('resize', () => requestAnimationFrame(updateGridTileSize));
+
             const diffToggle = document.getElementById('difficultyToggle');
             const diffMenu = document.getElementById('difficultyMenu');
             diffToggle.addEventListener('click', (e) => { e.stopPropagation(); diffMenu.classList.toggle('show'); });
@@ -1193,7 +1222,7 @@
                                 reportBtn.innerText = 'تم التبليغ بنجاح ✅';
                                 reportBtn.disabled = true;
                                 setTimeout(() => {
-                                    reportBtn.innerText = 'الكلمة صعبة؟';
+                                    reportBtn.innerText = 'الكلمة صعبة! بلّغ عنها';
                                     reportBtn.disabled = false;
                                 }, 3000);
                             })
