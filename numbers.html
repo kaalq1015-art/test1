@@ -14,11 +14,7 @@
 body{background-color:var(--bg-color);color:var(--text-color);transition:all 0.3s ease;margin:0;padding:0;height:100dvh;max-height:100dvh;display:flex;flex-direction:column;overflow:hidden;touch-action:manipulation;}
 .game-wrapper{flex:1;display:flex;flex-direction:column;justify-content:space-between;width:100%;max-width:800px;margin:0 auto;padding:6px 10px;overflow:hidden;min-height:0;}
 @media(max-width:768px){.game-wrapper{max-width:600px;}}
-/* إجبار الأرقام على الاتجاه من اليسار لليمين */
-#grid, .grid-row, .keyboard-row, .key, .tile, .matrix-grid, .matrix-row, .correct-number, .matrix-tile {
-    direction: ltr !important;
-    unicode-bidi: plaintext;
-}
+#grid, .grid-row, .keyboard-row, .key, .tile, .matrix-grid, .matrix-row, .correct-number, .matrix-tile{direction:ltr!important;unicode-bidi:plaintext;}
 .tile{--tile-size:62px;width:var(--tile-size);height:var(--tile-size);border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:calc(var(--tile-size)*0.50);font-weight:bold;user-select:none;transition:all 0.3s ease;border-radius:4px;flex-shrink:0;}
 .tile.filled{border-color:#878a8c;animation:pop 0.1s ease;}
 @keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.1);}100%{transform:scale(1);}}
@@ -100,20 +96,22 @@ h1{font-size:1.6rem;text-align:center;letter-spacing:0.08em;background:linear-gr
 </head>
 <body>
 <header class="grid grid-cols-3 items-center px-2 py-3 border-b border-[var(--border-color)] min-h-[60px]">
-<div class="flex items-center gap-1"><button id="helpBtn" class="p-1.5 hover:bg-[var(--default-color)] rounded-full"><i class="fas fa-question-circle text-lg"></i></button><button id="statsBtn" class="p-1.5 hover:bg-[var(--default-color)] rounded-full"><i class="fas fa-chart-bar text-lg"></i></button></div>
+<div class="flex items-center gap-1">
+    <button id="statsBtn" class="p-1.5 hover:bg-[var(--default-color)] rounded-full"><i class="fas fa-chart-bar text-lg"></i></button>
+    <a href="words.html" class="px-3 py-1.5 text-sm font-bold bg-[var(--default-color)] hover:bg-[var(--border-active)] rounded-full transition-colors">حروف</a>
+</div>
 <div class="flex justify-center"><h1 class="font-bold text-lg sm:text-xl whitespace-nowrap">12345</h1></div>
 <div class="flex items-center justify-end gap-1 sm:gap-2">
 <div class="difficulty-dropdown"><button id="difficultyToggle" class="flex items-center gap-1 px-1.5 py-1 sm:px-2 sm:py-1.5 border-2 border-[var(--border-color)] rounded-lg bg-[var(--bg-color)]"><span class="text-[10px] sm:text-sm font-bold">الصعوبة</span><i class="fas fa-chevron-down text-[8px] sm:text-[10px]"></i></button><div id="difficultyMenu" class="difficulty-menu text-xs sm:text-sm"><button data-difficulty="hard" class="difficulty-option active">صعب</button><button data-difficulty="easy" class="difficulty-option">سهل</button></div></div>
-<button id="newGameHeaderBtn" ...><i class="fas fa-redo-alt ..."></i></button>
-<a href="words.html" class="px-3 py-1.5 text-sm font-bold bg-[var(--default-color)] hover:bg-[var(--border-active)] rounded-full transition-colors">حروف</a>
-<button id="themeToggle" ...><i class="fas fa-sun ..."></i></button>
+<button id="newGameHeaderBtn" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center bg-[var(--newgame-color)] text-white rounded-full shrink-0"><i class="fas fa-redo-alt text-xs sm:text-sm"></i></button>
+<button id="themeToggle" class="p-1.5 hover:bg-[var(--default-color)] rounded-full shrink-0"><i class="fas fa-sun text-lg"></i></button>
 </div>
 </header>
 <div class="game-wrapper"><div id="message" class="text-center font-bold"></div><div id="grid" class="mb-4"></div><div id="keyboard" class="w-full"></div></div>
 
 <div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">طريقة اللعب</h2><button id="closeHelp" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div class="mb-6"><p class="text-base mb-5 text-center" id="helpAttemptsText">خمّن الرقم المكون من 5 خانات في 6 محاولات.</p><div class="color-example"><div class="color-box correct">5</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأخضر</h3><p>الرقم صحيح وفي المكان الصحيح.</p></div></div><div class="color-example"><div class="color-box present">2</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأصفر</h3><p>الرقم صحيح ولكن في المكان الخطأ.</p></div></div><div class="color-example"><div class="color-box absent">7</div><div class="color-description"><h3 class="font-bold mb-1">اللون الرمادي</h3><p>الرقم غير موجود في الرقم السري.</p></div></div></div><div class="text-center mt-5"><button id="startGameBtn" class="bg-[var(--correct-color)] text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 text-base">فهمت، ابدأ اللعب</button></div></div></div></div>
 
-<div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">الإحصائيات</h2><button id="closeStats" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div id="gameResultInfo" class="mb-4"></div><div id="attemptsTableContainer" class="attempts-table-container"><div class="attempts-title">سجل المحاولات</div><div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة. ابدأ اللعب الآن!</div><table class="attempts-table"><thead><tr><th>#</th><th>المحاولة</th><th>النتيجة</th> </tr></thead><tbody id="attemptsTableBody"></tbody> </table></div><div class="flex justify-around mb-6"><div class="text-center"><div id="playedCount" class="text-2xl font-bold">0</div><div class="text-xs">العب</div></div><div class="text-center"><div id="winPercent" class="text-2xl font-bold">0%</div><div class="text-xs">فوز</div></div><div class="text-center"><div id="currentStreak" class="text-2xl font-bold">0</div><div class="text-xs">تتابع</div></div><div class="text-center"><div id="maxStreak" class="text-2xl font-bold">0</div><div class="text-xs">أعلى تتابع</div></div></div><div class="space-y-2"><button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-2.5 rounded font-bold hover:bg-[var(--default-color)] text-sm">لعبة جديدة</button></div></div></div></div>
+<div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">الإحصائيات</h2><button id="closeStats" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div id="gameResultInfo" class="mb-4"></div><div id="attemptsTableContainer" class="attempts-table-container"><div class="attempts-title">سجل المحاولات</div><div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة. ابدأ اللعب الآن!</div><table class="attempts-table"><thead><th>#</th><th>المحاولة</th><th>النتيجة</th> </thead><tbody id="attemptsTableBody"></tbody>  </table></div><div class="flex justify-around mb-6"><div class="text-center"><div id="playedCount" class="text-2xl font-bold">0</div><div class="text-xs">العب</div></div><div class="text-center"><div id="winPercent" class="text-2xl font-bold">0%</div><div class="text-xs">فوز</div></div><div class="text-center"><div id="currentStreak" class="text-2xl font-bold">0</div><div class="text-xs">تتابع</div></div><div class="text-center"><div id="maxStreak" class="text-2xl font-bold">0</div><div class="text-xs">أعلى تتابع</div></div></div><div class="space-y-2"><button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-2.5 rounded font-bold hover:bg-[var(--default-color)] text-sm">لعبة جديدة</button></div></div></div></div>
 
 <div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold" id="resultModalTitle">نتيجة اللعبة</h2><button id="closeGameResult" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div id="gameResultDetails" class="text-center mb-4"></div><div id="attemptMatrixContainer" class="attempt-matrix-container"><h3 class="matrix-title">خريطة رحلتك في التفكير</h3><div id="matrixGrid" class="matrix-grid"></div><div class="matrix-legend"><div class="legend-item"><div class="legend-color correct"></div><span>صحيح</span></div><div class="legend-item"><div class="legend-color present"></div><span>موجود بموقع آخر</span></div><div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div></div></div><div class="result-buttons"><button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90"><i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى</button><button id="viewStatsBtn" class="border border-[var(--border-color)] hover:bg-[var(--default-color)]"><i class="fas fa-chart-bar ml-2"></i>عرض الإحصائيات</button></div></div></div></div>
 
@@ -327,7 +325,7 @@ function updateStatsDisplay() {
         body.innerHTML = '';
         [...attemptsHistory].reverse().forEach(a => {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td class="attempt-number">${a.number}</td><td>${a.attempts}</td><td><span class="attempt-result ${a.result}">${a.result === 'win' ? 'فوز ✓' : 'خسارة ✗'}</span></td>`;
+            tr.innerHTML = `<td class="attempt-number">${a.number}  </td><td>${a.attempts}</td><td><span class="attempt-result ${a.result}">${a.result === 'win' ? 'فوز ✓' : 'خسارة ✗'}</span></td>`;
             body.appendChild(tr);
         });
     } else {
@@ -508,7 +506,7 @@ function setupEventListeners() {
     document.querySelectorAll('.difficulty-option').forEach(opt => {
         opt.addEventListener('click', function() { changeDifficulty(this.dataset.difficulty); });
     });
-    document.getElementById('helpBtn').addEventListener('click', () => document.getElementById('helpModal').classList.remove('hidden'));
+    // helpBtn removed
     document.getElementById('statsBtn').addEventListener('click', () => { updateStatsDisplay(); document.getElementById('statsModal').classList.remove('hidden'); });
     document.getElementById('newGameHeaderBtn').addEventListener('click', startNewGame);
     document.getElementById('newGameFromStats').addEventListener('click', () => { startNewGame(); document.getElementById('statsModal').classList.add('hidden'); });
