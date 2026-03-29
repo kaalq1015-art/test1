@@ -9,7 +9,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
 *{font-family:'Tajawal',sans-serif;box-sizing:border-box;}
-:root{--correct-color:#4a9e52;--correct-glow:rgba(74,158,82,0.35);--present-color:#c9a227;--present-glow:rgba(201,162,39,0.35);--absent-color:#3a3a3c;--default-color:#565758;--bg-color:#0f0f10;--surface-color:#1a1a1b;--text-color:#f0f0f0;--text-muted:#818384;--border-color:#2d2d2e;--border-active:#555557;--key-bg:#4a4a4e;--key-text:#e8e8e8;--enter-color:#2563a8;--backspace-color:#9b2335;--newgame-color:#2563a8;--newgame-hover:#2f74c0;--easy-color:#4a9e52;--hard-color:#c0293f;--header-border:rgba(255,255,255,0.07);--max-rows:6;}
+:root{--correct-color:#4a9e52;--correct-glow:rgba(74,158,82,0.35);--present-color:#c9a227;--present-glow:rgba(201,162,39,0.35);--absent-color:#3a3a3c;--default-color:#565758;--bg-color:#0f0f10;--surface-color:#1a1a1b;--text-color:#f0f0f0;--text-muted:#818384;--border-color:#2d2d2e;--border-active:#555557;--key-bg:#4a4a4e;--key-text:#e8e8e8;--enter-color:#2563a8;--backspace-color:#9b2335;--newgame-color:#2563a8;--newgame-hover:#2f74c0;--easy-color:#4a9e52;--hard-color:#c0293f;--header-border:rgba(255,255,255,0.07);}
 .light-mode{--correct-color:#4a9e52;--correct-glow:rgba(74,158,82,0.2);--present-color:#c9a227;--present-glow:rgba(201,162,39,0.2);--absent-color:#6c6e70;--default-color:#e0e2e5;--bg-color:#f0f0f2;--surface-color:#ffffff;--text-color:#1a1a1b;--text-muted:#6c6e70;--border-color:#c8cacd;--border-active:#999ba0;--key-bg:#e0e2e5;--key-text:#1a1a1b;--enter-color:#2563a8;--backspace-color:#c0293f;--newgame-color:#2563a8;--newgame-hover:#2f74c0;--easy-color:#4a9e52;--hard-color:#c0293f;--header-border:rgba(0,0,0,0.08);}
 body{background-color:var(--bg-color);color:var(--text-color);transition:all 0.3s ease;margin:0;padding:0;height:100dvh;max-height:100dvh;display:flex;flex-direction:column;overflow:hidden;touch-action:manipulation;}
 .game-wrapper{flex:1;display:flex;flex-direction:column;justify-content:space-between;width:100%;max-width:800px;margin:0 auto;padding:6px 10px;overflow:hidden;min-height:0;}
@@ -47,7 +47,7 @@ h1{font-size:1.6rem;text-align:center;letter-spacing:0.08em;background:linear-gr
 #newGameHeaderBtn:active{transform:scale(0.92) rotate(-30deg);}
 .grid-row{display:flex;justify-content:center;gap:6px;margin-bottom:5px;}
 #message{font-size:1rem;min-height:40px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;padding:0 10px;text-align:center;gap:8px;flex-wrap:wrap;}
-.modal-content{width:95%;max-width:500px;max-height:90vh;overflow-y:auto;margin:10px;}
+.modal-content{width:95%;max-width:500px;max-height:90vh;overflow-y:auto;margin:10px;background-color:var(--bg-color);border:1px solid var(--border-color);border-radius:12px;}
 .correct-arrows{background:linear-gradient(135deg,var(--correct-color),#2d7a34);color:white;padding:14px 20px;border-radius:10px;margin:12px 0;text-align:center;font-size:2rem;font-weight:bold;letter-spacing:0.15em;animation:pulse 2s infinite;box-shadow:0 4px 20px var(--correct-glow);direction:ltr;}
 @keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);}}
 .color-example{display:flex;align-items:center;gap:12px;margin-bottom:15px;padding:10px;border-radius:8px;background-color:rgba(129,131,132,0.1);}
@@ -225,6 +225,7 @@ function evaluateGuess() {
 
 function handleWin() {
     showMessage('🎉 أحسنت! لقد فزت!');
+    // حفظ المصفوفة البصرية
     const matrix = [];
     for (let r = 0; r <= currentRow; r++) {
         const rowColors = [];
@@ -248,7 +249,7 @@ function handleWin() {
     if (stats.currentStreak > stats.maxStreak) stats.maxStreak = stats.currentStreak;
     localStorage.setItem('arrowle_stats', JSON.stringify(stats));
     updateStatsDisplay();
-    setTimeout(() => showGameResultModal(true), 2500);
+    setTimeout(() => showGameResultModal(true), 1000);
 }
 
 function handleLoss() {
@@ -273,15 +274,18 @@ function handleLoss() {
     stats.played++; stats.currentStreak = 0;
     localStorage.setItem('arrowle_stats', JSON.stringify(stats));
     updateStatsDisplay();
-    setTimeout(() => showGameResultModal(false), 1500);
+    setTimeout(() => showGameResultModal(false), 1000);
 }
 
 function renderAttemptMatrix() {
     const container = document.getElementById('matrixGrid');
     container.innerHTML = '';
-    const used = attemptResults.filter(r => r && r.length);
+    // استخدام attemptResults المسجلة أثناء اللعب
+    const usedRows = attemptResults.filter(r => r && r.length);
+    if (usedRows.length === 0) return;
+    
     const guessedArrows = [];
-    for (let r = 0; r < used.length; r++) {
+    for (let r = 0; r < usedRows.length; r++) {
         let seq = '';
         for (let c = 0; c < MAX_ARROWS; c++) {
             const tile = document.getElementById(`tile-${r}-${c}`);
@@ -289,7 +293,7 @@ function renderAttemptMatrix() {
         }
         guessedArrows.push(seq);
     }
-    used.forEach((res, idx) => {
+    usedRows.forEach((res, idx) => {
         const rowDiv = document.createElement('div');
         rowDiv.className = 'matrix-row';
         res.forEach((st, col) => {
@@ -304,6 +308,7 @@ function renderAttemptMatrix() {
 
 function showGameResultModal(isWin) {
     const modal = document.getElementById('gameResultModal');
+    if (!modal) return;
     document.getElementById('resultModalTitle').textContent = isWin ? '🎉 مبروك! فزت!' : '💔 انتهت المحاولات!';
     document.getElementById('gameResultDetails').innerHTML = `
         <div class="${isWin ? 'text-green-600' : 'text-red-600'} font-bold text-lg mb-2">${isWin ? 'لقد فزت في المحاولة ' + (currentRow + 1) : 'انتهت محاولاتك!'}</div>
@@ -312,6 +317,7 @@ function showGameResultModal(isWin) {
     `;
     renderAttemptMatrix();
     modal.classList.remove('hidden');
+    modal.style.display = 'flex';
 }
 
 function updateStatsDisplay() {
@@ -367,8 +373,11 @@ function startNewGame() {
     document.querySelectorAll('.key').forEach(k => k.classList.remove('correct', 'present', 'absent'));
     updateCurrentRow();
     document.getElementById('message').innerHTML = '';
-    document.getElementById('gameResultModal').classList.add('hidden');
-    document.getElementById('statsModal').classList.add('hidden');
+    // إخفاء المودال إذا كان ظاهراً
+    const modal = document.getElementById('gameResultModal');
+    if (modal) modal.classList.add('hidden');
+    const statsModal = document.getElementById('statsModal');
+    if (statsModal) statsModal.classList.add('hidden');
 }
 
 function handleInput(value) {
@@ -416,7 +425,7 @@ function handleInput(value) {
 function createKeyboard() {
     const keyboardDiv = document.getElementById('keyboard');
     const arrowRow = ['↑', '↓', '←', '→'];
-    // تبديل الترتيب: Backspace أولاً (على اليمين) ثم Enter (على اليسار)
+    // تبديل الترتيب: Backspace (يمين) ثم Enter (يسار)
     const controlRow = ['Backspace', 'Enter'];
     keyboardDiv.innerHTML = '';
     const row1 = document.createElement('div');
