@@ -55,43 +55,91 @@ body{
 }
 .game-wrapper{flex:1;display:flex;flex-direction:column;justify-content:space-between;width:100%;max-width:600px;margin:0 auto;padding:6px 10px;overflow:hidden;min-height:0;}
 
-/* HEADER - المعادلة المطلوبة */
+.shake{animation:shake 0.5s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}10%,30%,50%,70%,90%{transform:translateX(-5px);}20%,40%,60%,80%{transform:translateX(5px);}}
+.bounce{animation:bounce 0.5s ease;}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+/* HEADER */
 header {
     padding: 10px 16px;
     border-bottom: 1px solid var(--header-border);
     background: rgba(18, 18, 19, 0.8);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    position: sticky; top: 0; z-index: 50;
-    display: flex; align-items: center; justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 .light-mode header { background: rgba(248, 249, 250, 0.85); }
 h1 {
-    position: absolute; left: 50%; transform: translateX(-50%);
-    font-size: 1.5rem; font-weight: 800; margin: 0;
-    color: var(--text-color); white-space: nowrap;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0;
+    color: #ffffff;
+    white-space: nowrap;
+}
+.light-mode h1 {
+    color: #121213;
+    background: none;
+    -webkit-text-fill-color: initial;
 }
 .back-btn {
-    display:flex; align-items:center; justify-content:center;
-    width:36px; height:36px; border-radius:10px;
-    background:var(--correct-color); color:white !important;
-    text-decoration:none; transition:all 0.2s;
-    box-shadow:0 2px 8px rgba(83,141,78,0.4); flex-shrink:0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--correct-color);
+    color: white !important;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(83,141,78,0.4);
+    flex-shrink: 0;
+}
+.back-btn:hover {
+    opacity: 0.88;
+    transform: scale(1.05);
 }
 .stats-btn-header, #difficultyToggle, .theme-btn, #newGameHeaderBtn {
-    width: 36px; height: 36px; border-radius: 10px;
-    background: var(--surface-color); border: 1px solid var(--border-color);
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
     color: var(--text-color) !important;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 #difficultyToggle { width: auto !important; padding: 0 10px !important; font-size: 0.8rem; }
+.stats-btn-header span, .stats-btn-header i { color: inherit; }
+.theme-btn:hover, .stats-btn-header:hover { border-color: var(--border-active); }
+#newGameHeaderBtn:hover { border-color: var(--correct-color); color: var(--correct-color) !important; }
+#newGameHeaderBtn:active { transform: scale(0.92) rotate(-30deg); }
+.stats-btn-header{
+    width:36px;height:36px;border-radius:10px;
+    background:var(--surface-color);border:1px solid var(--border-color);
+    color:var(--text-color);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:all 0.2s;
+    backdrop-filter:blur(8px);
+}
+.stats-btn-header:hover{border-color:var(--border-active);}
 
 /* GRID & TILES */
 .grid-row{display:flex;justify-content:center;gap:6px;margin-bottom:5px;}
 .tile{--tile-size:62px;width:var(--tile-size);height:var(--tile-size);border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:calc(var(--tile-size)*0.50);font-weight:800;user-select:none;transition:all 0.3s ease;border-radius:6px;flex-shrink:0;}
 .tile.filled{border-color:rgba(255,255,255,0.3);animation:pop 0.1s ease;}
-@keyframes pop{50%{transform:scale(1.12);}}
+@keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.12);}100%{transform:scale(1);}}
 .tile.correct{background-color:var(--correct-color);border-color:var(--correct-color);color:white;box-shadow:0 0 14px var(--correct-glow);}
 .tile.present{background-color:var(--present-color);border-color:var(--present-color);color:white;box-shadow:0 0 14px var(--present-glow);}
 .tile.absent{background-color:var(--absent-color);border-color:var(--absent-color);color:white;}
@@ -102,16 +150,32 @@ h1 {
 .keyboard-row{display:flex;justify-content:center;gap:4px;margin-bottom:6px;width:100%;}
 .key{
     height:clamp(42px,6vh,58px);min-width:clamp(28px,6vw,43px);
-    background-color:var(--key-bg); color:var(--key-text);
-    border:1px solid var(--border-color); border-radius:8px;font-weight:700;
+    background-color:var(--key-bg);
+    color:var(--key-text);
+    border:1px solid var(--border-color);
+    border-radius:8px;font-weight:700;
+    font-size:clamp(0.85rem,3vw,1.1rem);
     display:flex;align-items:center;justify-content:center;
-    cursor:pointer; transition:all 0.15s ease; flex:1;
+    cursor:pointer;user-select:none;
+    transition:all 0.15s ease;
+    flex:1;margin:0 2px;padding:0 2px;touch-action:manipulation;
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
 }
-.key.enter{background-color:var(--enter-color);color:white;}
-.key.backspace{background-color:var(--backspace-color);color:white;}
-.key.correct{background-color:var(--correct-color);color:white;}
-.key.present{background-color:var(--present-color);color:white;}
-.key.absent{background-color:var(--absent-color)!important;color:rgba(255,255,255,0.4)!important;}
+.key.enter{background-color:var(--enter-color);color:white;border-color:var(--enter-color);font-size:clamp(0.7rem,2.5vw,0.9rem);}
+.key.backspace{background-color:var(--backspace-color);color:white;border-color:var(--backspace-color);}
+@media(max-width:480px){
+    .key{height:clamp(38px,5.5vh,50px);min-width:clamp(24px,5vw,34px);font-size:clamp(0.8rem,2.8vw,1rem);margin:0 1px;padding:0 1px;}
+    .key.enter{font-size:clamp(0.65rem,2.2vw,0.8rem);}
+    .keyboard-row{gap:2px;margin-bottom:5px;}
+}
+.key:hover{background-color:var(--border-active);transform:translateY(-1px);}
+.key:active{transform:translateY(0);}
+.key.wide{min-width:65px;}
+@media(max-width:640px){.key.wide{min-width:56px;}}
+@media(max-width:480px){.key.wide{min-width:50px;}}
+.key.correct{background-color:var(--correct-color);border-color:var(--correct-color);color:white;box-shadow:0 0 8px var(--correct-glow);}
+.key.present{background-color:var(--present-color);border-color:var(--present-color);color:white;box-shadow:0 0 8px var(--present-glow);}
+.key.absent{background-color:var(--absent-color)!important;border-color:var(--absent-color)!important;color:rgba(255,255,255,0.4)!important;}
 
 /* MODALS & RESULT SCREEN - إصلاح التداخل */
 .modal-overlay{background-color:rgba(0,0,0,0.75);backdrop-filter:blur(8px);position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;}
@@ -145,11 +209,12 @@ h1 {
 .difficulty-option { width: 100%; padding: 10px 14px; text-align: center; border: none; background: none; color: var(--text-color); font-size: 0.88rem; cursor: pointer; border-bottom: 1px solid var(--border-color); font-weight: 600; }
 .difficulty-option.active { color: var(--correct-color); font-weight: 800; }
 .suggest-btn { background: rgba(83,141,78,0.2); color: var(--correct-color); padding: 3px 10px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; border: 1px solid var(--correct-color); font-weight: 700; margin-right: 8px; }
-.hard-word-btn { background: linear-gradient(135deg,#e67e22,#d35400); color: white; padding: 11px; border-radius: 12px; font-weight: 800; width: 100%; margin-top: 12px; cursor: pointer; border: none; font-size: 0.9rem; }
+.win-celebration{animation:winCelebration 2s ease infinite;}
+@keyframes winCelebration{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
 </style>
 </head>
 <body>
-<header class="sticky top-0 z-50 flex items-center justify-between px-4 py-2.5 min-h-[58px]">
+<header>
 <div class="flex items-center gap-2">
     <button id="statsBtn" class="stats-btn-header"><i class="fas fa-chart-bar text-sm"></i></button>
     <a href="index.html" class="back-btn" title="تغيير اللعبة"><i class="fas fa-th-large text-sm"></i></a>
