@@ -94,53 +94,91 @@ body{
 .bounce{animation:bounce 0.5s ease;}
 @keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
 /* HEADER */
-header{
-    padding:10px 16px;
-    border-bottom:1px solid var(--header-border);
-    background:rgba(18,18,19,0.8);
-    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-    position:sticky;top:0;z-index:50;
+header {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--header-border);
+    background: rgba(18, 18, 19, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
-.light-mode header{background:rgba(248,249,250,0.85);}
-h1{
-    font-size:1.4rem;font-weight:900;text-align:center;
-    letter-spacing:-0.02em;
-    background:linear-gradient(135deg,var(--correct-color)0%,#ffffff 50%,var(--present-color)100%);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+
+.light-mode header {
+    background: rgba(248, 249, 250, 0.85);
 }
-.light-mode h1{background:linear-gradient(135deg,var(--correct-color)0%,#121213 50%,var(--present-color)100%);-webkit-background-clip:text;background-clip:text;}
-/* زر الرجوع */
-.back-btn{
-    display:flex;align-items:center;justify-content:center;
-    width:36px;height:36px;border-radius:10px;
-    background:var(--correct-color);
-    color:white;text-decoration:none;
-    transition:all 0.2s;box-shadow:0 2px 8px rgba(83,141,78,0.4);
-    flex-shrink:0;
+
+h1 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0;
+    color: #ffffff;
+    white-space: nowrap;
 }
-.back-btn:hover{opacity:0.88;transform:scale(1.05);}
-/* زر الثيم */
-.theme-btn{
-    width:36px;height:36px;border-radius:10px;
-    background:var(--surface-color);
-    border:1px solid var(--border-color);
-    color:var(--text-color);
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;transition:all 0.2s;
-    backdrop-filter:blur(8px);
+
+.light-mode h1 {
+    color: #121213;
+    background: none;
+    -webkit-text-fill-color: initial;
 }
-.theme-btn:hover{border-color:var(--border-active);}
-/* زر إعادة اللعبة */
-#newGameHeaderBtn{
-    width:36px;height:36px;border-radius:10px;
-    background:var(--surface-color);border:1px solid var(--border-color);
-    color:var(--text-color);
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;transition:all 0.2s;
-    backdrop-filter:blur(8px);
+
+.back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--correct-color);
+    color: white !important;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(83,141,78,0.4);
+    flex-shrink: 0;
 }
-#newGameHeaderBtn:hover{border-color:var(--correct-color);color:var(--correct-color);}
-#newGameHeaderBtn:active{transform:scale(0.92) rotate(-30deg);}
+
+.back-btn:hover {
+    opacity: 0.88;
+    transform: scale(1.05);
+}
+
+.stats-btn-header, #difficultyToggle, .theme-btn, #newGameHeaderBtn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.stats-btn-header span, .stats-btn-header i {
+    color: inherit;
+}
+
+.theme-btn:hover, .stats-btn-header:hover {
+    border-color: var(--border-active);
+}
+
+#newGameHeaderBtn:hover {
+    border-color: var(--correct-color);
+    color: var(--correct-color) !important;
+}
+
+#newGameHeaderBtn:active {
+    transform: scale(0.92) rotate(-30deg);
+}
 /* زر الإحصائيات */
 .stats-btn-header{
     width:36px;height:36px;border-radius:10px;
