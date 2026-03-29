@@ -94,22 +94,37 @@ body{
 .bounce{animation:bounce 0.5s ease;}
 @keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
 /* HEADER */
-header{
-    padding:10px 16px;
-    border-bottom:1px solid var(--header-border);
-    background:rgba(18,18,19,0.8);
-    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-    position:sticky;top:0;z-index:50;
+header {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--header-border);
+    background: rgba(18, 18, 19, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
-.light-mode header{background:rgba(248,249,250,0.85);}
-h1{
-    font-size:1.4rem;font-weight:900;text-align:center;
-    letter-spacing:-0.02em;
-    background:linear-gradient(135deg,var(--correct-color)0%,#ffffff 50%,var(--present-color)100%);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+h1 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 0;
+    white-space: nowrap;
+    background: linear-gradient(180deg, #ffffff 0%, #bbbbbb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
-.light-mode h1{background:linear-gradient(135deg,var(--correct-color)0%,#121213 50%,var(--present-color)100%);-webkit-background-clip:text;background-clip:text;}
-.back-btn{
+.light-mode h1 {
+    background: linear-gradient(180deg, #121213 0%, #4a4a4a 100%);
+    -webkit-background-clip: text;
+    text-shadow: none;
+}
     display:flex;align-items:center;justify-content:center;
     width:36px;height:36px;border-radius:10px;
     background:var(--correct-color);
