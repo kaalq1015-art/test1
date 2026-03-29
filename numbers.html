@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
         
         * { font-family: 'Tajawal', sans-serif; box-sizing: border-box; }
         
@@ -18,33 +18,28 @@
             --present-glow: rgba(181, 159, 59, 0.35);
             --absent-color: #3a3a3c;
             --bg-color: #121213;
-            --surface-color: #1e1e20;
+            --surface-color: rgba(30, 30, 32, 0.7);
             --text-color: #ffffff;
             --text-muted: #818384;
-            --border-color: #3a3a3c;
+            --border-color: rgba(255, 255, 255, 0.1);
             --border-active: #565758;
             --key-bg: #818384;
             --key-text: #ffffff;
             --enter-color: #538d4e;
             --backspace-color: #3a3a3c;
-            --header-border: rgba(255, 255, 255, 0.1);
         }
 
         .light-mode {
             --correct-color: #6aaa64;
-            --correct-glow: rgba(106, 170, 100, 0.2);
             --present-color: #c9b458;
-            --present-glow: rgba(201, 180, 88, 0.2);
             --absent-color: #787c7e;
-            --bg-color: #ffffff;
-            --surface-color: #f8f9fa;
+            --bg-color: #f8f9fa;
+            --surface-color: rgba(255, 255, 255, 0.8);
             --text-color: #121213;
             --text-muted: #787c7e;
-            --border-color: #d3d6da;
-            --border-active: #878a8c;
+            --border-color: rgba(0, 0, 0, 0.1);
             --key-bg: #d3d6da;
             --key-text: #121213;
-            --header-border: rgba(0, 0, 0, 0.1);
         }
 
         body {
@@ -71,7 +66,7 @@
             min-height: 0;
         }
 
-        #grid, .grid-row, .keyboard-row, .key, .tile, .matrix-tile {
+        #grid, .grid-row, .keyboard-row, .key, .tile, .matrix-grid, .matrix-row, .correct-number, .matrix-tile {
             direction: ltr !important;
         }
 
@@ -87,24 +82,26 @@
             font-weight: 800;
             user-select: none;
             transition: all 0.3s ease;
-            border-radius: 4px;
+            border-radius: 6px;
         }
 
         .tile.filled { border-color: var(--border-active); animation: pop 0.1s ease; }
         @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        .tile.correct { background-color: var(--correct-color); border-color: var(--correct-color); color: white; }
-        .tile.present { background-color: var(--present-color); border-color: var(--present-color); color: white; }
+        .tile.correct { background-color: var(--correct-color); border-color: var(--correct-color); color: white; box-shadow: 0 0 12px var(--correct-glow); }
+        .tile.present { background-color: var(--present-color); border-color: var(--present-color); color: white; box-shadow: 0 0 12px var(--present-glow); }
         .tile.absent { background-color: var(--absent-color); border-color: var(--absent-color); color: white; }
 
         .flip { animation: flip 0.6s ease; }
         @keyframes flip { 0% { transform: rotateX(0); } 50% { transform: rotateX(90deg); } 100% { transform: rotateX(0); } }
 
+        .keyboard-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 8px; }
         .key {
             height: 58px;
             background-color: var(--key-bg);
             color: var(--key-text);
-            border-radius: 4px;
+            border: none;
+            border-radius: 6px;
             font-weight: 700;
             font-size: 1.2rem;
             display: flex;
@@ -114,60 +111,67 @@
             flex: 1;
             transition: all 0.2s ease;
         }
-        .key.enter { flex: 1.5; font-size: 0.9rem; background-color: var(--correct-color); color: white; }
-        .key.backspace { flex: 1.5; background-color: var(--absent-color); color: white; }
+        .key.enter { flex: 1.5; font-size: 0.9rem; background-color: var(--enter-color); color: white; }
+        .key.backspace { flex: 1.5; background-color: var(--backspace-color); color: white; }
         
+        .difficulty-dropdown { position: relative; }
         .difficulty-menu {
             position: absolute;
             top: 100%;
             left: 0;
-            background-color: var(--surface-color);
+            background-color: var(--bg-color);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             z-index: 100;
             display: none;
             min-width: 100px;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.2);
         }
         .difficulty-menu.show { display: block; }
-        .difficulty-option { width: 100%; padding: 10px; text-align: center; border-bottom: 1px solid var(--border-color); }
+        .difficulty-option { width: 100%; padding: 12px; text-align: center; border-bottom: 1px solid var(--border-color); cursor: pointer; }
         .difficulty-option.active { color: var(--correct-color); font-weight: 800; }
 
         .correct-number {
-            background: var(--correct-color);
+            background: linear-gradient(135deg, var(--correct-color), #2d7a34);
             color: white;
             padding: 15px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 1.8rem;
             font-weight: 800;
             letter-spacing: 0.2em;
+            margin: 15px 0;
+            text-align: center;
         }
 
         .shake { animation: shake 0.5s ease; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); } 20%, 40%, 60%, 80% { transform: translateX(5px); } }
+
+        .modal-overlay { background-color: rgba(0,0,0,0.7); backdrop-filter: blur(8px); }
+        .matrix-tile { width: 40px; height: 40px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; font-size: 0.9rem; }
+        .matrix-tile.correct { background-color: var(--correct-color); }
+        .matrix-tile.present { background-color: var(--present-color); }
+        .matrix-tile.absent { background-color: var(--absent-color); }
     </style>
 </head>
 <body>
 
-<header class="grid grid-cols-3 items-center px-4 py-3 border-b border-[var(--header-border)] min-h-[65px]">
+<header class="flex justify-between items-center px-4 py-3 border-b border-[var(--border-color)] backdrop-blur-md min-h-[65px]">
     <div class="flex items-center gap-2">
-        <a href="index.html" class="w-9 h-9 bg-[var(--correct-color)] rounded-lg flex items-center justify-center hover:opacity-90 transition-all shadow-sm">
+        <a href="index.html" class="w-9 h-9 bg-[var(--correct-color)] rounded-lg flex items-center justify-center hover:opacity-90 transition-all shadow-lg" title="تغيير اللعبة">
             <i class="fas fa-th-large text-white text-sm"></i>
         </a>
-        <button id="statsBtn" class="w-9 h-9 rounded-lg hover:bg-[var(--surface-color)] border border-[var(--border-color)] flex items-center justify-center transition-all">
+        <button id="statsBtn" class="w-9 h-9 rounded-lg border border-[var(--border-color)] flex items-center justify-center hover:bg-[var(--surface-color)] transition-all">
             <i class="fas fa-chart-bar text-lg"></i>
         </button>
     </div>
 
-    <div class="flex justify-center">
-        <h1 class="font-black text-xl tracking-tighter">12345</h1>
-    </div>
+    <h1 class="font-black text-xl tracking-tighter">12345</h1>
 
-    <div class="flex items-center justify-end gap-2">
-        <div class="relative">
-            <button id="difficultyToggle" class="px-3 py-1.5 border border-[var(--border-color)] rounded-lg bg-[var(--surface-color)] text-xs font-bold flex items-center gap-2">
+    <div class="flex items-center gap-2">
+        <div class="difficulty-dropdown">
+            <button id="difficultyToggle" class="px-3 py-1.5 border border-[var(--border-color)] rounded-lg bg-[var(--surface-color)] text-[10px] sm:text-xs font-bold flex items-center gap-2">
                 <span>الصعوبة</span>
-                <i class="fas fa-chevron-down text-[10px]"></i>
+                <i class="fas fa-chevron-down text-[8px]"></i>
             </button>
             <div id="difficultyMenu" class="difficulty-menu">
                 <button data-difficulty="hard" class="difficulty-option active text-xs">صعب</button>
@@ -177,7 +181,7 @@
         <button id="newGameHeaderBtn" class="w-9 h-9 bg-[var(--correct-color)] text-white rounded-full flex items-center justify-center shadow-md hover:scale-105 transition-all">
             <i class="fas fa-redo-alt text-sm"></i>
         </button>
-        <button id="themeToggle" class="w-9 h-9 rounded-lg border border-[var(--border-color)] flex items-center justify-center">
+        <button id="themeToggle" class="w-9 h-9 rounded-lg border border-[var(--border-color)] flex items-center justify-center transition-all">
             <i class="fas fa-sun text-lg"></i>
         </button>
     </div>
@@ -186,38 +190,38 @@
 <div class="game-wrapper">
     <div id="message" class="text-center font-bold h-10 flex items-center justify-center text-sm"></div>
     <div id="grid" class="flex flex-col gap-1.5 items-center"></div>
-    <div id="keyboard" class="w-full flex flex-col gap-2 mt-4"></div>
+    <div id="keyboard" class="w-full flex flex-col gap-2"></div>
 </div>
 
 <div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-2xl max-w-sm w-full p-6 shadow-2xl">
+    <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-3xl max-w-sm w-full p-8 shadow-2xl">
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-extrabold">كيف تلعب؟</h2>
+            <h2 class="text-2xl font-black">طريقة اللعب</h2>
             <button id="closeHelp" class="text-2xl">&times;</button>
         </div>
         <p class="text-sm opacity-70 mb-6 text-center" id="helpAttemptsText"></p>
         <div class="space-y-4">
             <div class="flex items-center gap-4">
-                <div class="w-10 h-10 bg-[var(--correct-color)] rounded flex items-center justify-center font-bold text-white">5</div>
-                <div class="text-xs">الرقم في المكان الصحيح.</div>
+                <div class="w-12 h-12 bg-[var(--correct-color)] rounded-lg flex items-center justify-center font-black text-white text-xl">5</div>
+                <div class="text-xs font-bold">الرقم صحيح وفي مكانه الصحيح.</div>
             </div>
             <div class="flex items-center gap-4">
-                <div class="w-10 h-10 bg-[var(--present-color)] rounded flex items-center justify-center font-bold text-white">2</div>
-                <div class="text-xs">الرقم موجود ولكن بمكان آخر.</div>
+                <div class="w-12 h-12 bg-[var(--present-color)] rounded-lg flex items-center justify-center font-black text-white text-xl">2</div>
+                <div class="text-xs font-bold">الرقم موجود ولكن بمكان آخر.</div>
             </div>
             <div class="flex items-center gap-4">
-                <div class="w-10 h-10 bg-[var(--absent-color)] rounded flex items-center justify-center font-bold text-white">7</div>
-                <div class="text-xs">الرقم غير موجود نهائياً.</div>
+                <div class="w-12 h-12 bg-[var(--absent-color)] rounded-lg flex items-center justify-center font-black text-white text-xl">7</div>
+                <div class="text-xs font-bold">الرقم غير موجود نهائياً.</div>
             </div>
         </div>
-        <button id="startGameBtn" class="w-full mt-8 bg-[var(--correct-color)] text-white py-3 rounded-xl font-bold">ابدأ اللعب</button>
+        <button id="startGameBtn" class="w-full mt-8 bg-[var(--correct-color)] text-white py-4 rounded-2xl font-black hover:opacity-90">ابدأ اللعب</button>
     </div>
 </div>
 
 <div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-2xl max-w-sm w-full p-6">
+    <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-3xl max-w-sm w-full p-6">
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-extrabold">الإحصائيات</h2>
+            <h2 class="text-xl font-black">الإحصائيات</h2>
             <button id="closeStats" class="text-2xl">&times;</button>
         </div>
         <div class="grid grid-cols-4 gap-2 text-center mb-8">
@@ -226,26 +230,26 @@
             <div><div id="currentStreak" class="text-2xl font-black">0</div><div class="text-[10px] opacity-50">تتابع</div></div>
             <div><div id="maxStreak" class="text-2xl font-black">0</div><div class="text-[10px] opacity-50">أفضل</div></div>
         </div>
-        <div class="max-h-40 overflow-y-auto border border-[var(--border-color)] rounded-lg mb-6">
+        <div class="max-h-48 overflow-y-auto border border-[var(--border-color)] rounded-xl mb-6">
             <table class="w-full text-xs">
                 <thead class="bg-[var(--surface-color)] sticky top-0">
-                    <tr><th class="p-2">#</th><th class="p-2">المحاولات</th><th class="p-2">النتيجة</th></tr>
+                    <tr><th class="p-3">#</th><th class="p-3">المحاولات</th><th class="p-3">النتيجة</th></tr>
                 </thead>
                 <tbody id="attemptsTableBody" class="text-center"></tbody>
             </table>
         </div>
-        <button id="newGameFromStats" class="w-full bg-[var(--correct-color)] text-white py-3 rounded-xl font-bold">لعبة جديدة</button>
+        <button id="newGameFromStats" class="w-full bg-[var(--correct-color)] text-white py-3 rounded-xl font-black">لعبة جديدة</button>
     </div>
 </div>
 
 <div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-2xl max-w-sm w-full p-6 text-center">
-        <h2 id="resultModalTitle" class="text-2xl font-black mb-4"></h2>
-        <div id="gameResultDetails" class="mb-6"></div>
-        <div class="matrix-grid flex flex-col gap-1 items-center mb-8" id="matrixGrid"></div>
+    <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-3xl max-w-sm w-full p-8 text-center shadow-2xl">
+        <h2 id="resultModalTitle" class="text-3xl font-black mb-4"></h2>
+        <div id="gameResultDetails" class="mb-4"></div>
+        <div class="mb-6"><div class="text-sm opacity-50 mb-4">رحلتك في التفكير:</div><div class="flex flex-col gap-1 items-center" id="matrixGrid"></div></div>
         <div class="flex gap-3">
-            <button id="playAgainBtn" class="flex-1 bg-[var(--correct-color)] text-white py-3 rounded-xl font-bold">مرة أخرى</button>
-            <button id="viewStatsBtn" class="flex-1 border border-[var(--border-color)] py-3 rounded-xl font-bold">الإحصائيات</button>
+            <button id="playAgainBtn" class="flex-1 bg-[var(--correct-color)] text-white py-4 rounded-2xl font-black">مرة أخرى</button>
+            <button id="viewStatsBtn" class="flex-1 border border-[var(--border-color)] py-4 rounded-2xl font-black">الإحصائيات</button>
         </div>
     </div>
 </div>
@@ -259,11 +263,16 @@ let gameOver = false;
 let gameWon = false;
 let stats = { played: 0, wins: 0, currentStreak: 0, maxStreak: 0 };
 let attemptsHistory = [];
-let attemptMatrices = [];
+let attemptResults = [];
 let isProcessing = false;
 let inputLock = false;
 let difficulty = 'hard';
 let maxAttempts = 6;
+
+function convertArabicDigits(str) {
+    const arabicDigits = /[٠-٩]/g;
+    return str.replace(arabicDigits, d => String.fromCharCode(d.charCodeAt(0) - 1632 + 48));
+}
 
 function generateRandomNumber() {
     let num = "";
@@ -304,6 +313,7 @@ function showMessage(msg) {
 function evaluateGuess() {
     const guess = currentGuess;
     const result = calculateGuessResult(guess, targetNumber);
+    attemptResults[currentRow] = result;
     inputLock = true;
     let completed = 0;
     
@@ -345,9 +355,27 @@ function saveAndShow(isWin) {
     setTimeout(() => showGameResultModal(isWin), 2000);
 }
 
+function renderAttemptMatrix() {
+    const container = document.getElementById('matrixGrid');
+    container.innerHTML = '';
+    const used = attemptResults.filter(r => r && r.length);
+    used.forEach((res, idx) => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'flex gap-1';
+        res.forEach((st, col) => {
+            const tile = document.createElement('div');
+            tile.className = `matrix-tile ${st}`;
+            tile.textContent = document.getElementById(`tile-${idx}-${col}`).textContent;
+            rowDiv.appendChild(tile);
+        });
+        container.appendChild(rowDiv);
+    });
+}
+
 function showGameResultModal(isWin) {
     document.getElementById('resultModalTitle').textContent = isWin ? 'كفو! جبتها ✅' : 'حظ أوفر المرة الجاية ❌';
     document.getElementById('gameResultDetails').innerHTML = `<div class="correct-number">${targetNumber}</div>`;
+    renderAttemptMatrix();
     document.getElementById('gameResultModal').classList.remove('hidden');
 }
 
@@ -357,12 +385,13 @@ function updateStatsDisplay() {
     document.getElementById('currentStreak').textContent = stats.currentStreak;
     document.getElementById('maxStreak').textContent = stats.maxStreak;
     const body = document.getElementById('attemptsTableBody');
-    body.innerHTML = attemptsHistory.map(a => `<tr><td class="p-2">${a.number}</td><td class="p-2">${a.attempts}</td><td class="p-2 ${a.result === 'win' ? 'text-green-500' : 'text-red-500'} font-bold">${a.result === 'win' ? 'فوز' : 'خسارة'}</td></tr>`).join('');
+    body.innerHTML = attemptsHistory.map(a => `<tr class="border-b border-[var(--border-color)]"><td class="p-3">${a.number}</td><td class="p-3">${a.attempts}</td><td class="p-3 ${a.result === 'win' ? 'text-green-500' : 'text-red-500'} font-bold">${a.result === 'win' ? 'فوز' : 'خسارة'}</td></tr>`).join('');
 }
 
 function startNewGame() {
     targetNumber = generateRandomNumber();
     currentRow = 0; currentGuess = ""; gameOver = false; isProcessing = false; inputLock = false;
+    attemptResults = [];
     createGrid();
     document.querySelectorAll('.key').forEach(k => { k.style.backgroundColor = ''; k.style.color = ''; });
     document.getElementById('gameResultModal').classList.add('hidden');
@@ -386,7 +415,7 @@ function createGrid() {
     g.innerHTML = '';
     for (let r = 0; r < maxAttempts; r++) {
         const row = document.createElement('div');
-        row.className = 'flex gap-1.5';
+        row.className = 'flex gap-2 mb-1.5';
         for (let c = 0; c < MAX_DIGITS; c++) {
             const tile = document.createElement('div');
             tile.className = 'tile'; tile.id = `tile-${r}-${c}`;
@@ -399,7 +428,7 @@ function createGrid() {
 function createKeyboard() {
     const k = document.getElementById('keyboard');
     const layout = [['1','2','3','4','5'],['6','7','8','9','0'],['Enter','Backspace']];
-    k.innerHTML = layout.map(row => `<div class="flex gap-2">${row.map(key => `<button class="key ${key.toLowerCase()}" data-key="${key}">${key === 'Backspace' ? '⌫' : (key === 'Enter' ? 'دخول' : key)}</button>`).join('')}</div>`).join('');
+    k.innerHTML = layout.map(row => `<div class="keyboard-row">${row.map(key => `<button class="key ${key.toLowerCase()}" data-key="${key}">${key === 'Backspace' ? '⌫' : (key === 'Enter' ? 'دخول' : key)}</button>`).join('')}</div>`).join('');
     k.querySelectorAll('.key').forEach(btn => btn.addEventListener('click', () => handleInput(btn.dataset.key)));
 }
 
@@ -411,8 +440,7 @@ function setupDifficulty() {
     document.querySelectorAll('.difficulty-option').forEach(opt => {
         opt.classList.toggle('active', opt.dataset.difficulty === difficulty);
         opt.addEventListener('click', () => {
-            difficulty = opt.dataset.difficulty;
-            localStorage.setItem('numberle_difficulty', difficulty);
+            localStorage.setItem('numberle_difficulty', opt.dataset.difficulty);
             location.reload();
         });
     });
@@ -422,7 +450,6 @@ function setupDifficulty() {
     });
 }
 
-// Init
 window.addEventListener('load', () => {
     const savedStats = localStorage.getItem('numberle_stats');
     if (savedStats) stats = JSON.parse(savedStats);
@@ -457,9 +484,10 @@ window.addEventListener('load', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') handleInput('Enter');
-    else if (e.key === 'Backspace') handleInput('Backspace');
-    else if (/^\d$/.test(e.key)) handleInput(e.key);
+    const key = convertArabicDigits(e.key);
+    if (key === 'Enter') handleInput('Enter');
+    else if (key === 'Backspace') handleInput('Backspace');
+    else if (/^\d$/.test(key)) handleInput(key);
 });
 </script>
 </body>
