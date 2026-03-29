@@ -90,64 +90,6 @@ h1{font-size:1.6rem;text-align:center;letter-spacing:0.08em;background:linear-gr
 .result-buttons{display:flex;gap:10px;margin-top:20px;}
 .result-buttons button{flex:1;padding:12px;border-radius:8px;font-weight:bold;font-size:1rem;transition:all 0.2s ease;}
 @media(max-width:480px){.result-buttons{flex-direction:column;gap:8px;}}
-
-/* ===== MODAL UPGRADES ===== */
-.modal-content{width:95%;max-width:480px;max-height:92vh;overflow-y:auto;margin:8px;border-radius:20px!important;border:none!important;}
-.modal-header{display:flex;justify-content:space-between;align-items:center;padding:20px 20px 0;}
-.modal-header h2{font-size:1.15rem;font-weight:800;margin:0;}
-.modal-close-btn{width:32px;height:32px;border-radius:50%;border:none;background:var(--border-color);color:var(--text-color);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;transition:opacity 0.2s;}
-.modal-close-btn:hover{opacity:1;}
-
-/* بطاقة النتيجة */
-.result-card{border-radius:16px;padding:20px;margin:16px 20px;text-align:center;position:relative;overflow:hidden;}
-.result-card.win{background:linear-gradient(135deg,rgba(74,158,82,0.15),rgba(74,158,82,0.05));border:1px solid rgba(74,158,82,0.3);}
-.result-card.loss{background:linear-gradient(135deg,rgba(192,41,63,0.12),rgba(192,41,63,0.04));border:1px solid rgba(192,41,63,0.25);}
-.result-emoji{font-size:2.8rem;margin-bottom:6px;display:block;}
-.result-label{font-size:1.3rem;font-weight:800;margin-bottom:4px;}
-.result-word-display{display:inline-flex;gap:6px;margin-top:12px;direction:rtl;}
-.result-word-letter{width:38px;height:38px;border-radius:8px;background:var(--correct-color);color:white;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;box-shadow:0 2px 8px rgba(74,158,82,0.35);}
-
-/* إحصائيات بشكل grid */
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 20px;margin:16px 0;}
-.stat-card{background:var(--border-color);border-radius:12px;padding:12px 6px;text-align:center;}
-.stat-card .num{font-size:1.6rem;font-weight:900;color:var(--correct-color);line-height:1;}
-.stat-card .lbl{font-size:0.65rem;opacity:0.6;margin-top:3px;}
-
-/* خريطة المحاولات */
-.matrix-section{margin:0 20px 16px;padding:14px;border-radius:14px;background:rgba(129,131,132,0.06);border:1px solid var(--border-color);}
-.matrix-section .matrix-title{font-size:0.8rem;opacity:0.5;font-weight:600;margin-bottom:10px;letter-spacing:0.05em;}
-
-/* أزرار النتيجة */
-.result-actions{display:flex;gap:8px;padding:0 20px 20px;}
-.result-actions button{flex:1;padding:13px;border-radius:12px;font-weight:700;font-size:0.9rem;border:none;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px;}
-.btn-play-again{background:var(--correct-color);color:white;}
-.btn-play-again:hover{opacity:0.9;}
-.btn-view-stats{background:var(--border-color);color:var(--text-color);}
-.btn-view-stats:hover{background:var(--border-active,#555);}
-
-/* زر التبليغ */
-.report-btn-wrap{padding:0 20px 4px;}
-.hard-word-btn{background:linear-gradient(135deg,#e67e22,#d35400);color:white;padding:11px;border-radius:12px;font-weight:700;width:100%;cursor:pointer;border:none;transition:all 0.2s;font-size:0.9rem;}
-.hard-word-btn:hover{opacity:0.88;}
-
-/* سجل المحاولات */
-.attempts-table-container{max-height:200px;overflow-y:auto;margin:0 20px 12px;border:1px solid var(--border-color);border-radius:12px;padding:0;overflow:hidden;}
-.attempts-title{font-size:0.8rem;font-weight:700;opacity:0.5;letter-spacing:0.05em;padding:12px 16px 6px;text-align:center;}
-.attempts-table{width:100%;border-collapse:collapse;font-size:0.88rem;}
-.attempts-table th{padding:8px 12px;text-align:center;border-bottom:1px solid var(--border-color);font-size:0.75rem;opacity:0.5;font-weight:600;background:transparent;}
-.attempts-table td{padding:8px 12px;text-align:center;border-bottom:1px solid var(--border-color);}
-.attempts-table tr:last-child td{border-bottom:none;}
-.attempt-number{font-weight:700;color:var(--correct-color);}
-.attempt-result.win{color:var(--correct-color);font-weight:700;}
-.attempt-result.loss{color:#c0293f;font-weight:700;}
-
-/* زر لعبة جديدة في stats */
-.stats-new-game-wrap{padding:0 20px 20px;}
-.stats-new-game-wrap button{width:100%;padding:13px;border-radius:12px;font-weight:700;border:1px solid var(--border-color);background:transparent;color:var(--text-color);cursor:pointer;transition:all 0.2s;font-size:0.9rem;}
-.stats-new-game-wrap button:hover{background:var(--border-color);}
-
-/* لا توجد محاولات */
-.no-attempts-message{text-align:center;padding:20px;opacity:0.4;font-size:0.9rem;}
 </style>
 </head>
 <body>
@@ -166,9 +108,9 @@ h1{font-size:1.6rem;text-align:center;letter-spacing:0.08em;background:linear-gr
 
 <div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">طريقة اللعب</h2><button id="closeHelp" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div class="mb-6"><p class="text-base mb-5 text-center" id="helpAttemptsText">خمّن تسلسل الأسهم المكون من 6 أسهم في 6 محاولات.</p><div class="color-example"><div class="color-box correct">↑</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأخضر</h3><p>السهم صحيح وفي المكان الصحيح.</p></div></div><div class="color-example"><div class="color-box present">↓</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأصفر</h3><p>السهم صحيح ولكن في المكان الخطأ.</p></div></div><div class="color-example"><div class="color-box absent">←</div><div class="color-description"><h3 class="font-bold mb-1">اللون الرمادي</h3><p>السهم غير موجود في التسلسل السري.</p></div></div></div><div class="text-center mt-5"><button id="startGameBtn" class="bg-[var(--correct-color)] text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 text-base">فهمت، ابدأ اللعب</button></div></div></div></div>
 
-<div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] modal-content"><div class="modal-header"><h2>الإحصائيات</h2><button id="closeStats" class="modal-close-btn">&times;</button></div><div id="gameResultInfo"></div><div class="stats-grid"><div class="stat-card"><div id="playedCount" class="num">0</div><div class="lbl">مجموع</div></div><div class="stat-card"><div id="winPercent" class="num">0%</div><div class="lbl">فوز</div></div><div class="stat-card"><div id="currentStreak" class="num">0</div><div class="lbl">تتابع</div></div><div class="stat-card"><div id="maxStreak" class="num">0</div><div class="lbl">أعلى</div></div></div><div class="attempts-table-container"><div class="attempts-title">سجل المحاولات</div><div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة</div><table class="attempts-table"><thead><tr><th>#</th><th>المحاولة</th><th>النتيجة</th></tr></thead><tbody id="attemptsTableBody"></tbody></table></div><div class="stats-new-game-wrap"><button id="newGameFromStats">لعبة جديدة</button></div></div></div><div class="space-y-2"><button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-2.5 rounded font-bold hover:bg-[var(--default-color)] text-sm">لعبة جديدة</button></div></div></div></div>
+<div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">الإحصائيات</h2><button id="closeStats" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div id="gameResultInfo" class="mb-4"></div><div id="attemptsTableContainer" class="attempts-table-container"><div class="attempts-title">سجل المحاولات</div><div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة. ابدأ اللعب الآن!</div><table class="attempts-table"><thead><th>#</th><th>المحاولة</th><th>النتيجة</th> </thead><tbody id="attemptsTableBody"></tbody>     </table></div><div class="flex justify-around mb-6"><div class="text-center"><div id="playedCount" class="text-2xl font-bold">0</div><div class="text-xs">العب</div></div><div class="text-center"><div id="winPercent" class="text-2xl font-bold">0%</div><div class="text-xs">فوز</div></div><div class="text-center"><div id="currentStreak" class="text-2xl font-bold">0</div><div class="text-xs">تتابع</div></div><div class="text-center"><div id="maxStreak" class="text-2xl font-bold">0</div><div class="text-xs">أعلى تتابع</div></div></div><div class="space-y-2"><button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-2.5 rounded font-bold hover:bg-[var(--default-color)] text-sm">لعبة جديدة</button></div></div></div></div>
 
-<div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] modal-content"><div class="modal-header"><h2 id="resultModalTitle">نتيجة اللعبة</h2><button id="closeGameResult" class="modal-close-btn">&times;</button></div><div id="gameResultDetails"></div><div class="matrix-section"><div class="matrix-title">خريطة رحلتك</div><div id="matrixGrid" class="matrix-grid"></div><div class="matrix-legend"><div class="legend-item"><div class="legend-color correct"></div><span>صحيح</span></div><div class="legend-item"><div class="legend-color present"></div><span>موقع آخر</span></div><div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div></div></div><div class="result-actions"><button id="playAgainBtn" class="btn-play-again"><i class="fas fa-redo-alt"></i>العب مرة أخرى</button><button id="viewStatsBtn" class="btn-view-stats"><i class="fas fa-chart-bar"></i>الإحصائيات</button></div></div></div><div class="result-buttons"><button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90"><i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى</button><button id="viewStatsBtn" class="border border-[var(--border-color)] hover:bg-[var(--default-color)]"><i class="fas fa-chart-bar ml-2"></i>عرض الإحصائيات</button></div></div></div></div>
+<div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold" id="resultModalTitle">نتيجة اللعبة</h2><button id="closeGameResult" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div id="gameResultDetails" class="text-center mb-4"></div><div id="attemptMatrixContainer" class="attempt-matrix-container"><h3 class="matrix-title">خريطة رحلتك في التفكير</h3><div id="matrixGrid" class="matrix-grid"></div><div class="matrix-legend"><div class="legend-item"><div class="legend-color correct"></div><span>صحيح</span></div><div class="legend-item"><div class="legend-color present"></div><span>موجود بموقع آخر</span></div><div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div></div></div><div class="result-buttons"><button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90"><i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى</button><button id="viewStatsBtn" class="border border-[var(--border-color)] hover:bg-[var(--default-color)]"><i class="fas fa-chart-bar ml-2"></i>عرض الإحصائيات</button></div></div></div></div>
 
 <script>
 const MAX_ARROWS = 6;
