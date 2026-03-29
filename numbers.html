@@ -77,7 +77,7 @@ body{
 }
 .key.enter{background-color:var(--enter-color);color:white;border-color:var(--enter-color);font-size:clamp(0.7rem,2.5vw,0.9rem); flex: 1.5;}
 
-/* تعديل سهم الحذف ليكون أعرض */
+/* تنسيق زر الحذف والسهم العريض */
 .key.backspace{
     background-color:var(--backspace-color);
     color:white;
@@ -85,9 +85,10 @@ body{
     flex: 2 !important; /* جعل الزر أعرض */
 }
 .key.backspace i {
-    font-size: 1.4rem;
-    transform: scaleX(1.6); /* تمطيط السهم عرضياً ليكون أعرض */
+    font-size: 1.6rem; /* تكبير الحجم */
+    transform: scaleX(1.8); /* تمطيط السهم عرضياً ليصبح ضخماً مثل الإيموجي */
     display: inline-block;
+    filter: drop-shadow(0 0 2px rgba(0,0,0,0.2));
 }
 
 @media(max-width:480px){
@@ -107,7 +108,9 @@ body{
 @keyframes shake{0%,100%{transform:translateX(0);}10%,30%,50%,70%,90%{transform:translateX(-5px);}20%,40%,60%,80%{transform:translateX(5px);}}
 .bounce{animation:bounce 0.5s ease;}
 @keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
-/* HEADER */header {
+
+/* HEADER */
+header {
     padding: 10px 16px;
     border-bottom: 1px solid var(--header-border);
     background: rgba(18, 18, 19, 0.8);
@@ -612,7 +615,8 @@ function createKeyboard() {
             if (key === 'Enter') btn.classList.add('enter');
             if (key === 'Backspace') {
                 btn.classList.add('backspace');
-                btn.innerHTML = '<i class="fas fa-backspace"></i>'; // استخدام أيقونة سهم للمسح
+                // استخدام أيقونة أعرض وأكثر سماكة تشبه الإيموجي تماماً
+                btn.innerHTML = '<i class="fas fa-long-arrow-alt-left"></i>'; 
             } else {
                 btn.textContent = key;
             }
