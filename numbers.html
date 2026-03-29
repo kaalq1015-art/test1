@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<script>window.history.replaceState(null, '', '/');</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>12345</title>
+<title>لغز الشبكة الحسابية</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -25,8 +24,6 @@
     --key-text:#ffffff;
     --enter-color:#538d4e;
     --backspace-color:#9b2335;
-    --newgame-color:#538d4e;
-    --newgame-hover:#6aad65;
     --correct-glow:rgba(83,141,78,0.35);
     --present-glow:rgba(181,159,59,0.35);
     --header-border:rgba(255,255,255,0.07);
@@ -53,7 +50,7 @@ body{
     overflow:hidden;touch-action:manipulation;
 }
 .game-wrapper{flex:1;display:flex;flex-direction:column;justify-content:space-between;width:100%;max-width:600px;margin:0 auto;padding:6px 10px;overflow:hidden;min-height:0;}
-.tile{--tile-size:62px;width:var(--tile-size);height:var(--tile-size);border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:calc(var(--tile-size)*0.50);font-weight:800;user-select:none;transition:all 0.3s ease;border-radius:6px;flex-shrink:0;}
+.tile{--tile-size:52px;width:var(--tile-size);height:var(--tile-size);border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:calc(var(--tile-size)*0.48);font-weight:800;user-select:none;transition:all 0.3s ease;border-radius:6px;flex-shrink:0;direction:ltr;}
 .tile.filled{border-color:rgba(255,255,255,0.3);animation:pop 0.1s ease;}
 @keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.12);}100%{transform:scale(1);}}
 .tile.correct{background-color:var(--correct-color);border-color:var(--correct-color);color:white;box-shadow:0 0 14px var(--correct-glow);}
@@ -64,696 +61,402 @@ body{
 .keyboard-row{display:flex;justify-content:center;gap:4px;margin-bottom:6px;width:100%;}
 .key{
     height:clamp(42px,6vh,58px);min-width:clamp(28px,6vw,43px);
-    background-color:var(--key-bg);
-    color:var(--key-text);
-    border:1px solid var(--border-color);
-    border-radius:8px;font-weight:700;
+    background-color:var(--key-bg);color:var(--key-text);
+    border:1px solid var(--border-color);border-radius:8px;font-weight:700;
     font-size:clamp(0.85rem,3vw,1.1rem);
     display:flex;align-items:center;justify-content:center;
-    cursor:pointer;user-select:none;
-    transition:all 0.15s ease;
+    cursor:pointer;user-select:none;transition:all 0.15s ease;
     flex:1;margin:0 2px;padding:0 2px;touch-action:manipulation;
-    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
 }
-.key.enter{background-color:var(--enter-color);color:white;border-color:var(--enter-color);font-size:clamp(0.7rem,2.5vw,0.9rem); flex: 1.5;}
-
-/* تنسيق زر الحذف والسهم العريض */
-.key.backspace{
-    background-color:var(--backspace-color);
-    color:white;
-    border-color:var(--backspace-color);
-    flex: 2 !important; /* جعل الزر أعرض */
-}
-.key.backspace i {
-    font-size: 1.6rem; /* تكبير الحجم */
-    transform: scaleX(1.8); /* تمطيط السهم عرضياً ليصبح ضخماً مثل الإيموجي */
-    display: inline-block;
-    filter: drop-shadow(0 0 2px rgba(0,0,0,0.2));
-}
-
-@media(max-width:480px){
-    .key{height:clamp(38px,5.5vh,50px);min-width:clamp(24px,5vw,34px);font-size:clamp(0.8rem,2.8vw,1rem);margin:0 1px;padding:0 1px;}
-    .key.enter{font-size:clamp(0.65rem,2.2vw,0.8rem);}
-    .keyboard-row{gap:2px;margin-bottom:5px;}
-}
+.key.enter{background-color:var(--enter-color);color:white;border-color:var(--enter-color);font-size:clamp(0.7rem,2.5vw,0.9rem);flex:1.5;}
+.key.backspace{background-color:var(--backspace-color);color:white;border-color:var(--backspace-color);flex:2!important;}
+.key.backspace i{font-size:1.4rem;transform:scaleX(1.8);display:inline-block;}
+@media(max-width:480px){.key{height:clamp(38px,5.5vh,50px);min-width:clamp(24px,5vw,34px);margin:0 1px;padding:0 1px;}.keyboard-row{gap:2px;margin-bottom:5px;}}
 .key:hover{background-color:var(--border-active);transform:translateY(-1px);}
 .key:active{transform:translateY(0);}
-.key.wide{min-width:65px;}
-@media(max-width:640px){.key.wide{min-width:56px;}}
-@media(max-width:480px){.key.wide{min-width:50px;}}
-.key.correct{background-color:var(--correct-color);border-color:var(--correct-color);color:white;box-shadow:0 0 8px var(--correct-glow);}
-.key.present{background-color:var(--present-color);border-color:var(--present-color);color:white;box-shadow:0 0 8px var(--present-glow);}
+.key.correct{background-color:var(--correct-color)!important;border-color:var(--correct-color)!important;color:white!important;}
+.key.present{background-color:var(--present-color)!important;border-color:var(--present-color)!important;color:white!important;}
 .key.absent{background-color:var(--absent-color)!important;border-color:var(--absent-color)!important;color:rgba(255,255,255,0.4)!important;}
 .shake{animation:shake 0.5s ease;}
 @keyframes shake{0%,100%{transform:translateX(0);}10%,30%,50%,70%,90%{transform:translateX(-5px);}20%,40%,60%,80%{transform:translateX(5px);}}
-.bounce{animation:bounce 0.5s ease;}
-@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
-
-/* HEADER */
-header {
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--header-border);
-    background: rgba(18, 18, 19, 0.8);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.light-mode header {
-    background: rgba(248, 249, 250, 0.85);
-}
-
-h1 {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 1.5rem;
-    font-weight: 800;
-    margin: 0;
-    color: #ffffff;
-    white-space: nowrap;
-}
-
-.light-mode h1 {
-    color: #121213;
-    background: none;
-    -webkit-text-fill-color: initial;
-}
-
-.back-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    background: var(--correct-color);
-    color: white !important;
-    text-decoration: none;
-    transition: all 0.2s;
-    box-shadow: 0 2px 8px rgba(83,141,78,0.4);
-    flex-shrink: 0;
-}
-
-.back-btn i { font-size: 1.2rem; }
-
-.back-btn:hover {
-    opacity: 0.88;
-    transform: scale(1.05);
-}
-
-.stats-btn-header, #difficultyToggle, .theme-btn, #newGameHeaderBtn {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    background: var(--surface-color);
-    border: 1px solid var(--border-color);
-    color: var(--text-color) !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.stats-btn-header i, .theme-btn i, #newGameHeaderBtn i { font-size: 1.2rem; }
-
-#difficultyToggle {
-    width: auto !important;
-    padding: 0 12px !important;
-}
-
-.stats-btn-header span, .stats-btn-header i {
-    color: inherit;
-}
-
-.theme-btn:hover, .stats-btn-header:hover {
-    border-color: var(--border-active);
-}
-
-#newGameHeaderBtn:hover {
-    border-color: var(--correct-color);
-    color: var(--correct-color) !important;
-}
-
-#newGameHeaderBtn:active {
-    transform: scale(0.92) rotate(-30deg);
-}
-
-#difficultyToggle{
-    width:auto !important;
-    min-width:85px;
-    padding:0 12px !important;
-    gap:6px;
-    font-size:0.85rem;
-}
-.grid-row{
-    display:flex;
-    flex-direction:row !important;
-    direction:ltr !important;
-    justify-content:center;
-    gap:6px;
-    margin-bottom:5px;
-}
-.grid-row .tile{
-    direction:ltr;
-}
-#grid, .grid-row, .keyboard-row, .key, .tile, .matrix-grid, .matrix-row, .correct-number, .matrix-tile{
-    direction:ltr !important;
-    unicode-bidi:plaintext;
-}
+header{padding:10px 16px;border-bottom:1px solid var(--header-border);background:rgba(18,18,19,0.8);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:space-between;}
+.light-mode header{background:rgba(248,249,250,0.85);}
+h1{font-size:1.4rem;font-weight:800;margin:0;color:var(--text-color);}
+.header-btn{width:42px;height:42px;border-radius:12px;background:var(--surface-color);border:1px solid var(--border-color);color:var(--text-color);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;}
+.header-btn:hover{border-color:var(--border-active);}
+.header-btn.new-game:hover{border-color:var(--correct-color);color:var(--correct-color);}
+.header-btn i{font-size:1.2rem;}
+.grid-row{display:flex;direction:ltr!important;justify-content:center;gap:5px;margin-bottom:5px;}
+#grid,#grid .tile,.keyboard-row,.key{direction:ltr!important;unicode-bidi:plaintext;}
 #message{font-size:1rem;min-height:40px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;padding:0 10px;text-align:center;gap:8px;flex-wrap:wrap;font-weight:700;}
 .modal-overlay{background-color:rgba(0,0,0,0.75);backdrop-filter:blur(8px);}
-.modal-content{
-    width:95%;max-width:460px;max-height:90vh;overflow-y:auto;margin:10px;
-    border-radius:20px;border:1px solid var(--border-color);
-    background:var(--surface-color);
-    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-}
-::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--border-active);border-radius:10px;}
-.correct-word,.correct-arrows,.correct-number{
-    background:linear-gradient(135deg,var(--correct-color),#2d6b2d);
-    color:white;padding:12px 18px;border-radius:12px;margin:10px 0;
-    text-align:center;font-size:1.5rem;font-weight:900;letter-spacing:0.12em;
-    animation:pulse 2s infinite;box-shadow:0 4px 20px var(--correct-glow);
-    direction:ltr;
-}
-@keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.04);}100%{transform:scale(1);}}
+.modal-content{width:95%;max-width:400px;max-height:85vh;overflow-y:auto;margin:10px;border-radius:20px;border:1px solid var(--border-color);background:var(--surface-color);backdrop-filter:blur(20px);}
 .color-example{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding:10px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid var(--border-color);}
-.light-mode .color-example{background:rgba(0,0,0,0.03);}
 .color-box{width:44px;height:44px;border:none;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800;flex-shrink:0;}
 .color-box.correct{background:var(--correct-color);color:white;}
 .color-box.present{background:var(--present-color);color:white;}
 .color-box.absent{background:var(--absent-color);color:white;}
 .color-description{flex:1;font-size:0.9rem;}
-.attempts-table-container{max-height:220px;overflow-y:auto;margin:12px 0;border:1px solid var(--border-color);border-radius:12px;padding:8px;}
-.attempts-table{width:100%;border-collapse:collapse;font-size:0.88rem;}
-.attempts-table th{padding:8px;text-align:center;border-bottom:1px solid var(--border-color);font-size:0.75rem;opacity:0.5;font-weight:700;}
-.attempts-table td{padding:7px;text-align:center;border-bottom:1px solid var(--border-color);}
-.attempts-table tr:last-child td{border-bottom:none;}
-.attempt-number{font-weight:800;color:var(--correct-color);}
-.attempt-result{font-size:0.95rem;font-weight:700;}
-.attempt-result.win{color:var(--correct-color);}
-.attempt-result.loss{color:#e74c3c;}
-.attempts-title{font-size:1rem;font-weight:800;margin:10px 0 6px;text-align:center;color:var(--text-color);opacity:0.6;letter-spacing:0.05em;}
-.win-celebration{animation:winCelebration 2s ease infinite;}
-@keyframes winCelebration{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
-.no-attempts-message{text-align:center;padding:16px;opacity:0.35;font-size:0.9rem;}
-.attempt-matrix-container{margin:16px 0;padding:14px;border:1px solid var(--border-color);border-radius:14px;background:rgba(255,255,255,0.03);}
-.matrix-title{font-size:0.8rem;font-weight:700;margin-bottom:10px;text-align:center;color:var(--text-color);opacity:0.45;letter-spacing:0.08em;text-transform:uppercase;}
-.matrix-grid{display:flex;flex-direction:column;align-items:center;gap:5px;margin-bottom:10px;}
-.matrix-row{display:flex;justify-content:center;gap:5px;}
-.matrix-tile{--mt-size:40px;width:var(--mt-size);height:var(--mt-size);border:none;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:calc(var(--mt-size)*0.46);color:white;user-select:none;}
-@media(max-width:400px){.matrix-tile{--mt-size:33px;}}
-.matrix-tile.correct{background:var(--correct-color);}
-.matrix-tile.present{background:var(--present-color);}
-.matrix-tile.absent{background:var(--absent-color);}
-.matrix-legend{display:flex;justify-content:center;gap:12px;margin-top:8px;flex-wrap:wrap;}
-.legend-item{display:flex;align-items:center;gap:5px;font-size:0.75rem;opacity:0.6;}
-.legend-color{width:14px;height:14px;border-radius:3px;}
-.legend-color.correct{background:var(--correct-color);}
-.legend-color.present{background:var(--present-color);}
-.legend-color.absent{background:var(--absent-color);}
+.stat-box{display:flex;justify-content:center;gap:16px;margin:16px 0;}
+.stat-item{text-align:center;padding:12px 20px;background:rgba(255,255,255,0.05);border-radius:12px;min-width:70px;}
+.stat-value{font-size:2rem;font-weight:800;}
+.stat-label{font-size:0.75rem;opacity:0.7;margin-top:4px;}
+.result-equation{background:linear-gradient(135deg,var(--correct-color),#2d6b2d);color:white;padding:14px 20px;border-radius:12px;margin:16px auto;text-align:center;font-size:1.8rem;font-weight:900;letter-spacing:0.08em;animation:pulse 2s infinite;box-shadow:0 4px 20px var(--correct-glow);direction:ltr;max-width:280px;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
 .result-buttons{display:flex;gap:8px;margin-top:16px;}
-.result-buttons button{flex:1;padding:13px;border-radius:12px;font-weight:800;font-size:0.95rem;transition:all 0.2s;cursor:pointer;}
-@media(max-width:480px){.result-buttons{flex-direction:column;gap:8px;}}
-/* difficulty fixed position */
-.difficulty-dropdown{position:relative;display:inline-block;}
-.difficulty-menu{
-    position:absolute;top:100%;right:0;width:130px;
-    margin-top:5px;background:var(--surface-color);backdrop-filter:blur(16px);
-    border:1px solid var(--border-color);border-radius:10px;z-index:100;
-    box-shadow:0 8px 24px rgba(0,0,0,0.3);display:none;
-}
-.difficulty-menu.show{display:block;}
-.difficulty-option{width:100%;padding:10px 14px;text-align:center;border:none;background:none;color:var(--text-color);font-size:0.88rem;cursor:pointer;display:block;border-bottom:1px solid var(--border-color);font-weight:600;}
-.difficulty-option:last-child{border-bottom:none;}
-.difficulty-option.active{color:var(--correct-color);font-weight:800;}
-.suggest-btn{background:rgba(83,141,78,0.2);color:var(--correct-color);padding:3px 10px;border-radius:6px;font-size:0.8rem;margin-right:8px;cursor:pointer;border:1px solid var(--correct-color);transition:0.2s;font-weight:700;}
-.suggest-btn:hover{background:var(--correct-color);color:white;}
-.suggest-btn:disabled{opacity:0.4;cursor:not-allowed;}
-.hard-word-btn{background:linear-gradient(135deg,#e67e22,#d35400);color:white;padding:11px;border-radius:12px;font-weight:800;width:100%;margin-top:12px;cursor:pointer;border:none;transition:all 0.2s;font-size:0.9rem;}
-.hard-word-btn:hover{opacity:0.88;}
-.hard-word-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.result-buttons button{flex:1;padding:13px;border-radius:12px;font-weight:800;font-size:0.95rem;cursor:pointer;border:none;transition:all 0.2s;}
+.result-buttons .primary{background:var(--correct-color);color:white;}
+.result-buttons .secondary{background:var(--key-bg);color:var(--text-color);border:1px solid var(--border-color);}
+.close-btn{background:none;border:none;color:var(--text-color);font-size:1.5rem;cursor:pointer;padding:4px 8px;}
+.close-btn:hover{opacity:0.7;}
 </style>
 </head>
 <body>
-<header class="sticky top-0 z-50 flex items-center justify-between px-4 py-2.5 min-h-[64px]">
+<header>
 <div class="flex items-center gap-2">
-    <button id="statsBtn" class="stats-btn-header"><i class="fas fa-chart-bar"></i></button>
-    <a href="index.html" class="back-btn" title="تغيير اللعبة"><i class="fas fa-th-large"></i></a>
+    <button id="helpBtn" class="header-btn" title="طريقة اللعب"><i class="fas fa-question-circle"></i></button>
+    <a href="index.html" class="header-btn" title="القائمة"><i class="fas fa-th-large"></i></a>
 </div>
-<h1>الأرقام</h1>
+<h1>لغز الحساب</h1>
 <div class="flex items-center gap-2">
-<div class="difficulty-dropdown"><button id="difficultyToggle" class="stats-btn-header flex items-center gap-1 px-2"><span class="text-[11px] font-bold">صعوبة</span><i class="fas fa-chevron-down text-[10px]"></i></button><div id="difficultyMenu" class="difficulty-menu text-xs"><button data-difficulty="hard" class="difficulty-option active">صعب</button><button data-difficulty="easy" class="difficulty-option">سهل</button></div></div>
-<button id="newGameHeaderBtn"><i class="fas fa-redo-alt"></i></button>
-<button id="themeToggle" class="theme-btn"><i class="fas fa-sun text-yellow-400"></i></button>
+    <button id="statsBtn" class="header-btn"><i class="fas fa-chart-bar"></i></button>
+    <button id="newGameBtn" class="header-btn new-game"><i class="fas fa-redo-alt"></i></button>
+    <button id="themeToggle" class="header-btn"><i class="fas fa-sun text-yellow-400"></i></button>
 </div>
 </header>
-<div class="game-wrapper"><div id="message" class="text-center font-bold"></div><div id="grid" class="mb-4"></div><div id="keyboard" class="w-full"></div></div>
 
-<div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">طريقة اللعب</h2><button id="closeHelp" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div class="mb-6"><p class="text-base mb-5 text-center" id="helpAttemptsText">خمّن الرقم المكون من 5 خانات في 6 محاولات.</p><div class="color-example"><div class="color-box correct">5</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأخضر</h3><p>الرقم صحيح وفي المكان الصحيح.</p></div></div><div class="color-example"><div class="color-box present">2</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأصفر</h3><p>الرقم صحيح ولكن في المكان الخطأ.</p></div></div><div class="color-example"><div class="color-box absent">7</div><div class="color-description"><h3 class="font-bold mb-1">اللون الرمادي</h3><p>الرقم غير موجود في الرقم السري.</p></div></div></div><div class="text-center mt-5"><button id="startGameBtn" class="bg-[var(--correct-color)] text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 text-base">فهمت، ابدأ اللعب</button></div></div></div></div>
+<div class="game-wrapper">
+<div id="message"></div>
+<div id="grid"></div>
+<div id="keyboard"></div>
+</div>
 
-<div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">الإحصائيات</h2><button id="closeStats" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div id="gameResultInfo" class="mb-4"></div><div id="attemptsTableContainer" class="attempts-table-container"><div class="attempts-title">سجل المحاولات</div><div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة. ابدأ اللعب الآن!</div><table class="attempts-table"><thead><th>#</th><th>المحاولة</th><th>النتيجة</th> </thead><tbody id="attemptsTableBody"></tbody></table></div><div class="flex justify-around mb-6"><div class="text-center"><div id="playedCount" class="text-2xl font-bold">0</div><div class="text-xs">العب</div></div><div class="text-center"><div id="winPercent" class="text-2xl font-bold">0%</div><div class="text-xs">فوز</div></div><div class="text-center"><div id="currentStreak" class="text-2xl font-bold">0</div><div class="text-xs">تتابع</div></div><div class="text-center"><div id="maxStreak" class="text-2xl font-bold">0</div><div class="text-xs">أعلى تتابع</div></div></div><div class="space-y-2"><button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-2.5 rounded font-bold hover:bg-[var(--default-color)] text-sm">لعبة جديدة</button></div></div></div></div>
+<!-- Help Modal -->
+<div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
+<div class="modal-content p-5">
+<div class="flex justify-between items-center mb-4">
+<h2 class="text-xl font-bold">طريقة اللعب</h2>
+<button class="close-btn" onclick="document.getElementById('helpModal').classList.add('hidden')">&times;</button>
+</div>
+<p class="text-center mb-4 opacity-80">اكتشف المعادلة الصحيحة في 6 محاولات</p>
+<p class="text-center mb-4 text-sm" style="direction:ltr;font-family:monospace;font-size:1.2rem;font-weight:bold;">25+10=35</p>
+<div class="color-example"><div class="color-box correct">5</div><div class="color-description"><strong>الأخضر</strong> - صحيح في مكانه</div></div>
+<div class="color-example"><div class="color-box present">+</div><div class="color-description"><strong>الأصفر</strong> - موجود بمكان آخر</div></div>
+<div class="color-example"><div class="color-box absent">7</div><div class="color-description"><strong>الرمادي</strong> - غير موجود</div></div>
+<p class="text-sm opacity-60 mt-4 text-center">الأرقام: 0-9 | العمليات: + - * | =</p>
+<p class="text-sm text-red-400 text-center mt-2">القسمة (/) غير مسموحة</p>
+<button id="startGameBtn" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold mt-4 hover:bg-green-700">فهمت!</button>
+</div>
+</div>
 
-<div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold" id="resultModalTitle">نتيجة اللعبة</h2><button id="closeGameResult" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div id="gameResultDetails" class="text-center mb-4"></div><div id="attemptMatrixContainer" class="attempt-matrix-container"><h3 class="matrix-title">خريطة رحلتك في التفكير</h3><div id="matrixGrid" class="matrix-grid"></div><div class="matrix-legend"><div class="legend-item"><div class="legend-color correct"></div><span>صحيح</span></div><div class="legend-item"><div class="legend-color present"></div><span>موجود بموقع آخر</span></div><div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div></div></div><div class="result-buttons"><button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90"><i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى</button><button id="viewStatsBtn" class="border border-[var(--border-color)] hover:bg-[var(--default-color)]"><i class="fas fa-chart-bar ml-2"></i>عرض الإحصائيات</button></div></div></div></div>
+<!-- Stats Modal -->
+<div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
+<div class="modal-content p-5">
+<div class="flex justify-between items-center mb-4">
+<h2 class="text-xl font-bold">الإحصائيات</h2>
+<button class="close-btn" onclick="document.getElementById('statsModal').classList.add('hidden')">&times;</button>
+</div>
+<div class="stat-box">
+<div class="stat-item"><div id="playedCount" class="stat-value">0</div><div class="stat-label">الألعاب</div></div>
+<div class="stat-item"><div id="winPercent" class="stat-value">0%</div><div class="stat-label">نسبة الفوز</div></div>
+<div class="stat-item"><div id="currentStreak" class="stat-value">0</div><div class="stat-label">التتابع</div></div>
+<div class="stat-item"><div id="maxStreak" class="stat-value">0</div><div class="stat-label">أعلى تتابع</div></div>
+</div>
+<button id="newGameFromStats" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold mt-4 hover:bg-green-700">لعبة جديدة</button>
+</div>
+</div>
+
+<!-- Result Modal -->
+<div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
+<div class="modal-content p-5">
+<div class="flex justify-between items-center mb-4">
+<h2 id="resultModalTitle" class="text-xl font-bold"></h2>
+<button class="close-btn" onclick="document.getElementById('gameResultModal').classList.add('hidden')">&times;</button>
+</div>
+<div id="gameResultDetails" class="text-center"></div>
+<div class="result-buttons">
+<button class="primary" id="playAgainBtn"><i class="fas fa-redo ml-2"></i>لعبة جديدة</button>
+<button class="secondary" id="viewStatsBtn"><i class="fas fa-chart-bar ml-2"></i>الإحصائيات</button>
+</div>
+</div>
+</div>
 
 <script>
-// Logic preserved exactly as original
-const MAX_DIGITS = 5;
-let targetNumber = "";
-let currentRow = 0;
-let currentGuess = "";
-let gameOver = false;
-let gameWon = false;
-let startTime = null;
-let attemptResults = [];
-let stats = { played: 0, wins: 0, currentStreak: 0, maxStreak: 0 };
-let attemptsHistory = [];
-let attemptMatrices = [];
-let isProcessing = false;
-let inputLock = false;
-let difficulty = 'hard';
-let maxAttempts = 6;
+const COLS = 8, ROWS = 6;
+let target = "", row = 0, input = "", gameOver = false, won = false;
+let isProcessing = false, lock = false;
+let stats = {played:0, wins:0, streak:0, maxStreak:0};
 
-function convertArabicDigits(str) {
-    const arabicDigits = /[٠-٩]/g;
-    return str.replace(arabicDigits, d => String.fromCharCode(d.charCodeAt(0) - 1632 + 48));
+function genEquation() {
+    const ops = ['+', '-', '*'];
+    const op = ops[Math.floor(Math.random() * ops.length)];
+    let a, b, result;
+    if (op === '+') { a = Math.floor(Math.random() * 50) + 1; b = Math.floor(Math.random() * 50) + 1; result = a + b; }
+    else if (op === '-') { a = Math.floor(Math.random() * 50) + 20; b = Math.floor(Math.random() * Math.min(a-1, 50)) + 1; result = a - b; }
+    else { a = Math.floor(Math.random() * 12) + 1; b = Math.floor(Math.random() * 12) + 1; result = a * b; }
+    const eq = `${a}${op}${b}=${result}`;
+    return eq.length === COLS ? eq : genEquation();
 }
 
-function generateRandomNumber() {
-    let num = "";
-    for (let i = 0; i < MAX_DIGITS; i++) num += Math.floor(Math.random() * 10);
-    return num;
+function calcResult(expr) {
+    // Handle * before +/-
+    const parts = expr.split(/([+*-])/);
+    let nums = [], ops = [];
+    parts.forEach(p => { if (/^\d+$/.test(p)) nums.push(parseInt(p)); else if (p) ops.push(p); });
+
+    // First: handle multiplication
+    let i = 0, finalNums = [], finalOps = [];
+    while (i < nums.length) {
+        if (ops[i] === '*') {
+            finalNums.push(nums[i] * nums[i+1]);
+            i += 2;
+            if (ops[i]) finalOps.push(ops[i]);
+            i++;
+        } else {
+            finalNums.push(nums[i]);
+            if (ops[i]) finalOps.push(ops[i]);
+            i++;
+        }
+    }
+
+    // Then: + and - left to right
+    let res = finalNums[0];
+    for (let j = 0; j < finalOps.length; j++) {
+        if (finalOps[j] === '+') res += finalNums[j+1];
+        else if (finalOps[j] === '-') res -= finalNums[j+1];
+    }
+    return res;
 }
 
-function calculateGuessResult(guess, target) {
-    const result = Array(MAX_DIGITS).fill('absent');
-    const targetCount = {};
-    for (const d of target) targetCount[d] = (targetCount[d] || 0) + 1;
-    for (let i = 0; i < MAX_DIGITS; i++) if (guess[i] === target[i]) { result[i] = 'correct'; targetCount[guess[i]]--; }
-    for (let i = 0; i < MAX_DIGITS; i++) if (result[i] !== 'correct' && targetCount[guess[i]] > 0) { result[i] = 'present'; targetCount[guess[i]]--; }
-    return result;
+function validate(inp) {
+    if (inp.length !== COLS) return {ok: false, msg: `يجب إدخال ${COLS} خانات`};
+    if (!inp.includes('=')) return {ok: false, msg: 'المعادلة يجب أن تحتوي على ='};
+    if ((inp.match(/=/g)||[]).length !== 1) return {ok: false, msg: 'علامة = واحدة فقط'};
+    if (inp.indexOf('=') === 0 || inp.indexOf('=') === COLS-1) return {ok: false, msg: '= لا يمكن أن تكون في البداية أو النهاية'};
+    if (inp.includes('/')) return {ok: false, msg: 'القسمة (/) غير مسموحة!'};
+
+    const sides = inp.split('=');
+    if (!sides[0] || !sides[1] || !/^\d+$/.test(sides[1])) return {ok: false, msg: 'الناتج يجب أن يكون رقماً'};
+    if (!/^[0-9+*-]+$/.test(inp)) return {ok: false, msg: 'أحرف غير مسموحة'};
+
+    const left = calcResult(sides[0]);
+    const right = parseInt(sides[1]);
+    if (left !== right) return {ok: false, msg: `${sides[0]} = ${left} ≠ ${right}`};
+    return {ok: true};
 }
 
-function updateKeyboard(digit, status) {
-    const key = document.querySelector(`.key[data-key="${digit}"]`);
-    if (!key) return;
-    if (status === 'correct') { key.classList.add('correct'); key.classList.remove('present','absent'); }
-    else if (status === 'present' && !key.classList.contains('correct')) { key.classList.add('present'); key.classList.remove('absent'); }
-    else if (status === 'absent' && !key.classList.contains('correct') && !key.classList.contains('present')) key.classList.add('absent');
+function calcGuess(guess, tgt) {
+    const res = Array(COLS).fill('absent');
+    const tgtArr = tgt.split(''), guessArr = guess.split('');
+    const cnt = {};
+    tgtArr.forEach(c => cnt[c] = (cnt[c]||0)+1);
+    for (let i = 0; i < COLS; i++) {
+        if (guessArr[i] === tgtArr[i]) { res[i] = 'correct'; cnt[guessArr[i]]--; }
+    }
+    for (let i = 0; i < COLS; i++) {
+        if (res[i] !== 'correct' && cnt[guessArr[i]] > 0) { res[i] = 'present'; cnt[guessArr[i]]--; }
+    }
+    return res;
 }
 
-function updateCurrentRow() {
-    for (let i = 0; i < MAX_DIGITS; i++) {
-        const tile = document.getElementById(`tile-${currentRow}-${i}`);
-        if (tile) tile.textContent = currentGuess[i] || '';
+function updateKey(char, status) {
+    const k = document.querySelector(`.key[data-key="${char}"]`);
+    if (!k) return;
+    if (status === 'correct') { k.classList.add('correct'); k.classList.remove('present','absent'); }
+    else if (status === 'present' && !k.classList.contains('correct')) { k.classList.add('present'); k.classList.remove('absent'); }
+    else if (status === 'absent' && !k.classList.contains('correct') && !k.classList.contains('present')) k.classList.add('absent');
+}
+
+function updateRow() {
+    for (let i = 0; i < COLS; i++) {
+        const t = document.getElementById(`t-${row}-${i}`);
+        if (t) t.textContent = input[i] || '';
     }
 }
 
-function showMessage(msg, duration = 3000) {
-    const msgDiv = document.getElementById('message');
-    const original = msgDiv.innerHTML;
-    msgDiv.innerHTML = msg;
-    if (window._msgTimeout) clearTimeout(window._msgTimeout);
-    window._msgTimeout = setTimeout(() => { if (msgDiv.innerHTML === msg) msgDiv.innerHTML = original; }, duration);
+function showMsg(msg, dur = 2500) {
+    document.getElementById('message').innerHTML = msg;
+    if (window._t) clearTimeout(window._t);
+    window._t = setTimeout(() => document.getElementById('message').innerHTML = '', dur);
 }
 
-function shakeRow() {
-    const row = document.getElementById(`row-${currentRow}`);
-    if (row) { row.classList.add('shake'); setTimeout(() => row.classList.remove('shake'), 500); }
+function shake() {
+    document.getElementById(`row-${row}`)?.classList.add('shake');
+    setTimeout(() => document.getElementById(`row-${row}`)?.classList.remove('shake'), 500);
 }
 
-function evaluateGuess() {
-    const guess = currentGuess;
-    const result = calculateGuessResult(guess, targetNumber);
-    attemptResults[currentRow] = result;
-    inputLock = true;
-    let completed = 0;
-    for (let i = 0; i < MAX_DIGITS; i++) {
-        const tile = document.getElementById(`tile-${currentRow}-${i}`);
-        if (!tile) continue;
+function submitGuess() {
+    if (lock || isProcessing || gameOver) return;
+    const v = validate(input);
+    if (!v.ok) { showMsg(v.msg); shake(); return; }
+
+    lock = true; isProcessing = true;
+    const result = calcGuess(input, target);
+    let done = 0;
+
+    for (let i = 0; i < COLS; i++) {
+        const t = document.getElementById(`t-${row}-${i}`);
+        if (!t) continue;
         setTimeout(() => {
-            tile.classList.add('flip');
+            t.classList.add('flip');
             setTimeout(() => {
-                tile.classList.add(result[i]);
-                updateKeyboard(guess[i], result[i]);
-                completed++;
-                if (completed === MAX_DIGITS) {
+                t.classList.add(result[i]);
+                updateKey(input[i], result[i]);
+                done++;
+                if (done === COLS) {
                     setTimeout(() => {
-                        if (guess === targetNumber) {
-                            gameWon = true;
+                        if (input === target) {
+                            won = true; gameOver = true;
+                            stats.played++; stats.wins++; stats.streak++;
+                            if (stats.streak > stats.maxStreak) stats.maxStreak = stats.streak;
+                            saveStats();
+                            showMsg('🎉 أحسنت! فزت!');
+                            setTimeout(() => showResult(true), 2000);
+                        } else if (row === ROWS-1) {
                             gameOver = true;
-                            handleWin();
-                        } else if (currentRow === maxAttempts - 1) {
-                            gameOver = true;
-                            handleLoss();
+                            stats.played++; stats.streak = 0;
+                            saveStats();
+                            showMsg(`💔 انتهت المحاولات!`);
+                            setTimeout(() => showResult(false), 2000);
                         } else {
-                            currentRow++;
-                            currentGuess = "";
-                            inputLock = false;
-                            updateCurrentRow();
+                            row++; input = ''; lock = false;
                         }
                         isProcessing = false;
                     }, 300);
                 }
             }, 300);
-        }, i * 300);
+        }, i * 200);
     }
 }
 
-function handleWin() {
-    showMessage('🎉 أحسنت! لقد فزت!');
-    const matrix = [];
-    for (let r = 0; r <= currentRow; r++) {
-        const rowColors = [];
-        for (let c = 0; c < MAX_DIGITS; c++) {
-            const tile = document.getElementById(`tile-${r}-${c}`);
-            if (tile.classList.contains('correct')) rowColors.push('correct');
-            else if (tile.classList.contains('present')) rowColors.push('present');
-            else rowColors.push('absent');
-        }
-        matrix.push(rowColors);
-    }
-    attemptMatrices.unshift({ matrix, result: 'win', attempts: currentRow + 1, word: targetNumber });
-    if (attemptMatrices.length > 50) attemptMatrices.pop();
-    localStorage.setItem('numberle_matrices', JSON.stringify(attemptMatrices));
-
-    attemptsHistory.unshift({ number: attemptsHistory.length + 1, attempts: currentRow + 1, result: 'win', target: targetNumber });
-    if (attemptsHistory.length > 100) attemptsHistory.pop();
-    localStorage.setItem('numberle_history', JSON.stringify(attemptsHistory));
-
-    stats.played++; stats.wins++; stats.currentStreak++;
-    if (stats.currentStreak > stats.maxStreak) stats.maxStreak = stats.currentStreak;
-    localStorage.setItem('numberle_stats', JSON.stringify(stats));
-    updateStatsDisplay();
-    setTimeout(() => showGameResultModal(true), 2500);
-}
-
-function handleLoss() {
-    showMessage(`💔 انتهت المحاولات! الرقم الصحيح: ${targetNumber}`);
-    const matrix = [];
-    for (let r = 0; r < maxAttempts; r++) {
-        const rowColors = [];
-        for (let c = 0; c < MAX_DIGITS; c++) {
-            const tile = document.getElementById(`tile-${r}-${c}`);
-            if (tile.classList.contains('correct')) rowColors.push('correct');
-            else if (tile.classList.contains('present')) rowColors.push('present');
-            else rowColors.push('absent');
-        }
-        matrix.push(rowColors);
-    }
-    attemptMatrices.unshift({ matrix, result: 'loss', attempts: maxAttempts, word: targetNumber });
-    localStorage.setItem('numberle_matrices', JSON.stringify(attemptMatrices));
-
-    attemptsHistory.unshift({ number: attemptsHistory.length + 1, attempts: maxAttempts, result: 'loss', target: targetNumber });
-    localStorage.setItem('numberle_history', JSON.stringify(attemptsHistory));
-
-    stats.played++; stats.currentStreak = 0;
-    localStorage.setItem('numberle_stats', JSON.stringify(stats));
-    updateStatsDisplay();
-    setTimeout(() => showGameResultModal(false), 1500);
-}
-
-function renderAttemptMatrix() {
-    const container = document.getElementById('matrixGrid');
-    container.innerHTML = '';
-    const used = attemptResults.filter(r => r && r.length);
-    const guessedNumbers = [];
-    for (let r = 0; r < used.length; r++) {
-        let num = '';
-        for (let c = 0; c < MAX_DIGITS; c++) {
-            const tile = document.getElementById(`tile-${r}-${c}`);
-            num += tile ? (tile.textContent || '') : '';
-        }
-        guessedNumbers.push(num);
-    }
-    used.forEach((res, idx) => {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'matrix-row';
-        res.forEach((st, col) => {
-            const tile = document.createElement('div');
-            tile.className = `matrix-tile ${st}`;
-            tile.textContent = guessedNumbers[idx]?.[col] || '';
-            rowDiv.appendChild(tile);
-        });
-        container.appendChild(rowDiv);
-    });
-}
-
-function showGameResultModal(isWin) {
-    const modal = document.getElementById('gameResultModal');
-    document.getElementById('resultModalTitle').textContent = isWin ? '🎉 مبروك! فزت!' : '💔 انتهت المحاولات!';
+function showResult(isWin) {
+    document.getElementById('resultModalTitle').textContent = isWin ? '🎉 مبروك!' : '💔 انتهت المحاولات!';
     document.getElementById('gameResultDetails').innerHTML = `
-        <div class="${isWin ? 'text-green-600' : 'text-red-600'} font-bold text-lg mb-2">${isWin ? 'لقد فزت في المحاولة ' + (currentRow + 1) : 'انتهت محاولاتك!'}</div>
-        <div class="text-gray-600 dark:text-gray-400 mb-3">الرقم الصحيح:</div>
-        <div class="correct-number">${targetNumber}</div>
+        <div class="text-lg mb-2">${isWin ? `فزت في المحاولة ${row+1}` : 'المعادلة الصحيحة:'}</div>
+        <div class="result-equation">${target}</div>
     `;
-    renderAttemptMatrix();
-    modal.classList.remove('hidden');
+    document.getElementById('gameResultModal').classList.remove('hidden');
 }
 
-function updateStatsDisplay() {
+function updateStats() {
     document.getElementById('playedCount').textContent = stats.played;
-    const winPercent = stats.played ? Math.round((stats.wins / stats.played) * 100) : 0;
-    document.getElementById('winPercent').textContent = winPercent + '%';
-    document.getElementById('currentStreak').textContent = stats.currentStreak;
+    document.getElementById('winPercent').textContent = stats.played ? Math.round(stats.wins/stats.played*100)+'%' : '0%';
+    document.getElementById('currentStreak').textContent = stats.streak;
     document.getElementById('maxStreak').textContent = stats.maxStreak;
-
-    const body = document.getElementById('attemptsTableBody');
-    const noMsg = document.getElementById('noAttemptsMessage');
-    const table = document.querySelector('.attempts-table');
-    if (attemptsHistory.length > 0) {
-        noMsg.classList.add('hidden');
-        table.classList.remove('hidden');
-        body.innerHTML = '';
-        [...attemptsHistory].reverse().forEach(a => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td class="attempt-number">${a.number}</td><td>${a.attempts}</td><td><span class="attempt-result ${a.result}">${a.result === 'win' ? 'فوز ✓' : 'خسارة ✗'}</span></td>`;
-            body.appendChild(tr);
-        });
-    } else {
-        noMsg.classList.remove('hidden');
-        table.classList.add('hidden');
-    }
 }
 
-function startNewGame() {
-    targetNumber = generateRandomNumber();
-    currentRow = 0;
-    currentGuess = "";
-    gameOver = false;
-    gameWon = false;
-    isProcessing = false;
-    inputLock = false;
-    startTime = new Date();
-    attemptResults = [];
+function saveStats() { localStorage.setItem('mathgrid_stats', JSON.stringify(stats)); }
+function loadStats() { const s = localStorage.getItem('mathgrid_stats'); if (s) stats = JSON.parse(s); }
 
-    const grid = document.getElementById('grid');
-    grid.innerHTML = '';
-    for (let r = 0; r < maxAttempts; r++) {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'grid-row';
-        rowDiv.id = `row-${r}`;
-        for (let c = 0; c < MAX_DIGITS; c++) {
-            const tile = document.createElement('div');
-            tile.className = 'tile';
-            tile.id = `tile-${r}-${c}`;
-            rowDiv.appendChild(tile);
+function createGrid() {
+    document.getElementById('grid').innerHTML = '';
+    for (let r = 0; r < ROWS; r++) {
+        const d = document.createElement('div');
+        d.className = 'grid-row';
+        d.id = `row-${r}`;
+        for (let c = 0; c < COLS; c++) {
+            const t = document.createElement('div');
+            t.className = 'tile';
+            t.id = `t-${r}-${c}`;
+            d.appendChild(t);
         }
-        grid.appendChild(rowDiv);
+        document.getElementById('grid').appendChild(d);
     }
-    document.querySelectorAll('.key').forEach(k => k.classList.remove('correct', 'present', 'absent'));
-    updateCurrentRow();
-    document.getElementById('message').innerHTML = '';
-    document.getElementById('gameResultModal').classList.add('hidden');
-    document.getElementById('statsModal').classList.add('hidden');
+    resizeTiles();
 }
 
-function handleInput(value) {
-    if (inputLock || gameOver || isProcessing) return;
-    if (value === 'Enter') {
-        if (currentGuess.length !== MAX_DIGITS) {
-            showMessage(`يجب إدخال ${MAX_DIGITS} أرقام`);
-            shakeRow();
-            return;
-        }
-        isProcessing = true;
-        evaluateGuess();
-    } else if (value === 'Backspace') {
-        if (currentGuess.length > 0) {
-            currentGuess = currentGuess.slice(0, -1);
-            updateCurrentRow();
-        }
-    } else if (/^\d$/.test(value)) {
-        if (currentGuess.length < MAX_DIGITS) {
-            currentGuess += value;
-            updateCurrentRow();
-            const tile = document.getElementById(`tile-${currentRow}-${currentGuess.length-1}`);
-            if (tile) { tile.classList.add('filled'); setTimeout(() => tile.classList.remove('filled'), 100); }
-        }
-    }
+function resizeTiles() {
+    const h = document.querySelector('header')?.offsetHeight || 60;
+    const kb = document.getElementById('keyboard')?.offsetHeight || 180;
+    const avail = window.innerHeight - h - kb - 90;
+    const size = Math.min(Math.floor(avail/ROWS), Math.floor((window.innerWidth-40)/COLS), 58);
+    document.querySelectorAll('.tile').forEach(t => t.style.setProperty('--tile-size', Math.max(size,36)+'px'));
 }
 
 function createKeyboard() {
-    const keyboard = document.getElementById('keyboard');
-    const layout = [['1','2','3','4','5'],['6','7','8','9','0'],['Enter','Backspace']];
-    keyboard.innerHTML = '';
-    layout.forEach(row => {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'keyboard-row';
-        row.forEach(key => {
-            const btn = document.createElement('button');
-            btn.className = 'key';
-            if (key === 'Enter') btn.classList.add('enter');
-            if (key === 'Backspace') {
-                btn.classList.add('backspace');
-                // استخدام أيقونة أعرض وأكثر سماكة تشبه الإيموجي تماماً
-                btn.innerHTML = '<i class="fas fa-long-arrow-alt-left"></i>'; 
-            } else {
-                btn.textContent = key;
-            }
-            btn.dataset.key = key;
-            btn.addEventListener('click', () => handleInput(key));
-            rowDiv.appendChild(btn);
+    document.getElementById('keyboard').innerHTML = '';
+    const layout = [
+        ['1','2','3','4','5','6','7','8','9','0'],
+        ['+','-','*','='],
+        ['Enter','Backspace']
+    ];
+    layout.forEach(r => {
+        const d = document.createElement('div');
+        d.className = 'keyboard-row';
+        r.forEach(k => {
+            const b = document.createElement('button');
+            b.className = 'key';
+            b.dataset.key = k;
+            if (k === 'Enter') { b.classList.add('enter'); b.textContent = 'إدخال'; }
+            else if (k === 'Backspace') { b.classList.add('backspace'); b.innerHTML = '<i class="fas fa-backspace"></i>'; }
+            else b.textContent = k;
+            b.onclick = () => handleInput(k);
+            d.appendChild(b);
         });
-        keyboard.appendChild(rowDiv);
+        document.getElementById('keyboard').appendChild(d);
     });
 }
 
-function loadData() {
-    const savedStats = localStorage.getItem('numberle_stats');
-    if (savedStats) stats = JSON.parse(savedStats);
-    const savedHistory = localStorage.getItem('numberle_history');
-    if (savedHistory) attemptsHistory = JSON.parse(savedHistory);
-    const savedMatrices = localStorage.getItem('numberle_matrices');
-    if (savedMatrices) attemptMatrices = JSON.parse(savedMatrices);
-    updateStatsDisplay();
-}
-
-function loadTheme() {
-    const saved = localStorage.getItem('numberle_theme');
-    const icon = document.querySelector('#themeToggle i');
-    if (saved === 'light') {
-        document.body.classList.add('light-mode');
-        icon.className = 'fas fa-moon';
-    } else {
-        document.body.classList.remove('light-mode');
-        icon.className = 'fas fa-sun';
+function handleInput(v) {
+    if (lock || gameOver || isProcessing) return;
+    if (v === 'Enter') { if (input.length === COLS) submitGuess(); else { showMsg(`أدخل ${COLS} خانات`); shake(); } }
+    else if (v === 'Backspace') { input = input.slice(0,-1); updateRow(); }
+    else if (/^[0-9+\-*=]$/.test(v) && input.length < COLS) {
+        input += v; updateRow();
+        const t = document.getElementById(`t-${row}-${input.length-1}`);
+        if (t) { t.classList.add('filled'); setTimeout(() => t.classList.remove('filled'), 100); }
     }
 }
 
-function updateGridTileSize() {
-    const headerH = document.querySelector('header')?.offsetHeight || 60;
-    const keyboardH = document.getElementById('keyboard')?.offsetHeight || 180;
-    const msgH = 44, padding = 24, gridGaps = (maxAttempts - 1) * 5;
-    const availableH = window.innerHeight - headerH - keyboardH - msgH - padding - gridGaps;
-    const tileByHeight = Math.floor(availableH / maxAttempts);
-    const tileByWidth = Math.floor((Math.min(window.innerWidth, 480) - 60) / MAX_DIGITS);
-    const tileSize = Math.min(tileByHeight, tileByWidth, 75);
-    const finalSize = Math.max(tileSize, 32);
-    document.querySelectorAll('.tile').forEach(t => t.style.setProperty('--tile-size', finalSize + 'px'));
-}
-
-function loadDifficulty() {
-    const saved = localStorage.getItem('numberle_difficulty');
-    difficulty = (saved === 'easy' || saved === 'hard') ? saved : 'hard';
-    maxAttempts = difficulty === 'hard' ? 6 : 8;
-    const helpText = document.getElementById('helpAttemptsText');
-    helpText.textContent = `خمّن الرقم المكون من 5 خانات في ${maxAttempts} محاولات.`;
-    const easyOpt = document.querySelector('[data-difficulty="easy"]');
-    const hardOpt = document.querySelector('[data-difficulty="hard"]');
-    if (difficulty === 'hard') { hardOpt.classList.add('active'); easyOpt.classList.remove('active'); }
-    else { hardOpt.classList.remove('active'); easyOpt.classList.add('active'); }
-}
-
-function changeDifficulty(newDiff) {
-    if (newDiff === difficulty) return;
-    difficulty = newDiff;
-    maxAttempts = difficulty === 'hard' ? 6 : 8;
-    localStorage.setItem('numberle_difficulty', difficulty);
-    loadDifficulty();
+function newGame() {
+    target = genEquation();
+    console.log('الجواب:', target);
+    row = 0; input = ''; gameOver = false; won = false; isProcessing = false; lock = false;
     createGrid();
-    startNewGame();
-}
-
-function createGrid() {
-    const grid = document.getElementById('grid');
-    grid.innerHTML = '';
-    for (let r = 0; r < maxAttempts; r++) {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'grid-row';
-        rowDiv.id = `row-${r}`;
-        for (let c = 0; c < MAX_DIGITS; c++) {
-            const tile = document.createElement('div');
-            tile.className = 'tile';
-            tile.id = `tile-${r}-${c}`;
-            rowDiv.appendChild(tile);
-        }
-        grid.appendChild(rowDiv);
-    }
-    requestAnimationFrame(updateGridTileSize);
-}
-
-function setupEventListeners() {
-    document.addEventListener('keydown', (e) => {
-        if (e.ctrlKey || e.metaKey || e.altKey) return;
-        let key = e.key;
-        if (key === 'Enter') handleInput('Enter');
-        else if (key === 'Backspace') handleInput('Backspace');
-        else if (/^\d$/.test(key)) handleInput(key);
-        else {
-            const converted = convertArabicDigits(key);
-            if (/^\d$/.test(converted)) handleInput(converted);
-        }
-    });
-    window.addEventListener('resize', () => requestAnimationFrame(updateGridTileSize));
-    const diffToggle = document.getElementById('difficultyToggle');
-    const diffMenu = document.getElementById('difficultyMenu');
-    diffToggle.addEventListener('click', (e) => { e.stopPropagation(); diffMenu.classList.toggle('show'); });
-    document.addEventListener('click', () => diffMenu?.classList.remove('show'));
-    document.querySelectorAll('.difficulty-option').forEach(opt => {
-        opt.addEventListener('click', function() { changeDifficulty(this.dataset.difficulty); });
-    });
-    document.getElementById('statsBtn').addEventListener('click', () => { updateStatsDisplay(); document.getElementById('statsModal').classList.remove('hidden'); });
-    document.getElementById('newGameHeaderBtn').addEventListener('click', startNewGame);
-    document.getElementById('newGameFromStats').addEventListener('click', () => { startNewGame(); document.getElementById('statsModal').classList.add('hidden'); });
-    document.getElementById('startGameBtn').addEventListener('click', () => { document.getElementById('helpModal').classList.add('hidden'); startNewGame(); });
-    document.getElementById('closeHelp').addEventListener('click', () => document.getElementById('helpModal').classList.add('hidden'));
-    document.getElementById('closeStats').addEventListener('click', () => document.getElementById('statsModal').classList.add('hidden'));
-    document.getElementById('closeGameResult').addEventListener('click', () => document.getElementById('gameResultModal').classList.add('hidden'));
-    document.getElementById('playAgainBtn').addEventListener('click', () => { startNewGame(); document.getElementById('gameResultModal').classList.add('hidden'); });
-    document.getElementById('viewStatsBtn').addEventListener('click', () => { document.getElementById('gameResultModal').classList.add('hidden'); updateStatsDisplay(); document.getElementById('statsModal').classList.remove('hidden'); });
-    document.getElementById('themeToggle').addEventListener('click', () => {
-        const isLight = document.body.classList.toggle('light-mode');
-        const icon = document.querySelector('#themeToggle i');
-        icon.className = isLight ? 'fas fa-moon' : 'fas fa-sun';
-        localStorage.setItem('numberle_theme', isLight ? 'light' : 'dark');
-    });
+    document.querySelectorAll('.key').forEach(k => k.classList.remove('correct','present','absent'));
+    document.getElementById('message').innerHTML = '';
+    document.getElementById('gameResultModal').classList.add('hidden');
 }
 
 function init() {
-    loadData();
-    loadTheme();
-    loadDifficulty();
+    loadStats();
     createKeyboard();
-    createGrid();
-    startNewGame();
-    setupEventListeners();
-    if (!localStorage.getItem('numberle_help_seen')) {
+    newGame();
+
+    // Theme
+    const saved = localStorage.getItem('mathgrid_theme');
+    if (saved === 'light') { document.body.classList.add('light-mode'); document.querySelector('#themeToggle i').className = 'fas fa-moon'; }
+    document.getElementById('themeToggle').onclick = () => {
+        const isLight = document.body.classList.toggle('light-mode');
+        document.querySelector('#themeToggle i').className = isLight ? 'fas fa-moon' : 'fas fa-sun';
+        localStorage.setItem('mathgrid_theme', isLight ? 'light' : 'dark');
+    };
+
+    // Events
+    document.addEventListener('keydown', e => {
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+        if (e.key === 'Enter') handleInput('Enter');
+        else if (e.key === 'Backspace') handleInput('Backspace');
+        else if (/^[0-9+\-*=]$/.test(e.key)) handleInput(e.key);
+    });
+
+    document.getElementById('helpBtn').onclick = () => document.getElementById('helpModal').classList.remove('hidden');
+    document.getElementById('startGameBtn').onclick = () => { document.getElementById('helpModal').classList.add('hidden'); newGame(); };
+    document.getElementById('statsBtn').onclick = () => { updateStats(); document.getElementById('statsModal').classList.remove('hidden'); };
+    document.getElementById('newGameBtn').onclick = newGame;
+    document.getElementById('newGameFromStats').onclick = () => { document.getElementById('statsModal').classList.add('hidden'); newGame(); };
+    document.getElementById('playAgainBtn').onclick = () => { document.getElementById('gameResultModal').classList.add('hidden'); newGame(); };
+    document.getElementById('viewStatsBtn').onclick = () => { document.getElementById('gameResultModal').classList.add('hidden'); updateStats(); document.getElementById('statsModal').classList.remove('hidden'); };
+
+    window.onresize = resizeTiles;
+
+    if (!localStorage.getItem('mathgrid_help')) {
         setTimeout(() => document.getElementById('helpModal').classList.remove('hidden'), 500);
-        localStorage.setItem('numberle_help_seen', 'true');
+        localStorage.setItem('mathgrid_help', 'true');
     }
 }
 
-window.addEventListener('load', init);
+window.onload = init;
 </script>
 </body>
 </html>
