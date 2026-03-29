@@ -1,1571 +1,1425 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>وردل الأسهم</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
-*{font-family:'Tajawal',sans-serif;box-sizing:border-box;}
-:root{
-    --correct-color:#538d4e;
-    --present-color:#b59f3b;
-    --absent-color:#3a3a3c;
-    --default-color:#565758;
-    --bg-color:#121213;
-    --bg-gradient:linear-gradient(180deg,#121213 0%,#050505 100%);
-    --surface-color:rgba(30,30,32,0.85);
-    --text-color:#ffffff;
-    --border-color:rgba(255,255,255,0.1);
-    --border-active:rgba(255,255,255,0.2);
-    --key-bg:rgba(255,255,255,0.08);
-    --key-text:#ffffff;
-    --enter-color:#538d4e;
-    --backspace-color:#9b2335;
-    --newgame-color:#538d4e;
-    --newgame-hover:#6aad65;
-    --correct-glow:rgba(83,141,78,0.35);
-    --present-glow:rgba(181,159,59,0.35);
-    --header-border:rgba(255,255,255,0.07);
-    --locked-color:#2d6b2d;
-}
-.light-mode{
-    --bg-color:#f8f9fa;
-    --bg-gradient:linear-gradient(180deg,#f8f9fa 0%,#e9ecef 100%);
-    --surface-color:rgba(255,255,255,0.85);
-    --text-color:#121213;
-    --border-color:rgba(0,0,0,0.1);
-    --border-active:rgba(0,0,0,0.2);
-    --key-bg:rgba(0,0,0,0.07);
-    --key-text:#121213;
-    --default-color:#d3d6da;
-    --header-border:rgba(0,0,0,0.08);
-    --locked-color:#538d4e;
-}
-body{
-    background:var(--bg-gradient);
-    color:var(--text-color);
-    transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
-    margin:0;padding:0;
-    height:100dvh;max-height:100dvh;
-    display:flex;flex-direction:column;
-    overflow:hidden;touch-action:manipulation;
-}
-.game-wrapper{flex:1;display:flex;flex-direction:column;justify-content:space-between;width:100%;max-width:640px;margin:0 auto;padding:6px 10px;overflow:hidden;min-height:0;}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>لغز الشبكة الحسابية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Roboto+Mono:wght@400;700&display=swap');
 
-/* TILE */
-.tile{
-    --tile-size:58px;
-    width:var(--tile-size);
-    height:var(--tile-size);
-    border:2px solid var(--border-color);
-    display:flex;align-items:center;justify-content:center;
-    font-size:calc(var(--tile-size)*0.68);
-    font-weight:800;
-    line-height:1;
-    user-select:none;
-    transition:all 0.3s ease;
-    border-radius:6px;
-    flex-shrink:0;
-    position:relative;
-}
-.tile.filled{border-color:rgba(255,255,255,0.3);animation:pop 0.1s ease;}
-@keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.12);}100%{transform:scale(1);}}
-.tile.correct{background-color:var(--correct-color);border-color:var(--correct-color);color:white;box-shadow:0 0 14px var(--correct-glow);}
-.tile.present{background-color:var(--present-color);border-color:var(--present-color);color:white;box-shadow:0 0 14px var(--present-glow);}
-.tile.absent{background-color:var(--absent-color);border-color:var(--absent-color);color:white;}
+        * {
+            font-family: 'Tajawal', sans-serif;
+            box-sizing: border-box;
+        }
 
-/* Locked tile (correct in hard mode) */
-.tile.locked{
-    background-color:var(--locked-color);
-    border-color:var(--locked-color);
-    border-width:3px;
-    box-shadow:0 0 16px var(--correct-glow), inset 0 0 20px rgba(255,255,255,0.15);
-}
-.tile.locked::after{
-    content:'🔒';
-    position:absolute;
-    top:-8px;left:-8px;
-    font-size:14px;
-    filter:drop-shadow(0 1px 2px rgba(0,0,0,0.5));
-}
-.tile.locked::before{
-    content:'';
-    position:absolute;
-    inset:0;
-    background:linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
-    border-radius:4px;
-    pointer-events:none;
-}
+        :root {
+            --bg-primary: #0f0f1a;
+            --bg-surface: #1a1a2e;
+            --bg-gradient: linear-gradient(180deg, #0f0f1a 0%, #050508 100%);
+            --correct-color: #4ade80;
+            --present-color: #fbbf24;
+            --absent-color: #4b5563;
+            --default-color: #374151;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --border-active: rgba(255, 255, 255, 0.2);
+            --key-bg: rgba(255, 255, 255, 0.08);
+            --enter-color: #4ade80;
+            --backspace-color: #ef4444;
+            --correct-glow: rgba(74, 222, 128, 0.35);
+            --present-glow: rgba(251, 191, 36, 0.35);
+        }
 
-.flip{animation:flip 0.6s ease;}
-@keyframes flip{0%{transform:rotateX(0);}50%{transform:rotateX(90deg);}100%{transform:rotateX(0);}}
+        .light-mode {
+            --bg-primary: #f3f4f6;
+            --bg-surface: #ffffff;
+            --bg-gradient: linear-gradient(180deg, #f3f4f6 0%, #e5e7eb 100%);
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --border-active: rgba(0, 0, 0, 0.2);
+            --key-bg: rgba(0, 0, 0, 0.06);
+            --default-color: #d1d5db;
+        }
 
-/* KEYBOARD */
-.keyboard-row{display:flex;justify-content:center;gap:6px;margin-bottom:6px;width:100%;}
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 0;
+            padding: 0;
+            height: 100dvh;
+            max-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
 
-.key{
-    height:clamp(48px,7vh,64px);
-    width:clamp(48px,7vh,64px);
-    min-width:clamp(48px,7vh,64px);
-    max-width:clamp(48px,7vh,64px);
-    background-color:var(--key-bg);
-    color:var(--key-text);
-    border:1px solid var(--border-color);
-    border-radius:10px;
-    font-weight:800;
-    font-size:clamp(1.6rem,4.5vw,2.2rem);
-    line-height:1;
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;user-select:none;
-    transition:all 0.15s ease;
-    flex:none;
-    padding:0;
-    touch-action:manipulation;
-    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-    position:relative;
-}
-.key.used-in-correct{
-    border-color:var(--correct-color);
-    box-shadow:inset 0 -3px 0 var(--correct-color), 0 0 8px var(--correct-glow);
-}
-.key.used-in-correct::after{
-    content:'✓';
-    position:absolute;
-    bottom:2px;left:50%;
-    transform:translateX(-50%);
-    font-size:8px;
-    color:var(--correct-color);
-}
-.key.control{
-    height:clamp(48px,7vh,64px);
-    width:auto;
-    min-width:clamp(70px,16vw,100px);
-    max-width:none;
-    font-size:clamp(0.75rem,2.2vw,0.95rem);
-    padding:0 10px;
-}
-.key.enter{background-color:var(--enter-color);color:white;border-color:var(--enter-color);}
-.key.backspace{background-color:var(--backspace-color);color:white;border-color:var(--backspace-color);}
+        .game-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 6px 10px;
+            overflow: hidden;
+            min-height: 0;
+        }
 
-@media(max-width:480px){
-    .key{
-        height:clamp(42px,6.5vh,56px);
-        width:clamp(42px,6.5vh,56px);
-        min-width:clamp(42px,6.5vh,56px);
-        max-width:clamp(42px,6.5vh,56px);
-        font-size:clamp(1.4rem,4vw,2rem);
-    }
-    .key.control{
-        height:clamp(42px,6.5vh,56px);
-        min-width:clamp(60px,14vw,88px);
-        max-width:none;
-        font-size:clamp(0.68rem,2vw,0.88rem);
-    }
-    .keyboard-row{gap:4px;margin-bottom:5px;}
-}
+        .tile {
+            --tile-size: 52px;
+            width: var(--tile-size);
+            height: var(--tile-size);
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Roboto Mono', monospace;
+            font-size: calc(var(--tile-size) * 0.48);
+            font-weight: 700;
+            user-select: none;
+            transition: all 0.3s ease;
+            border-radius: 6px;
+            flex-shrink: 0;
+            background: var(--bg-surface);
+        }
 
-.key:hover{background-color:var(--border-active);transform:translateY(-1px);}
-.key:active{transform:translateY(0);}
-.key.correct{background-color:var(--correct-color);border-color:var(--correct-color);color:white;box-shadow:0 0 8px var(--correct-glow);}
-.key.present{background-color:var(--present-color);border-color:var(--present-color);color:white;box-shadow:0 0 8px var(--present-glow);}
-.key.absent{background-color:var(--absent-color)!important;border-color:var(--absent-color)!important;color:rgba(255,255,255,0.4)!important;}
+        .tile.filled {
+            border-color: rgba(255, 255, 255, 0.3);
+            animation: pop 0.1s ease;
+        }
 
-.shake{animation:shake 0.5s ease;}
-@keyframes shake{0%,100%{transform:translateX(0);}10%,30%,50%,70%,90%{transform:translateX(-5px);}20%,40%,60%,80%{transform:translateX(5px);}}
-.bounce{animation:bounce 0.5s ease;}
-@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+            100% { transform: scale(1); }
+        }
 
-/* HEADER */
-header{
-    padding:10px 16px;
-    border-bottom:1px solid var(--header-border);
-    background:rgba(18,18,19,0.8);
-    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-    position:sticky;top:0;z-index:50;
-    display:flex;align-items:center;justify-content:space-between;
-}
-.light-mode header{background:rgba(248,249,250,0.85);}
-h1{
-    position:absolute;left:50%;transform:translateX(-50%);
-    font-size:1.5rem;font-weight:800;margin:0;color:#ffffff;white-space:nowrap;
-}
-.light-mode h1{color:#121213;background:none;-webkit-text-fill-color:initial;}
-.back-btn{
-    display:flex;align-items:center;justify-content:center;
-    width:36px;height:36px;border-radius:10px;
-    background:var(--correct-color);color:white!important;text-decoration:none;
-    transition:all 0.2s;box-shadow:0 2px 8px rgba(83,141,78,0.4);flex-shrink:0;
-}
-.back-btn:hover{opacity:0.88;transform:scale(1.05);}
-.stats-btn-header,.theme-btn,#newGameHeaderBtn{
-    width:36px;height:36px;border-radius:10px;
-    background:var(--surface-color);border:1px solid var(--border-color);
-    color:var(--text-color)!important;
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;transition:all 0.2s;
-}
-.theme-btn:hover,.stats-btn-header:hover{border-color:var(--border-active);}
-#newGameHeaderBtn:hover{border-color:var(--correct-color);color:var(--correct-color)!important;}
-#newGameHeaderBtn:active{transform:scale(0.92) rotate(-30deg);}
+        .tile.correct {
+            background-color: var(--correct-color);
+            border-color: var(--correct-color);
+            color: white;
+            box-shadow: 0 0 14px var(--correct-glow);
+        }
 
-/* DIFFICULTY BUTTON - 3 levels */
-#difficultyBtn{
-    height:36px;padding:0 10px;border-radius:10px;
-    border:1px solid var(--border-color);
-    background:var(--surface-color);
-    color:var(--text-color);
-    display:flex;align-items:center;justify-content:center;gap:4px;
-    cursor:pointer;transition:all 0.2s;
-    font-weight:800;font-size:0.78rem;white-space:nowrap;
-}
-#difficultyBtn.easy-mode{
-    border-color:#2ecc71;color:#2ecc71;
-    background:rgba(46,204,113,0.12);
-}
-#difficultyBtn.medium-mode{
-    border-color:#e67e22;color:#e67e22;
-    background:rgba(230,126,34,0.12);
-}
-#difficultyBtn.hard-mode{
-    border-color:#e74c3c;color:#e74c3c;
-    background:rgba(231,76,60,0.15);
-    box-shadow:0 0 10px rgba(231,76,60,0.2);
-}
-#difficultyBtn:hover{border-color:var(--border-active);}
+        .tile.present {
+            background-color: var(--present-color);
+            border-color: var(--present-color);
+            color: white;
+            box-shadow: 0 0 14px var(--present-glow);
+        }
 
-.grid-row{display:flex;justify-content:center;gap:5px;margin-bottom:4px;}
-#message{font-size:1rem;min-height:38px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;padding:0 10px;text-align:center;gap:8px;flex-wrap:wrap;font-weight:700;}
+        .tile.absent {
+            background-color: var(--absent-color);
+            border-color: var(--absent-color);
+            color: rgba(255, 255, 255, 0.4);
+        }
 
-/* Lock indicator banner */
-#lockIndicator{
-    background:linear-gradient(135deg, rgba(46,204,113,0.1), rgba(39,174,96,0.1));
-    border:1px solid rgba(46,204,113,0.2);
-    border-radius:10px;
-    padding:8px 14px;
-    margin-bottom:8px;
-    text-align:center;
-    font-size:0.8rem;
-    color:#2ecc71;
-    display:none;
-}
-#lockIndicator.active{display:flex;align-items:center;justify-content:center;gap:6px;}
+        .flip {
+            animation: flip 0.6s ease;
+        }
 
-/* MODAL */
-.modal-overlay{background-color:rgba(0,0,0,0.75);backdrop-filter:blur(8px);}
-.modal-content{
-    width:95%;max-width:480px;max-height:90vh;overflow-y:auto;margin:10px;
-    border-radius:20px;border:1px solid var(--border-color);
-    background:var(--surface-color);
-    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-}
-::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--border-active);border-radius:10px;}
-.correct-word,.correct-arrows,.correct-number{
-    background:linear-gradient(135deg,var(--correct-color),#2d6b2d);
-    color:white;padding:12px 18px;border-radius:12px;margin:10px 0;
-    text-align:center;font-size:1.6rem;font-weight:900;letter-spacing:0.1em;
-    animation:pulse 2s infinite;box-shadow:0 4px 20px var(--correct-glow);
-    direction:ltr;line-height:1.4;
-}
-@keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.04);}100%{transform:scale(1);}}
-.color-example{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding:10px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid var(--border-color);}
-.light-mode .color-example{background:rgba(0,0,0,0.03);}
-.color-box{width:44px;height:44px;border:none;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;flex-shrink:0;line-height:1;}
-.color-box.correct{background:var(--correct-color);color:white;}
-.color-box.present{background:var(--present-color);color:white;}
-.color-box.absent{background:var(--absent-color);color:white;}
-.color-box.locked{background:var(--locked-color);color:white;border:2px solid var(--correct-color);}
-.color-description{flex:1;font-size:0.9rem;}
-.attempts-table-container{max-height:220px;overflow-y:auto;margin:12px 0;border:1px solid var(--border-color);border-radius:12px;padding:8px;}
-.attempts-table{width:100%;border-collapse:collapse;font-size:0.88rem;}
-.attempts-table th{padding:8px;text-align:center;border-bottom:1px solid var(--border-color);font-size:0.75rem;opacity:0.5;font-weight:700;}
-.attempts-table td{padding:7px;text-align:center;border-bottom:1px solid var(--border-color);}
-.attempts-table tr:last-child td{border-bottom:none;}
-.attempt-number{font-weight:800;color:var(--correct-color);}
-.attempt-result{font-size:0.95rem;font-weight:700;}
-.attempt-result.win{color:var(--correct-color);}
-.attempt-result.loss{color:#e74c3c;}
-.attempts-title{font-size:1rem;font-weight:800;margin:10px 0 6px;text-align:center;color:var(--text-color);opacity:0.6;letter-spacing:0.05em;}
-.no-attempts-message{text-align:center;padding:16px;opacity:0.35;font-size:0.9rem;}
-.attempt-matrix-container{margin:16px 0;padding:14px;border:1px solid var(--border-color);border-radius:14px;background:rgba(255,255,255,0.03);}
-.matrix-title{font-size:0.8rem;font-weight:700;margin-bottom:10px;text-align:center;color:var(--text-color);opacity:0.45;letter-spacing:0.08em;text-transform:uppercase;}
-.matrix-grid{display:flex;flex-direction:column;align-items:center;gap:5px;margin-bottom:10px;}
-.matrix-row{display:flex;justify-content:center;gap:4px;flex-wrap:wrap;}
-.matrix-tile{
-    --mt-size:36px;
-    width:var(--mt-size);height:var(--mt-size);
-    border:none;border-radius:5px;
-    display:flex;align-items:center;justify-content:center;
-    font-weight:800;font-size:calc(var(--mt-size)*0.62);
-    color:white;user-select:none;line-height:1;
-}
-.matrix-tile.locked{
-    background:var(--locked-color);
-    border:2px solid var(--correct-color);
-    position:relative;
-}
-.matrix-tile.locked::after{
-    content:'🔒';
-    position:absolute;
-    top:-6px;left:-6px;
-    font-size:10px;
-}
-@media(max-width:420px){.matrix-tile{--mt-size:28px;}}
-.matrix-tile.correct{background:var(--correct-color);}
-.matrix-tile.present{background:var(--present-color);}
-.matrix-tile.absent{background:var(--absent-color);}
-.matrix-legend{display:flex;justify-content:center;gap:12px;margin-top:8px;flex-wrap:wrap;}
-.legend-item{display:flex;align-items:center;gap:5px;font-size:0.75rem;opacity:0.6;}
-.legend-color{width:14px;height:14px;border-radius:3px;}
-.legend-color.correct{background:var(--correct-color);}
-.legend-color.present{background:var(--present-color);}
-.legend-color.absent{background:var(--absent-color);}
-.legend-color.locked{background:var(--locked-color);border:1px solid var(--correct-color);}
-.result-buttons{display:flex;gap:8px;margin-top:16px;}
-.result-buttons button{flex:1;padding:13px;border-radius:12px;font-weight:800;font-size:0.95rem;transition:all 0.2s;cursor:pointer;}
-@media(max-width:480px){.result-buttons{flex-direction:column;gap:8px;}}
+        @keyframes flip {
+            0% { transform: rotateX(0); }
+            50% { transform: rotateX(90deg); }
+            100% { transform: rotateX(0); }
+        }
 
-/* Difficulty info badge */
-.difficulty-info{
-    background:linear-gradient(135deg, rgba(83,141,78,0.1), rgba(39,174,96,0.05));
-    border:1px solid rgba(83,141,78,0.15);
-    border-radius:8px;
-    padding:10px 14px;
-    margin-bottom:12px;
-    text-align:center;
-}
-.difficulty-info.medium{
-    background:linear-gradient(135deg, rgba(230,126,34,0.1), rgba(211,84,0,0.05));
-    border-color:rgba(230,126,34,0.2);
-}
-.difficulty-info.hard{
-    background:linear-gradient(135deg, rgba(231,76,60,0.12), rgba(192,57,43,0.08));
-    border-color:rgba(231,76,60,0.2);
-}
-.difficulty-info h3{font-weight:800;font-size:0.95rem;margin-bottom:4px;}
-.difficulty-info.easy-mode h3{color:#2ecc71;}
-.difficulty-info.medium h3{color:#e67e22;}
-.difficulty-info.hard h3{color:#e74c3c;}
-.difficulty-info p{font-size:0.78rem;opacity:0.6;margin:0;}
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 6px;
+            width: 100%;
+        }
 
-/* Force LTR on all game elements */
-#grid,.grid-row,.keyboard-row,.key,.tile,.matrix-grid,.matrix-row,.correct-arrows,.matrix-tile{direction:ltr!important;unicode-bidi:plaintext;}
-.keyboard-row:last-child{flex-direction:row-reverse;}
-.correct-arrows{direction:ltr;}
+        .key {
+            height: clamp(42px, 6vh, 58px);
+            min-width: clamp(28px, 6vw, 43px);
+            background-color: var(--key-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-weight: 700;
+            font-family: 'Roboto Mono', monospace;
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.15s ease;
+            flex: 1;
+            margin: 0 2px;
+            padding: 0 2px;
+            touch-action: manipulation;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
 
-/* Hard mode locked tiles in grid */
-.locked-tile-hint{
-    position:absolute;
-    top:-6px;left:-6px;
-    background:var(--correct-color);
-    color:white;
-    width:18px;height:18px;
-    border-radius:50%;
-    display:flex;align-items:center;justify-content:center;
-    font-size:10px;
-    z-index:5;
-    box-shadow:0 2px 6px rgba(0,0,0,0.3);
-}
-</style>
+        .key.enter {
+            background-color: var(--enter-color);
+            color: white;
+            border-color: var(--enter-color);
+            font-size: clamp(0.65rem, 2.2vw, 0.85rem);
+            font-family: 'Tajawal', sans-serif;
+            flex: 1.5;
+        }
+
+        .key.backspace {
+            background-color: var(--backspace-color);
+            color: white;
+            border-color: var(--backspace-color);
+            flex: 2 !important;
+        }
+
+        .key.backspace i {
+            font-size: 1.4rem;
+        }
+
+        @media (max-width: 480px) {
+            .key {
+                height: clamp(38px, 5.5vh, 50px);
+                min-width: clamp(24px, 5vw, 34px);
+                font-size: clamp(0.8rem, 2.8vw, 1rem);
+                margin: 0 1px;
+                padding: 0 1px;
+            }
+            .key.enter {
+                font-size: clamp(0.6rem, 2vw, 0.75rem);
+            }
+            .keyboard-row {
+                gap: 2px;
+                margin-bottom: 5px;
+            }
+        }
+
+        .key:hover {
+            background-color: var(--border-active);
+            transform: translateY(-1px);
+        }
+
+        .key:active {
+            transform: translateY(0);
+        }
+
+        .key.correct {
+            background-color: var(--correct-color) !important;
+            border-color: var(--correct-color) !important;
+            color: white !important;
+            box-shadow: 0 0 8px var(--correct-glow);
+        }
+
+        .key.present {
+            background-color: var(--present-color) !important;
+            border-color: var(--present-color) !important;
+            color: white !important;
+            box-shadow: 0 0 8px var(--present-glow);
+        }
+
+        .key.absent {
+            background-color: var(--absent-color) !important;
+            border-color: var(--absent-color) !important;
+            color: rgba(255, 255, 255, 0.4) !important;
+        }
+
+        .shake {
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .bounce {
+            animation: bounce 0.5s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        header {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(15, 15, 26, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .light-mode header {
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        h1 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin: 0;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .header-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .header-btn:hover {
+            border-color: var(--border-active);
+        }
+
+        .header-btn.new-game:hover {
+            border-color: var(--correct-color);
+            color: var(--correct-color);
+        }
+
+        .header-btn i {
+            font-size: 1.2rem;
+        }
+
+        .grid-row {
+            display: flex;
+            flex-direction: row !important;
+            direction: ltr !important;
+            justify-content: center;
+            gap: 5px;
+            margin-bottom: 5px;
+        }
+
+        .grid-row .tile {
+            direction: ltr;
+        }
+
+        #grid, .grid-row, .keyboard-row, .key, .tile {
+            direction: ltr !important;
+            unicode-bidi: plaintext;
+        }
+
+        #message {
+            font-size: 1rem;
+            min-height: 40px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 10px;
+            text-align: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            font-weight: 700;
+        }
+
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            width: 95%;
+            max-width: 460px;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: 10px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-active);
+            border-radius: 10px;
+        }
+
+        .equation-example {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+        }
+
+        .light-mode .equation-example {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .equation-box {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .equation-box.correct {
+            background: var(--correct-color);
+            color: white;
+        }
+
+        .equation-box.present {
+            background: var(--present-color);
+            color: white;
+        }
+
+        .equation-box.absent {
+            background: var(--absent-color);
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .equation-description {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px 8px;
+            background: var(--key-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .result-equation {
+            background: linear-gradient(135deg, var(--correct-color), #22c55e);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 12px;
+            margin: 10px 0;
+            text-align: center;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 20px var(--correct-glow);
+            direction: ltr;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+
+        .win-celebration {
+            animation: winCelebration 2s ease infinite;
+        }
+
+        @keyframes winCelebration {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+
+        .result-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .result-buttons button {
+            flex: 1;
+            padding: 13px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        @media (max-width: 480px) {
+            .result-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        .equation-hint {
+            font-family: 'Roboto Mono', monospace;
+            direction: ltr;
+            text-align: center;
+            padding: 8px;
+            background: rgba(74, 222, 128, 0.1);
+            border-radius: 8px;
+            margin: 8px 0;
+            font-size: 0.85rem;
+            color: var(--correct-color);
+            border: 1px dashed var(--correct-color);
+        }
+
+        .help-section {
+            margin-bottom: 16px;
+        }
+
+        .help-section h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .help-section p {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .rule-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+        }
+
+        .rule-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .rule-icon.forbidden {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .rule-icon.allowed {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+        }
+    </style>
 </head>
 <body>
-<header class="sticky top-0 z-50 flex items-center justify-between px-4 py-2.5 min-h-[58px]">
-  <div class="flex items-center gap-2">
-    <button id="statsBtn" class="stats-btn-header"><i class="fas fa-chart-bar text-sm"></i></button>
-    <a href="index.html" class="back-btn" title="تغيير اللعبة"><i class="fas fa-th-large text-sm"></i></a>
-  </div>
-  <h1>الأسهم</h1>
-  <div class="flex items-center gap-2">
-    <button id="difficultyBtn" title="تغيير الصعوبة"><span id="diffIcon">⚡</span>&nbsp;<span id="diffText">سهل 6</span></button>
-    <button id="newGameHeaderBtn"><i class="fas fa-redo-alt text-sm"></i></button>
-    <button id="themeToggle" class="theme-btn"><i class="fas fa-sun text-sm text-yellow-400"></i></button>
-  </div>
-</header>
-
-<div class="game-wrapper">
-  <div id="lockIndicator">
-    <i class="fas fa-lock"></i>
-    <span>🔥 وضع متقدم: الأسهم الصحيحة تُقفل مكانها!</span>
-    <i class="fas fa-fire"></i>
-  </div>
-  <div id="message" class="text-center font-bold"></div>
-  <div id="grid" class="mb-3"></div>
-  <div id="keyboard" class="w-full"></div>
-</div>
-
-<!-- Help Modal -->
-<div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
-  <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
-    <div class="p-5">
-      <div class="flex justify-between items-center mb-5">
-        <h2 class="text-xl font-bold">طريقة اللعب</h2>
-        <button id="closeHelp" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
-      </div>
-      <div id="helpDifficultyInfo" class="difficulty-info easy-mode">
-        <h3 id="helpDiffTitle">⚡ المستوى الحالي: سهل</h3>
-        <p id="helpDiffDesc">6 أسهم - 6 محاولات</p>
-      </div>
-      <p class="text-base mb-4 text-center">خمّن تسلسل الأسهم في 6 محاولات.<br><small class="opacity-60" id="helpArrowsInfo">سهل: 6 أسهم &nbsp;|&nbsp; متوسط: 7 أسهم &nbsp;|&nbsp; صعب: 8 أسهم (مقفل!)</small></p>
-
-      <div class="color-example"><div class="color-box correct">↑</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأخضر</h3><p>السهم صحيح وفي المكان الصحيح.</p></div></div>
-      <div class="color-example"><div class="color-box present">↓</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأصفر</h3><p>السهم صحيح ولكن في المكان الخطأ.</p></div></div>
-      <div class="color-example"><div class="color-box absent">←</div><div class="color-description"><h3 class="font-bold mb-1">اللون الرمادي</h3><p>السهم غير موجود في التسلسل السري.</p></div></div>
-
-      <div class="color-example" id="hardModeHelp" style="display:none;">
-        <div class="color-box locked">🔒</div>
-        <div class="color-description">
-          <h3 class="font-bold mb-1">🔥 المستوى الصعب - السهم المقفل!</h3>
-          <p>في المستوى الصعب، الأسهم الصحيحة تُقفل مكانها ولا يمكن تغييرها. هذا يضيف تحدياً ذهنياً كبيراً!</p>
+    <header>
+        <div class="flex items-center gap-2">
+            <button id="helpBtn" class="header-btn" title="طريقة اللعب">
+                <i class="fas fa-question-circle"></i>
+            </button>
+            <a href="index.html" class="header-btn" title="القائمة الرئيسية">
+                <i class="fas fa-th-large"></i>
+            </a>
         </div>
-      </div>
-
-      <div class="text-center mt-5">
-        <button id="startGameBtn" class="bg-[var(--correct-color)] text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 text-base">فهمت، ابدأ اللعب</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Stats Modal -->
-<div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
-  <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
-    <div class="p-5">
-      <div class="flex justify-between items-center mb-5">
-        <h2 class="text-xl font-bold">الإحصائيات</h2>
-        <button id="closeStats" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
-      </div>
-      <div id="gameResultInfo" class="mb-4"></div>
-      <div id="attemptsTableContainer" class="attempts-table-container">
-        <div class="attempts-title">سجل المحاولات</div>
-        <div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة. ابدأ اللعب الآن!</div>
-        <table class="attempts-table"><thead><th>#</th><th>المحاولة</th><th>النتيجة</th></thead><tbody id="attemptsTableBody"></tbody></table>
-      </div>
-      <div class="flex justify-around mb-6">
-        <div class="text-center"><div id="playedCount" class="text-2xl font-bold">0</div><div class="text-xs">العب</div></div>
-        <div class="text-center"><div id="winPercent" class="text-2xl font-bold">0%</div><div class="text-xs">فوز</div></div>
-        <div class="text-center"><div id="currentStreak" class="text-2xl font-bold">0</div><div class="text-xs">تتابع</div></div>
-        <div class="text-center"><div id="maxStreak" class="text-2xl font-bold">0</div><div class="text-xs">أعلى تتابع</div></div>
-      </div>
-      <div class="flex justify-around mb-4" id="difficultyStats">
-        <div class="text-center"><div id="easyWins" class="text-lg font-bold" style="color:#2ecc71">0</div><div class="text-xs opacity-60">سهل</div></div>
-        <div class="text-center"><div id="mediumWins" class="text-lg font-bold" style="color:#e67e22">0</div><div class="text-xs opacity-60">متوسط</div></div>
-        <div class="text-center"><div id="hardWins" class="text-lg font-bold" style="color:#e74c3c">0</div><div class="text-xs opacity-60">صعب</div></div>
-      </div>
-      <button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-2.5 rounded font-bold hover:bg-[var(--default-color)] text-sm">لعبة جديدة</button>
-    </div>
-  </div>
-</div>
-
-<!-- Game Result Modal -->
-<div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
-  <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
-    <div class="p-5">
-      <div class="flex justify-between items-center mb-5">
-        <h2 class="text-xl font-bold" id="resultModalTitle">نتيجة اللعبة</h2>
-        <button id="closeGameResult" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
-      </div>
-      <div id="gameResultDetails" class="text-center mb-4"></div>
-      <div id="attemptMatrixContainer" class="attempt-matrix-container">
-        <h3 class="matrix-title">خريطة رحلتك في التفكير</h3>
-        <div id="matrixGrid" class="matrix-grid"></div>
-        <div class="matrix-legend">
-          <div class="legend-item"><div class="legend-color correct"></div><span>صحيح</span></div>
-          <div class="legend-item"><div class="legend-color present"></div><span>موجود بموقع آخر</span></div>
-          <div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div>
-          <div class="legend-item" id="matrixLockedLegend" style="display:none;"><div class="legend-color locked"></div><span>مقفل 🔒</span></div>
+        <h1>لغز الشبكة الحسابية</h1>
+        <div class="flex items-center gap-2">
+            <button id="statsBtn" class="header-btn" title="الإحصائيات">
+                <i class="fas fa-chart-bar"></i>
+            </button>
+            <button id="newGameBtn" class="header-btn new-game" title="لعبة جديدة">
+                <i class="fas fa-redo-alt"></i>
+            </button>
+            <button id="themeToggle" class="header-btn">
+                <i class="fas fa-sun text-yellow-400"></i>
+            </button>
         </div>
-      </div>
-      <div class="result-buttons">
-        <button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90"><i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى</button>
-        <button id="viewStatsBtn" class="border border-[var(--border-color)] hover:bg-[var(--default-color)]"><i class="fas fa-chart-bar ml-2"></i>الإحصائيات</button>
-      </div>
+    </header>
+
+    <div class="game-wrapper">
+        <div id="message" class="text-center font-bold"></div>
+        <div id="grid" class="mb-4"></div>
+        <div id="keyboard" class="w-full"></div>
     </div>
-  </div>
-</div>
 
-<script>
-// ─── CONFIG ───────────────────────────────────────────────────────────────────
-const MAX_ATTEMPTS = 6;
-const ARROW_SYMBOLS = ['↑', '↓', '←', '→'];
+    <!-- Help Modal -->
+    <div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
+        <div class="modal-content">
+            <div class="p-5">
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="text-xl font-bold">طريقة اللعب</h2>
+                    <button id="closeHelp" class="text-xl hover:text-gray-400">&times;</button>
+                </div>
 
-// Difficulty levels configuration
-const DIFFICULTY_CONFIG = {
-    easy: { arrows: 6, name: 'سهل', icon: '⚡', lockedTiles: false },
-    medium: { arrows: 7, name: 'متوسط', icon: '💪', lockedTiles: false },
-    hard: { arrows: 8, name: 'صعب', icon: '🔥', lockedTiles: true }
-};
+                <div class="help-section">
+                    <h3>الهدف</h3>
+                    <p>اكتشف المعادلة الحسابية الصحيحة في 6 محاولات. كل معادلة تتكون من 8 خانات.</p>
+                </div>
 
-const DIFFICULTY_ORDER = ['easy', 'medium', 'hard'];
+                <div class="help-section">
+                    <h3>القواعد</h3>
+                    <div class="rule-item">
+                        <div class="rule-icon allowed"><i class="fas fa-check"></i></div>
+                        <div>
+                            <strong>الأرقام المسموحة:</strong> 0-9
+                        </div>
+                    </div>
+                    <div class="rule-item">
+                        <div class="rule-icon allowed"><i class="fas fa-check"></i></div>
+                        <div>
+                            <strong>العمليات المسموحة:</strong> + (جمع)، - (طرح)، * (ضرب)
+                        </div>
+                    </div>
+                    <div class="rule-item">
+                        <div class="rule-icon allowed"><i class="fas fa-check"></i></div>
+                        <div>
+                            <strong>المعادلة الصحيحة:</strong> الطرف الأيسر = الطرف الأيمن
+                        </div>
+                    </div>
+                    <div class="rule-item">
+                        <div class="rule-icon forbidden"><i class="fas fa-times"></i></div>
+                        <div>
+                            <strong>ممنوع:</strong> استخدام القسمة (/) - غير مسموح نهائياً
+                        </div>
+                    </div>
+                </div>
 
-// ─── STATE ────────────────────────────────────────────────────────────────────
-let difficulty = localStorage.getItem('arrowle_difficulty') || 'easy';
-let MAX_ARROWS = DIFFICULTY_CONFIG[difficulty].arrows;
+                <div class="help-section">
+                    <h3>تلميحات الألوان</h3>
+                    <div class="equation-example">
+                        <div class="equation-box correct">5</div>
+                        <div class="equation-description">
+                            <strong class="text-green-400">الأخضر</strong> - الرقم/الرمز صحيح وفي مكانه الصحيح
+                        </div>
+                    </div>
+                    <div class="equation-example">
+                        <div class="equation-box present">+</div>
+                        <div class="equation-description">
+                            <strong class="text-yellow-400">الأصفر</strong> - موجود لكن في مكان خاطئ
+                        </div>
+                    </div>
+                    <div class="equation-example">
+                        <div class="equation-box absent">7</div>
+                        <div class="equation-description">
+                            <strong class="text-gray-400">الرمادي</strong> - غير موجود في المعادلة
+                        </div>
+                    </div>
+                </div>
 
-let targetSequence = [];
-let currentRow = 0;
-let currentGuess = [];
-let lockedPositions = []; // Track locked positions in hard mode
-let gameOver = false;
-let gameWon = false;
-let startTime = null;
-let attemptResults = [];
-let stats = {
-    played: 0,
-    wins: 0,
-    currentStreak: 0,
-    maxStreak: 0,
-    easyWins: 0,
-    mediumWins: 0,
-    hardWins: 0
-};
-let attemptsHistory = [];
-let attemptMatrices = [];
-let isProcessing = false;
-let inputLock = false;
+                <div class="help-section">
+                    <h3>مثال</h3>
+                    <div class="equation-hint">
+                        25+10=35
+                    </div>
+                    <p>الطرف الأيسر (25+10=35) يساوي الطرف الأيمن ✓</p>
+                </div>
 
-// ─── DIFFICULTY ───────────────────────────────────────────────────────────────
-function applyDifficulty() {
-    const config = DIFFICULTY_CONFIG[difficulty];
-    MAX_ARROWS = config.arrows;
-    lockedPositions = [];
+                <div class="text-center mt-5">
+                    <button id="startGameBtn" class="bg-green-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-600 text-base w-full">
+                        فهمت، ابدأ اللعب!
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    const btn = document.getElementById('difficultyBtn');
-    const diffIcon = document.getElementById('diffIcon');
-    const diffText = document.getElementById('diffText');
+    <!-- Stats Modal -->
+    <div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
+        <div class="modal-content">
+            <div class="p-5">
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="text-xl font-bold">الإحصائيات</h2>
+                    <button id="closeStats" class="text-xl hover:text-gray-400">&times;</button>
+                </div>
 
-    btn.classList.remove('easy-mode', 'medium-mode', 'hard-mode');
-    btn.classList.add(difficulty + '-mode');
-    diffIcon.textContent = config.icon;
-    diffText.textContent = config.name + ' ' + MAX_ARROWS;
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div id="playedCount" class="stat-value">0</div>
+                        <div class="stat-label">الألعاب</div>
+                    </div>
+                    <div class="stat-item">
+                        <div id="winPercent" class="stat-value">0%</div>
+                        <div class="stat-label">نسبة الفوز</div>
+                    </div>
+                    <div class="stat-item">
+                        <div id="currentStreak" class="stat-value">0</div>
+                        <div class="stat-label">التتابع الحالي</div>
+                    </div>
+                    <div class="stat-item">
+                        <div id="maxStreak" class="stat-value">0</div>
+                        <div class="stat-label">أعلى تتابع</div>
+                    </div>
+                </div>
 
-    // Show/hide lock indicator
-    const lockIndicator = document.getElementById('lockIndicator');
-    if (config.lockedTiles) {
-        lockIndicator.classList.add('active');
-    } else {
-        lockIndicator.classList.remove('active');
-    }
+                <div id="guessDistribution" class="mt-4">
+                    <h3 class="text-center font-bold mb-3 text-sm opacity-70">توزيع المحاولات</h3>
+                    <div id="distributionBars"></div>
+                </div>
 
-    // Update help modal
-    updateHelpModal();
-}
+                <div class="mt-4">
+                    <button id="newGameFromStats" class="w-full bg-green-500 text-white py-3 rounded-lg font-bold hover:bg-green-600 text-sm">
+                        لعبة جديدة
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-function updateHelpModal() {
-    const config = DIFFICULTY_CONFIG[difficulty];
-    const helpDiffInfo = document.getElementById('helpDifficultyInfo');
-    const helpDiffTitle = document.getElementById('helpDiffTitle');
-    const helpDiffDesc = document.getElementById('helpDiffDesc');
-    const hardModeHelp = document.getElementById('hardModeHelp');
-    const matrixLockedLegend = document.getElementById('matrixLockedLegend');
+    <!-- Game Result Modal -->
+    <div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
+        <div class="modal-content">
+            <div class="p-5">
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="text-xl font-bold" id="resultModalTitle">نتيجة اللعبة</h2>
+                    <button id="closeGameResult" class="text-xl hover:text-gray-400">&times;</button>
+                </div>
 
-    helpDiffInfo.classList.remove('easy-mode', 'medium', 'hard');
-    helpDiffInfo.classList.add(difficulty === 'easy' ? 'easy-mode' : difficulty);
+                <div id="gameResultDetails" class="text-center mb-4"></div>
 
-    helpDiffTitle.textContent = config.icon + ' المستوى الحالي: ' + config.name;
-    helpDiffDesc.textContent = MAX_ARROWS + ' أسهم - ' + MAX_ATTEMPTS + ' محاولات';
+                <div class="result-buttons">
+                    <button id="playAgainBtn" class="bg-green-500 text-white hover:bg-green-600">
+                        <i class="fas fa-redo-alt ml-2"></i>
+                        العب مرة أخرى
+                    </button>
+                    <button id="viewStatsBtn" class="bg-gray-700 hover:bg-gray-600 text-white">
+                        <i class="fas fa-chart-bar ml-2"></i>
+                        الإحصائيات
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    if (difficulty === 'hard') {
-        hardModeHelp.style.display = 'flex';
-        matrixLockedLegend.style.display = 'flex';
-    } else {
-        hardModeHelp.style.display = 'none';
-        matrixLockedLegend.style.display = 'none';
-    }
-}
+    <script>
+        // Game Configuration
+        const GRID_COLS = 8;
+        const MAX_ATTEMPTS = 6;
 
-function toggleDifficulty() {
-    const currentIndex = DIFFICULTY_ORDER.indexOf(difficulty);
-    const nextIndex = (currentIndex + 1) % DIFFICULTY_ORDER.length;
-    difficulty = DIFFICULTY_ORDER[nextIndex];
-    localStorage.setItem('arrowle_difficulty', difficulty);
-    applyDifficulty();
-    startNewGame();
-}
+        // Game State
+        let targetEquation = "";
+        let currentRow = 0;
+        let currentInput = "";
+        let gameOver = false;
+        let gameWon = false;
+        let isProcessing = false;
+        let inputLock = false;
+        let stats = {
+            played: 0,
+            wins: 0,
+            currentStreak: 0,
+            maxStreak: 0,
+            guessDistribution: [0, 0, 0, 0, 0, 0]
+        };
 
-// ─── GAME LOGIC ───────────────────────────────────────────────────────────────
-function generateRandomSequence() {
-    return Array.from({ length: MAX_ARROWS }, () =>
-        ARROW_SYMBOLS[Math.floor(Math.random() * ARROW_SYMBOLS.length)]
-    );
-}
+        // DOM Elements
+        const gridEl = document.getElementById('grid');
+        const keyboardEl = document.getElementById('keyboard');
+        const messageEl = document.getElementById('message');
 
-function calculateGuessResult(guessArr, targetArr) {
-    const result = Array(MAX_ARROWS).fill('absent');
-    const targetCount = {};
-    for (const a of targetArr) targetCount[a] = (targetCount[a] || 0) + 1;
-    for (let i = 0; i < MAX_ARROWS; i++) {
-        if (guessArr[i] === targetArr[i]) {
-            result[i] = 'correct';
-            targetCount[guessArr[i]]--;
-        }
-    }
-    for (let i = 0; i < MAX_ARROWS; i++) {
-        if (result[i] !== 'correct' && targetCount[guessArr[i]] > 0) {
-            result[i] = 'present';
-            targetCount[guessArr[i]]--;
-        }
-    }
-    return result;
-}
-
-function updateKeyboard(arrow, status) {
-    const key = document.querySelector(`.key[data-key="${arrow}"]`);
-    if (!key) return;
-    if (status === 'correct') {
-        key.classList.add('correct'); key.classList.remove('present', 'absent');
-        key.classList.add('used-in-correct');
-    } else if (status === 'present' && !key.classList.contains('correct')) {
-        key.classList.add('present'); key.classList.remove('absent');
-    } else if (status === 'absent' && !key.classList.contains('correct') && !key.classList.contains('present')) {
-        key.classList.add('absent');
-    }
-}
-
-function updateCurrentRow() {
-    for (let i = 0; i < MAX_ARROWS; i++) {
-        const tile = document.getElementById(`tile-${currentRow}-${i}`);
-        if (tile) {
-            if (lockedPositions.includes(i)) {
-                tile.textContent = targetSequence[i];
-                tile.classList.add('locked');
-            } else {
-                tile.textContent = currentGuess[i] || '';
+        // Utility Functions
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
             }
+            return arr;
         }
-    }
-}
 
-function showMessage(msg, duration = 3000) {
-    const msgDiv = document.getElementById('message');
-    msgDiv.innerHTML = msg;
-    if (window._msgTimeout) clearTimeout(window._msgTimeout);
-    window._msgTimeout = setTimeout(() => { if (msgDiv.innerHTML === msg) msgDiv.innerHTML = ''; }, duration);
-}
+        // Equation Generation
+        function generateEquation() {
+            const operations = ['+', '-', '*'];
+            const operation = operations[Math.floor(Math.random() * operations.length)];
 
-function shakeRow() {
-    const row = document.getElementById(`row-${currentRow}`);
-    if (row) { row.classList.add('shake'); setTimeout(() => row.classList.remove('shake'), 500); }
-}
+            let num1, num2, result;
+            const maxNum = 99;
+            const maxResult = 999;
 
-function bounceLockedTiles() {
-    for (let i = 0; i < MAX_ARROWS; i++) {
-        if (lockedPositions.includes(i)) {
-            const tile = document.getElementById(`tile-${currentRow}-${i}`);
-            if (tile) {
-                tile.classList.add('bounce');
-                setTimeout(() => tile.classList.remove('bounce'), 500);
+            // Generate based on operation
+            if (operation === '+') {
+                num1 = Math.floor(Math.random() * maxNum) + 1;
+                num2 = Math.floor(Math.random() * maxNum) + 1;
+                result = num1 + num2;
+            } else if (operation === '-') {
+                num1 = Math.floor(Math.random() * maxNum) + 1;
+                num2 = Math.floor(Math.random() * Math.min(num1, maxNum)) + 1;
+                // Ensure num1 > num2 for valid subtraction
+                while (num2 >= num1) {
+                    num1 = Math.floor(Math.random() * maxNum) + 1;
+                    num2 = Math.floor(Math.random() * maxNum) + 1;
+                }
+                result = num1 - num2;
+            } else if (operation === '*') {
+                num1 = Math.floor(Math.random() * 12) + 1; // 1-12 for multiplication
+                num2 = Math.floor(Math.random() * 12) + 1;
+                result = num1 * num2;
             }
+
+            const equation = `${num1}${operation}${num2}=${result}`;
+
+            // Validate equation is exactly 8 characters
+            if (equation.length === GRID_COLS) {
+                return equation;
+            }
+
+            // Try again if not 8 characters
+            return generateEquation();
         }
-    }
-}
 
-function evaluateGuess() {
-    const result = calculateGuessResult(currentGuess, targetSequence);
-    attemptResults[currentRow] = result;
-    inputLock = true;
-    let completed = 0;
+        // Mathematical Evaluation with proper order of operations
+        function evaluateMath(expression) {
+            // Handle left-to-right evaluation with * before +/-
+            try {
+                // First, handle multiplication
+                let result = expression;
 
-    // Lock correct positions in hard mode
-    const newlyLocked = [];
-    for (let i = 0; i < MAX_ARROWS; i++) {
-        if (result[i] === 'correct' && !lockedPositions.includes(i)) {
-            newlyLocked.push(i);
-        }
-    }
+                // Replace * with actual multiplication and evaluate
+                // Split by + and - while keeping the operators
+                const tokens = [];
+                let currentNum = '';
 
-    for (let i = 0; i < MAX_ARROWS; i++) {
-        const tile = document.getElementById(`tile-${currentRow}-${i}`);
-        if (!tile) continue;
-        setTimeout(() => {
-            tile.classList.add('flip');
-            setTimeout(() => {
-                tile.classList.add(result[i]);
-                updateKeyboard(currentGuess[i], result[i]);
+                for (let i = 0; i < expression.length; i++) {
+                    const char = expression[i];
+                    if ('0123456789'.includes(char)) {
+                        currentNum += char;
+                    } else if ('+-*'.includes(char)) {
+                        if (currentNum || char === '-') {
+                            tokens.push(currentNum || '0');
+                            tokens.push(char);
+                            currentNum = '';
+                        }
+                    }
+                }
+                if (currentNum) tokens.push(currentNum);
 
-                // Lock tile if correct in hard mode
-                if (result[i] === 'correct' && DIFFICULTY_CONFIG[difficulty].lockedTiles) {
-                    lockedPositions.push(i);
-                    tile.classList.add('locked');
-                    // Add lock indicator
-                    const lockBadge = document.createElement('div');
-                    lockBadge.className = 'locked-tile-hint';
-                    lockBadge.textContent = '🔒';
-                    tile.appendChild(lockBadge);
+                // Now evaluate with proper precedence: * first
+                let i = 0;
+                let processedTokens = [];
+
+                // First pass: handle multiplication
+                while (i < tokens.length) {
+                    if (tokens[i + 1] === '*') {
+                        const mult = parseInt(tokens[i]) * parseInt(tokens[i + 2]);
+                        processedTokens.push(mult.toString());
+                        i += 3;
+                    } else {
+                        processedTokens.push(tokens[i]);
+                        i++;
+                    }
                 }
 
-                completed++;
-                if (completed === MAX_ARROWS) {
+                // Second pass: handle addition and subtraction (left to right)
+                if (processedTokens.length === 0) return 0;
+
+                let finalResult = parseInt(processedTokens[0]);
+                i = 1;
+                while (i < processedTokens.length) {
+                    const op = processedTokens[i];
+                    const num = parseInt(processedTokens[i + 1]);
+                    if (op === '+') finalResult += num;
+                    else if (op === '-') finalResult -= num;
+                    i += 2;
+                }
+
+                return finalResult;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function validateEquation(input) {
+            // Must be 8 characters
+            if (input.length !== GRID_COLS) {
+                return { valid: false, error: `يجب أن تكون المعادلة ${GRID_COLS} خانات` };
+            }
+
+            // Must contain exactly one =
+            const equalsCount = (input.match(/=/g) || []).length;
+            if (equalsCount !== 1) {
+                return { valid: false, error: 'يجب أن تحتوي المعادلة على علامة (=) واحدة' };
+            }
+
+            // = must not be at start or end
+            if (input[0] === '=' || input[input.length - 1] === '=') {
+                return { valid: false, error: 'علامة (=) لا يمكن أن تكون في البداية أو النهاية' };
+            }
+
+            // Split by =
+            const parts = input.split('=');
+            if (parts.length !== 2) {
+                return { valid: false, error: 'صيغة المعادلة غير صحيحة' };
+            }
+
+            const leftSide = parts[0];
+            const rightSide = parts[1];
+
+            // Both sides must have content
+            if (!leftSide || !rightSide) {
+                return { valid: false, error: 'كل طرف يجب أن يحتوي على قيمة' };
+            }
+
+            // Right side must be a number
+            if (!/^\d+$/.test(rightSide)) {
+                return { valid: false, error: 'الناتج يجب أن يكون رقماً' };
+            }
+
+            // Check for division
+            if (input.includes('/')) {
+                return { valid: false, error: 'القسمة (/) غير مسموحة!' };
+            }
+
+            // Evaluate left side
+            const leftResult = evaluateMath(leftSide);
+            const rightResult = parseInt(rightSide);
+
+            if (leftResult === null) {
+                return { valid: false, error: 'صيغة المعادلة غير صحيحة' };
+            }
+
+            if (leftResult !== rightResult) {
+                return { valid: false, error: `${leftSide} = ${leftResult} ≠ ${rightResult}` };
+            }
+
+            // Check for valid characters
+            const validChars = /^[0-9+\-*]+$/;
+            if (!validChars.test(input)) {
+                return { valid: false, error: 'الأحرف المسموحة: أرقام و (+، -، *) فقط' };
+            }
+
+            return { valid: true };
+        }
+
+        // Calculate guess result for color feedback
+        function calculateGuessResult(guess, target) {
+            const result = Array(GRID_COLS).fill('absent');
+            const targetChars = target.split('');
+            const guessChars = guess.split('');
+
+            // Create frequency map for target
+            const targetCount = {};
+            for (const char of targetChars) {
+                targetCount[char] = (targetCount[char] || 0) + 1;
+            }
+
+            // First pass: mark correct positions
+            for (let i = 0; i < GRID_COLS; i++) {
+                if (guessChars[i] === targetChars[i]) {
+                    result[i] = 'correct';
+                    targetCount[guessChars[i]]--;
+                }
+            }
+
+            // Second pass: mark present (but not correct) positions
+            for (let i = 0; i < GRID_COLS; i++) {
+                if (result[i] !== 'correct' && targetCount[guessChars[i]] > 0) {
+                    result[i] = 'present';
+                    targetCount[guessChars[i]]--;
+                }
+            }
+
+            return result;
+        }
+
+        // Update keyboard colors
+        function updateKeyboard(char, status) {
+            const key = document.querySelector(`.key[data-key="${char}"]`);
+            if (!key) return;
+
+            // Only upgrade status, never downgrade
+            if (status === 'correct') {
+                key.classList.remove('present', 'absent');
+                key.classList.add('correct');
+            } else if (status === 'present' && !key.classList.contains('correct')) {
+                key.classList.remove('absent');
+                key.classList.add('present');
+            } else if (status === 'absent' && !key.classList.contains('correct') && !key.classList.contains('present')) {
+                key.classList.add('absent');
+            }
+        }
+
+        // Update current row display
+        function updateCurrentRow() {
+            for (let i = 0; i < GRID_COLS; i++) {
+                const tile = document.getElementById(`tile-${currentRow}-${i}`);
+                if (tile) {
+                    tile.textContent = currentInput[i] || '';
+                    if (currentInput[i]) {
+                        tile.classList.add('filled');
+                    } else {
+                        tile.classList.remove('filled');
+                    }
+                }
+            }
+        }
+
+        // Show message
+        function showMessage(msg, duration = 2500) {
+            const original = messageEl.innerHTML;
+            messageEl.innerHTML = msg;
+            if (window._msgTimeout) clearTimeout(window._msgTimeout);
+            window._msgTimeout = setTimeout(() => {
+                if (messageEl.innerHTML === msg) messageEl.innerHTML = original;
+            }, duration);
+        }
+
+        // Shake row animation
+        function shakeRow() {
+            const row = document.getElementById(`row-${currentRow}`);
+            if (row) {
+                row.classList.add('shake');
+                setTimeout(() => row.classList.remove('shake'), 500);
+            }
+        }
+
+        // Evaluate guess
+        function evaluateGuess() {
+            const validation = validateEquation(currentInput);
+
+            if (!validation.valid) {
+                showMessage(validation.error);
+                shakeRow();
+                return;
+            }
+
+            const guess = currentInput;
+            const result = calculateGuessResult(guess, targetEquation);
+
+            inputLock = true;
+            isProcessing = true;
+
+            let completed = 0;
+
+            for (let i = 0; i < GRID_COLS; i++) {
+                const tile = document.getElementById(`tile-${currentRow}-${i}`);
+                if (!tile) continue;
+
+                setTimeout(() => {
+                    tile.classList.add('flip');
                     setTimeout(() => {
-                        if (newlyLocked.length > 0) {
-                            bounceLockedTiles();
+                        tile.classList.add(result[i]);
+                        updateKeyboard(guess[i], result[i]);
+                        completed++;
+
+                        if (completed === GRID_COLS) {
                             setTimeout(() => {
-                                if (newlyLocked.length > 1) {
-                                    showMessage('🔒 ' + newlyLocked.length + ' أسهم قُفلت في مكانها الصحيح!', 1500);
+                                if (guess === targetEquation) {
+                                    gameWon = true;
+                                    gameOver = true;
+                                    handleWin();
+                                } else if (currentRow === MAX_ATTEMPTS - 1) {
+                                    gameOver = true;
+                                    handleLoss();
                                 } else {
-                                    showMessage('🔒 سهم قُفل في مكانه الصحيح!', 1500);
+                                    currentRow++;
+                                    currentInput = "";
+                                    inputLock = false;
+                                    updateCurrentRow();
                                 }
+                                isProcessing = false;
                             }, 300);
                         }
-
-                        setTimeout(() => {
-                            if (JSON.stringify(currentGuess) === JSON.stringify(targetSequence)) {
-                                gameWon = true; gameOver = true; handleWin();
-                            } else if (currentRow === MAX_ATTEMPTS - 1) {
-                                gameOver = true; handleLoss();
-                            } else {
-                                currentRow++;
-                                currentGuess = Array(MAX_ARROWS).fill('');
-                                inputLock = false;
-                                updateCurrentRow();
-                            }
-                            isProcessing = false;
-                        }, newlyLocked.length > 0 ? 1500 : 0);
                     }, 300);
+                }, i * 200);
+            }
+        }
+
+        // Handle win
+        function handleWin() {
+            const messages = [
+                '🎉 مبروك! لقد فزت!',
+                '🏆 أحسنت! معادلة صحيحة!',
+                '✨ رائع! لقد وجدت المعادلة!',
+                '🌟 ممتاز! أنت محقق رياضيات!'
+            ];
+            showMessage(messages[Math.floor(Math.random() * messages.length)], 3000);
+
+            // Update stats
+            stats.played++;
+            stats.wins++;
+            stats.currentStreak++;
+            if (stats.currentStreak > stats.maxStreak) {
+                stats.maxStreak = stats.currentStreak;
+            }
+            stats.guessDistribution[currentRow]++;
+
+            saveStats();
+
+            setTimeout(() => showGameResultModal(true), 2000);
+        }
+
+        // Handle loss
+        function handleLoss() {
+            showMessage(`💔 انتهت المحاولات! المعادلة الصحيحة: <span style="font-family: 'Roboto Mono'; direction: ltr;">${targetEquation}</span>`, 4000);
+
+            // Update stats
+            stats.played++;
+            stats.currentStreak = 0;
+
+            saveStats();
+
+            setTimeout(() => showGameResultModal(false), 2000);
+        }
+
+        // Show game result modal
+        function showGameResultModal(isWin) {
+            const modal = document.getElementById('gameResultModal');
+            const title = document.getElementById('resultModalTitle');
+            const details = document.getElementById('gameResultDetails');
+
+            title.textContent = isWin ? '🎉 مبروك! فزت!' : '💔 انتهت المحاولات!';
+
+            details.innerHTML = `
+                <div class="${isWin ? 'text-green-400' : 'text-red-400'} font-bold text-lg mb-2">
+                    ${isWin ? `لقد فزت في المحاولة ${currentRow + 1}` : 'انتهت محاولاتك!'}
+                </div>
+                <div class="text-sm opacity-70 mb-2">المعادلة الصحيحة:</div>
+                <div class="result-equation">${targetEquation}</div>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        // Update stats display
+        function updateStatsDisplay() {
+            document.getElementById('playedCount').textContent = stats.played;
+            const winPercent = stats.played ? Math.round((stats.wins / stats.played) * 100) : 0;
+            document.getElementById('winPercent').textContent = winPercent + '%';
+            document.getElementById('currentStreak').textContent = stats.currentStreak;
+            document.getElementById('maxStreak').textContent = stats.maxStreak;
+
+            // Update distribution bars
+            const distContainer = document.getElementById('distributionBars');
+            const maxDist = Math.max(...stats.guessDistribution, 1);
+
+            let distHTML = '';
+            for (let i = 0; i < MAX_ATTEMPTS; i++) {
+                const count = stats.guessDistribution[i];
+                const percentage = Math.round((count / maxDist) * 100);
+                const isCurrentRow = i === currentRow && gameWon;
+
+                distHTML += `
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-xs font-bold w-4">${i + 1}</span>
+                        <div class="flex-1 bg-gray-700 rounded overflow-hidden">
+                            <div class="h-5 rounded transition-all duration-300 ${isCurrentRow ? 'bg-green-500' : 'bg-gray-500'}"
+                                 style="width: ${percentage}%"></div>
+                        </div>
+                        <span class="text-xs font-bold w-6 text-left">${count}</span>
+                    </div>
+                `;
+            }
+            distContainer.innerHTML = distHTML;
+        }
+
+        // Save stats to localStorage
+        function saveStats() {
+            localStorage.setItem('mathgrid_stats', JSON.stringify(stats));
+        }
+
+        // Load stats from localStorage
+        function loadStats() {
+            const saved = localStorage.getItem('mathgrid_stats');
+            if (saved) {
+                stats = JSON.parse(saved);
+            }
+        }
+
+        // Load theme
+        function loadTheme() {
+            const saved = localStorage.getItem('mathgrid_theme');
+            const icon = document.querySelector('#themeToggle i');
+
+            if (saved === 'light') {
+                document.body.classList.add('light-mode');
+                icon.className = 'fas fa-moon';
+            } else {
+                document.body.classList.remove('light-mode');
+                icon.className = 'fas fa-sun';
+            }
+        }
+
+        // Toggle theme
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-mode');
+            const icon = document.querySelector('#themeToggle i');
+            icon.className = isLight ? 'fas fa-moon' : 'fas fa-sun';
+            localStorage.setItem('mathgrid_theme', isLight ? 'light' : 'dark');
+        }
+
+        // Create grid
+        function createGrid() {
+            gridEl.innerHTML = '';
+            for (let r = 0; r < MAX_ATTEMPTS; r++) {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'grid-row';
+                rowDiv.id = `row-${r}`;
+
+                for (let c = 0; c < GRID_COLS; c++) {
+                    const tile = document.createElement('div');
+                    tile.className = 'tile';
+                    tile.id = `tile-${r}-${c}`;
+                    rowDiv.appendChild(tile);
                 }
-            }, 300);
-        }, i * 250);
-    }
-}
 
-function collectMatrix(upToRow) {
-    const matrix = [];
-    const locked = [];
-    for (let r = 0; r <= upToRow; r++) {
-        const rowColors = [];
-        const rowLocked = [];
-        for (let c = 0; c < MAX_ARROWS; c++) {
-            const tile = document.getElementById(`tile-${r}-${c}`);
-            if (!tile) { rowColors.push('absent'); rowLocked.push(false); continue; }
-            if (tile.classList.contains('locked')) {
-                rowColors.push('correct');
-                rowLocked.push(true);
-            } else if (tile.classList.contains('correct')) {
-                rowColors.push('correct');
-                rowLocked.push(false);
-            } else if (tile.classList.contains('present')) {
-                rowColors.push('present');
-                rowLocked.push(false);
-            } else {
-                rowColors.push('absent');
-                rowLocked.push(false);
+                gridEl.appendChild(rowDiv);
+            }
+            updateGridTileSize();
+        }
+
+        // Update grid tile size based on screen
+        function updateGridTileSize() {
+            const headerH = document.querySelector('header')?.offsetHeight || 60;
+            const keyboardH = keyboardEl?.offsetHeight || 180;
+            const msgH = 44;
+            const padding = 24;
+            const gridGaps = (MAX_ATTEMPTS - 1) * 5;
+
+            const availableH = window.innerHeight - headerH - keyboardH - msgH - padding - gridGaps;
+            const tileByHeight = Math.floor(availableH / MAX_ATTEMPTS);
+            const tileByWidth = Math.floor((Math.min(window.innerWidth, 600) - 80) / GRID_COLS);
+
+            const tileSize = Math.min(tileByHeight, tileByWidth, 58);
+            const finalSize = Math.max(tileSize, 36);
+
+            document.querySelectorAll('.tile').forEach(t => {
+                t.style.setProperty('--tile-size', finalSize + 'px');
+            });
+        }
+
+        // Create keyboard
+        function createKeyboard() {
+            const layout = [
+                ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+                ['+', '-', '*', '='],
+                ['Enter', 'Backspace']
+            ];
+
+            keyboardEl.innerHTML = '';
+
+            layout.forEach(row => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'keyboard-row';
+
+                row.forEach(key => {
+                    const btn = document.createElement('button');
+                    btn.className = 'key';
+                    btn.dataset.key = key;
+
+                    if (key === 'Enter') {
+                        btn.classList.add('enter');
+                        btn.textContent = 'إدخال';
+                    } else if (key === 'Backspace') {
+                        btn.classList.add('backspace');
+                        btn.innerHTML = '<i class="fas fa-backspace"></i>';
+                    } else {
+                        btn.textContent = key;
+                    }
+
+                    btn.addEventListener('click', () => handleInput(key));
+                    rowDiv.appendChild(btn);
+                });
+
+                keyboardEl.appendChild(rowDiv);
+            });
+        }
+
+        // Handle input
+        function handleInput(value) {
+            if (inputLock || gameOver || isProcessing) return;
+
+            if (value === 'Enter') {
+                if (currentInput.length !== GRID_COLS) {
+                    showMessage(`يجب إدخال ${GRID_COLS} خانات`);
+                    shakeRow();
+                    return;
+                }
+                evaluateGuess();
+            } else if (value === 'Backspace') {
+                if (currentInput.length > 0) {
+                    currentInput = currentInput.slice(0, -1);
+                    updateCurrentRow();
+                }
+            } else if (/^[0-9+\-*=]$/.test(value)) {
+                if (currentInput.length < GRID_COLS) {
+                    currentInput += value;
+                    updateCurrentRow();
+
+                    const tile = document.getElementById(`tile-${currentRow}-${currentInput.length - 1}`);
+                    if (tile) {
+                        tile.classList.add('filled');
+                        setTimeout(() => tile.classList.remove('filled'), 100);
+                    }
+                }
             }
         }
-        matrix.push(rowColors);
-        locked.push(rowLocked);
-    }
-    return { matrix, locked };
-}
 
-function handleWin() {
-    showMessage('🎉 أحسنت! لقد فزت!');
-    const { matrix, locked } = collectMatrix(currentRow);
-    attemptMatrices.unshift({ matrix, locked, result: 'win', attempts: currentRow + 1, word: targetSequence.join(''), difficulty });
-    if (attemptMatrices.length > 50) attemptMatrices.pop();
-    localStorage.setItem('arrowle_matrices', JSON.stringify(attemptMatrices));
+        // Start new game
+        function startNewGame() {
+            targetEquation = generateEquation();
+            console.log('Target equation:', targetEquation); // For debugging
 
-    attemptsHistory.unshift({ number: attemptsHistory.length + 1, attempts: currentRow + 1, result: 'win', target: targetSequence.join(''), difficulty });
-    if (attemptsHistory.length > 100) attemptsHistory.pop();
-    localStorage.setItem('arrowle_history', JSON.stringify(attemptsHistory));
+            currentRow = 0;
+            currentInput = "";
+            gameOver = false;
+            gameWon = false;
+            isProcessing = false;
+            inputLock = false;
 
-    stats.played++; stats.wins++; stats.currentStreak++;
-    if (difficulty === 'easy') stats.easyWins++;
-    else if (difficulty === 'medium') stats.mediumWins++;
-    else stats.hardWins++;
-    if (stats.currentStreak > stats.maxStreak) stats.maxStreak = stats.currentStreak;
-    localStorage.setItem('arrowle_stats', JSON.stringify(stats));
-    updateStatsDisplay();
-    setTimeout(() => showGameResultModal(true), 2500);
-}
+            createGrid();
 
-function handleLoss() {
-    showMessage(`💔 انتهت المحاولات! التسلسل الصحيح: ${targetSequence.join(' ')}`);
-    const { matrix, locked } = collectMatrix(MAX_ATTEMPTS - 1);
-    attemptMatrices.unshift({ matrix, locked, result: 'loss', attempts: MAX_ATTEMPTS, word: targetSequence.join(''), difficulty });
-    localStorage.setItem('arrowle_matrices', JSON.stringify(attemptMatrices));
+            // Clear keyboard colors
+            document.querySelectorAll('.key').forEach(k => {
+                k.classList.remove('correct', 'present', 'absent');
+            });
 
-    attemptsHistory.unshift({ number: attemptsHistory.length + 1, attempts: MAX_ATTEMPTS, result: 'loss', target: targetSequence.join(''), difficulty });
-    localStorage.setItem('arrowle_history', JSON.stringify(attemptsHistory));
-
-    stats.played++; stats.currentStreak = 0;
-    localStorage.setItem('arrowle_stats', JSON.stringify(stats));
-    updateStatsDisplay();
-    setTimeout(() => showGameResultModal(false), 1500);
-}
-
-// ─── MATRIX RENDER ────────────────────────────────────────────────────────────
-function renderAttemptMatrix() {
-    const container = document.getElementById('matrixGrid');
-    container.innerHTML = '';
-    const used = attemptResults.filter(r => r && r.length);
-    used.forEach((res, idx) => {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'matrix-row';
-        res.forEach((st, col) => {
-            const tile = document.createElement('div');
-            // Check if this position was locked
-            const isLocked = DIFFICULTY_CONFIG[difficulty].lockedTiles && lockedPositions.includes(col);
-            if (isLocked) {
-                tile.className = 'matrix-tile locked';
-            } else {
-                tile.className = `matrix-tile ${st}`;
-            }
-            const srcTile = document.getElementById(`tile-${idx}-${col}`);
-            tile.textContent = srcTile ? (srcTile.textContent || '') : '';
-            rowDiv.appendChild(tile);
-        });
-        container.appendChild(rowDiv);
-    });
-}
-
-function showGameResultModal(isWin) {
-    const modal = document.getElementById('gameResultModal');
-    document.getElementById('resultModalTitle').textContent = isWin ? '🎉 مبروك! فزت!' : '💔 انتهت المحاولات!';
-
-    const difficultyLabel = DIFFICULTY_CONFIG[difficulty].icon + ' ' + DIFFICULTY_CONFIG[difficulty].name;
-    document.getElementById('gameResultDetails').innerHTML = `
-        <div class="${isWin ? 'text-green-500' : 'text-red-500'} font-bold text-lg mb-2">
-            ${isWin ? 'لقد فزت في المحاولة ' + (currentRow + 1) : 'انتهت محاولاتك!'}
-        </div>
-        <div style="font-size:0.85rem;margin-bottom:8px;opacity:0.5;">المستوى: ${difficultyLabel}</div>
-        <div class="opacity-60 mb-3 text-sm">التسلسل الصحيح:</div>
-        <div class="correct-arrows">${targetSequence.join(' ')}</div>
-        ${DIFFICULTY_CONFIG[difficulty].lockedTiles ? '<div style="margin-top:8px;font-size:0.8rem;opacity:0.5;">🔒 ' + lockedPositions.length + ' سهم قُفل</div>' : ''}
-    `;
-    renderAttemptMatrix();
-    modal.classList.remove('hidden');
-}
-
-// ─── STATS ───────────────────────────────────────────────────────────────────
-function updateStatsDisplay() {
-    document.getElementById('playedCount').textContent = stats.played;
-    const wp = stats.played ? Math.round((stats.wins / stats.played) * 100) : 0;
-    document.getElementById('winPercent').textContent = wp + '%';
-    document.getElementById('currentStreak').textContent = stats.currentStreak;
-    document.getElementById('maxStreak').textContent = stats.maxStreak;
-
-    document.getElementById('easyWins').textContent = stats.easyWins;
-    document.getElementById('mediumWins').textContent = stats.mediumWins;
-    document.getElementById('hardWins').textContent = stats.hardWins;
-
-    const body = document.getElementById('attemptsTableBody');
-    const noMsg = document.getElementById('noAttemptsMessage');
-    const table = document.querySelector('.attempts-table');
-    if (attemptsHistory.length > 0) {
-        noMsg.classList.add('hidden'); table.classList.remove('hidden');
-        body.innerHTML = '';
-        [...attemptsHistory].reverse().forEach(a => {
-            const diffIcon = DIFFICULTY_CONFIG[a.difficulty]?.icon || '⚡';
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td class="attempt-number">${a.number}</td><td>${a.attempts}</td><td><span class="attempt-result ${a.result}">${a.result === 'win' ? 'فوز ✓' : 'خسارة ✗'}</span><br><small style="opacity:0.4;font-size:0.7rem">${diffIcon}</small></td>`;
-            body.appendChild(tr);
-        });
-    } else {
-        noMsg.classList.remove('hidden'); table.classList.add('hidden');
-    }
-}
-
-// ─── INPUT ───────────────────────────────────────────────────────────────────
-function handleInput(value) {
-    if (inputLock || gameOver || isProcessing) return;
-
-    // Check if trying to modify a locked position
-    if (value === 'Backspace') {
-        let last = -1;
-        for (let i = currentGuess.length - 1; i >= 0; i--) {
-            if (currentGuess[i] !== '' && !lockedPositions.includes(i)) {
-                last = i;
-                break;
-            }
-        }
-        if (last !== -1) {
-            currentGuess[last] = '';
             updateCurrentRow();
-        } else if (lockedPositions.length > 0) {
-            showMessage('🔒 لا يمكن حذف الأسهم المقفلة!', 1000);
-            shakeRow();
-        }
-        return;
-    }
+            messageEl.innerHTML = '';
 
-    if (value === 'Enter') {
-        // Check if any non-locked positions are empty
-        const emptyNonLocked = [];
-        for (let i = 0; i < MAX_ARROWS; i++) {
-            if (currentGuess[i] === '' && !lockedPositions.includes(i)) {
-                emptyNonLocked.push(i);
+            // Hide modals
+            document.getElementById('gameResultModal').classList.add('hidden');
+            document.getElementById('statsModal').classList.add('hidden');
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Keyboard input
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+                if (e.key === 'Enter') {
+                    handleInput('Enter');
+                } else if (e.key === 'Backspace') {
+                    handleInput('Backspace');
+                } else if (/^[0-9+\-*=]$/.test(e.key)) {
+                    handleInput(e.key);
+                }
+            });
+
+            // Window resize
+            window.addEventListener('resize', () => {
+                requestAnimationFrame(updateGridTileSize);
+            });
+
+            // Header buttons
+            document.getElementById('helpBtn').addEventListener('click', () => {
+                document.getElementById('helpModal').classList.remove('hidden');
+            });
+
+            document.getElementById('closeHelp').addEventListener('click', () => {
+                document.getElementById('helpModal').classList.add('hidden');
+            });
+
+            document.getElementById('startGameBtn').addEventListener('click', () => {
+                document.getElementById('helpModal').classList.add('hidden');
+                startNewGame();
+            });
+
+            document.getElementById('statsBtn').addEventListener('click', () => {
+                updateStatsDisplay();
+                document.getElementById('statsModal').classList.remove('hidden');
+            });
+
+            document.getElementById('closeStats').addEventListener('click', () => {
+                document.getElementById('statsModal').classList.add('hidden');
+            });
+
+            document.getElementById('newGameFromStats').addEventListener('click', () => {
+                document.getElementById('statsModal').classList.add('hidden');
+                startNewGame();
+            });
+
+            document.getElementById('newGameBtn').addEventListener('click', startNewGame);
+
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+            // Game result modal
+            document.getElementById('closeGameResult').addEventListener('click', () => {
+                document.getElementById('gameResultModal').classList.add('hidden');
+            });
+
+            document.getElementById('playAgainBtn').addEventListener('click', () => {
+                document.getElementById('gameResultModal').classList.add('hidden');
+                startNewGame();
+            });
+
+            document.getElementById('viewStatsBtn').addEventListener('click', () => {
+                document.getElementById('gameResultModal').classList.add('hidden');
+                updateStatsDisplay();
+                document.getElementById('statsModal').classList.remove('hidden');
+            });
+
+            // Close modals on overlay click
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        overlay.classList.add('hidden');
+                    }
+                });
+            });
+        }
+
+        // Initialize game
+        function init() {
+            loadStats();
+            loadTheme();
+            createKeyboard();
+            startNewGame();
+            setupEventListeners();
+
+            // Show help on first visit
+            if (!localStorage.getItem('mathgrid_help_seen')) {
+                setTimeout(() => {
+                    document.getElementById('helpModal').classList.remove('hidden');
+                }, 500);
+                localStorage.setItem('mathgrid_help_seen', 'true');
             }
         }
-        if (emptyNonLocked.length > 0) {
-            showMessage(`يجب إدخال ${emptyNonLocked.length} سهم/أسهم`, 1500);
-            shakeRow();
-            return;
-        }
 
-        // If in hard mode with locked tiles, some positions might be empty (locked correct ones)
-        // Check if ALL non-locked positions are filled
-        const allNonLockedFilled = currentGuess.every((val, idx) => val !== '' || lockedPositions.includes(idx));
-        if (!allNonLockedFilled) {
-            showMessage('أكمل إدخال الأسهم الفارغة', 1500);
-            shakeRow();
-            return;
-        }
-
-        isProcessing = true;
-        evaluateGuess();
-    } else if (ARROW_SYMBOLS.includes(value)) {
-        // Find first non-locked empty position
-        let first = -1;
-        for (let i = 0; i < MAX_ARROWS; i++) {
-            if (currentGuess[i] === '' && !lockedPositions.includes(i)) {
-                first = i;
-                break;
-            }
-        }
-
-        if (first !== -1) {
-            currentGuess[first] = value;
-            updateCurrentRow();
-            const tile = document.getElementById(`tile-${currentRow}-${first}`);
-            if (tile) { tile.classList.add('filled'); setTimeout(() => tile.classList.remove('filled'), 100); }
-        } else if (lockedPositions.length > 0) {
-            showMessage('🔒 جميع الأسهم غير المقفلة ممتلئة!', 1000);
-        } else {
-            showMessage('لا يمكن إضافة المزيد من الأسهم', 1000);
-        }
-    }
-}
-
-// ─── KEYBOARD ─────────────────────────────────────────────────────────────────
-function createKeyboard() {
-    const keyboardDiv = document.getElementById('keyboard');
-    keyboardDiv.innerHTML = '';
-
-    // Row 1: arrow keys
-    const row1 = document.createElement('div');
-    row1.className = 'keyboard-row';
-    ARROW_SYMBOLS.forEach(arrow => {
-        const btn = document.createElement('button');
-        btn.className = 'key';
-        btn.textContent = arrow;
-        btn.dataset.key = arrow;
-        btn.addEventListener('click', () => handleInput(arrow));
-        row1.appendChild(btn);
-    });
-    keyboardDiv.appendChild(row1);
-
-    // Row 2: control keys
-    const row2 = document.createElement('div');
-    row2.className = 'keyboard-row';
-    [['Backspace', '⌫ حذف', 'backspace'], ['Enter', '✓ تأكيد', 'enter']].forEach(([key, label, cls]) => {
-        const btn = document.createElement('button');
-        btn.className = `key control ${cls}`;
-        btn.textContent = label;
-        btn.dataset.key = key;
-        btn.addEventListener('click', () => handleInput(key));
-        row2.appendChild(btn);
-    });
-    keyboardDiv.appendChild(row2);
-}
-
-// ─── GRID ─────────────────────────────────────────────────────────────────────
-function buildGrid() {
-    const grid = document.getElementById('grid');
-    grid.innerHTML = '';
-    for (let r = 0; r < MAX_ATTEMPTS; r++) {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'grid-row'; rowDiv.id = `row-${r}`;
-        for (let c = 0; c < MAX_ARROWS; c++) {
-            const tile = document.createElement('div');
-            tile.className = 'tile'; tile.id = `tile-${r}-${c}`;
-            rowDiv.appendChild(tile);
-        }
-        grid.appendChild(rowDiv);
-    }
-    requestAnimationFrame(updateGridTileSize);
-}
-
-// ─── TILE SIZE ────────────────────────────────────────────────────────────────
-function updateGridTileSize() {
-    const headerH = document.querySelector('header')?.offsetHeight || 60;
-    const keyboardH = document.getElementById('keyboard')?.offsetHeight || 200;
-    const lockH = document.getElementById('lockIndicator')?.offsetHeight || 0;
-    const msgH = 42, padding = 24;
-    const gridGaps = (MAX_ATTEMPTS - 1) * 4;
-    const availableH = window.innerHeight - headerH - keyboardH - msgH - padding - gridGaps - lockH;
-    const tileByHeight = Math.floor(availableH / MAX_ATTEMPTS);
-    const maxW = Math.min(window.innerWidth, 640);
-    const tileByWidth = Math.floor((maxW - 40 - (MAX_ARROWS - 1) * 5) / MAX_ARROWS);
-    const tileSize = Math.max(Math.min(tileByHeight, tileByWidth, 70), 28);
-    document.querySelectorAll('.tile').forEach(t => t.style.setProperty('--tile-size', tileSize + 'px'));
-}
-
-// ─── NEW GAME ─────────────────────────────────────────────────────────────────
-function startNewGame() {
-    applyDifficulty();
-    targetSequence = generateRandomSequence();
-    currentRow = 0;
-    currentGuess = Array(MAX_ARROWS).fill('');
-    lockedPositions = [];
-    gameOver = false; gameWon = false;
-    isProcessing = false; inputLock = false;
-    startTime = new Date();
-    attemptResults = [];
-    document.querySelectorAll('.key').forEach(k => k.classList.remove('correct', 'present', 'absent', 'used-in-correct'));
-    buildGrid();
-    updateCurrentRow();
-    document.getElementById('message').innerHTML = '';
-    document.getElementById('gameResultModal').classList.add('hidden');
-    document.getElementById('statsModal').classList.add('hidden');
-}
-
-// ─── THEME ────────────────────────────────────────────────────────────────────
-function loadTheme() {
-    const saved = localStorage.getItem('arrowle_theme');
-    const icon = document.querySelector('#themeToggle i');
-    if (saved === 'light') {
-        document.body.classList.add('light-mode');
-        icon.className = 'fas fa-moon text-lg';
-    } else {
-        document.body.classList.remove('light-mode');
-        icon.className = 'fas fa-sun text-sm text-yellow-400';
-    }
-}
-
-// ─── EVENTS ───────────────────────────────────────────────────────────────────
-function setupEventListeners() {
-    document.addEventListener('keydown', (e) => {
-        if (e.ctrlKey || e.metaKey || e.altKey) return;
-        const map = { Enter:'Enter', Backspace:'Backspace', ArrowUp:'↑', ArrowDown:'↓', ArrowLeft:'←', ArrowRight:'→' };
-        if (map[e.key]) { e.preventDefault(); handleInput(map[e.key]); }
-    });
-    window.addEventListener('resize', () => requestAnimationFrame(updateGridTileSize));
-
-    document.getElementById('statsBtn').addEventListener('click', () => { updateStatsDisplay(); document.getElementById('statsModal').classList.remove('hidden'); });
-    document.getElementById('newGameHeaderBtn').addEventListener('click', startNewGame);
-    document.getElementById('difficultyBtn').addEventListener('click', toggleDifficulty);
-    document.getElementById('newGameFromStats').addEventListener('click', () => { startNewGame(); document.getElementById('statsModal').classList.add('hidden'); });
-    document.getElementById('startGameBtn').addEventListener('click', () => { document.getElementById('helpModal').classList.add('hidden'); startNewGame(); });
-    document.getElementById('closeHelp').addEventListener('click', () => document.getElementById('helpModal').classList.add('hidden'));
-    document.getElementById('closeStats').addEventListener('click', () => document.getElementById('statsModal').classList.add('hidden'));
-    document.getElementById('closeGameResult').addEventListener('click', () => document.getElementById('gameResultModal').classList.add('hidden'));
-    document.getElementById('playAgainBtn').addEventListener('click', () => { startNewGame(); document.getElementById('gameResultModal').classList.add('hidden'); });
-    document.getElementById('viewStatsBtn').addEventListener('click', () => { document.getElementById('gameResultModal').classList.add('hidden'); updateStatsDisplay(); document.getElementById('statsModal').classList.remove('hidden'); });
-    document.getElementById('themeToggle').addEventListener('click', () => {
-        const isLight = document.body.classList.toggle('light-mode');
-        const icon = document.querySelector('#themeToggle i');
-        icon.className = isLight ? 'fas fa-moon text-lg' : 'fas fa-sun text-sm text-yellow-400';
-        localStorage.setItem('arrowle_theme', isLight ? 'light' : 'dark');
-    });
-}
-
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-function loadData() {
-    const s = localStorage.getItem('arrowle_stats');
-    if (s) {
-        const loaded = JSON.parse(s);
-        stats = { ...stats, ...loaded };
-    }
-    const h = localStorage.getItem('arrowle_history');
-    if (h) attemptsHistory = JSON.parse(h);
-    const m = localStorage.getItem('arrowle_matrices');
-    if (m) attemptMatrices = JSON.parse(m);
-    updateStatsDisplay();
-}
-
-function init() {
-    loadData();
-    loadTheme();
-    applyDifficulty();
-    createKeyboard();
-    startNewGame();
-    setupEventListeners();
-    if (!localStorage.getItem('arrowle_help_seen')) {
-        setTimeout(() => document.getElementById('helpModal').classList.remove('hidden'), 500);
-        localStorage.setItem('arrowle_help_seen', 'true');
-    }
-}
-
-window.addEventListener('load', init);
-</script>
-
-<script>
-/**
- * Iframe 元素高亮注入脚本
- * 需要在目标网站中引入此脚本来支持跨域 iframe 高亮功能
- *
- * 使用方法：
- * 1. 将此脚本添加到目标网站的 HTML 中
- * 2. 或通过浏览器扩展、用户脚本等方式注入
- */
-
-(function () {
-  "use strict";
-
-  // 检查是否在 iframe 中
-  if (window.self === window.top) {
-    return; // 不在 iframe 中，不执行
-  }
-
-  // 检查是否已经初始化过
-  if (window.__iframeHighlightInitialized) {
-    return;
-  }
-  window.__iframeHighlightInitialized = true;
-  console.log("Iframe 高亮脚本已加载");
-
-  // 创建高亮覆盖层
-  var overlay = document.createElement("div");
-  overlay.id = "iframe-highlight-overlay";
-  overlay.style.cssText = "\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100vw;\n    height: 100vh;\n    pointer-events: none;\n    z-index: 999999;\n    overflow: hidden;\n  ";
-
-  // 创建悬停高亮框（虚线边框）
-  var highlightBox = document.createElement("div");
-  highlightBox.id = "iframe-highlight-box";
-  highlightBox.style.cssText = "\n    position: absolute;\n    border: 2px dashed #007AFF;\n    background: rgba(0, 122, 255, 0.08);\n    pointer-events: none;\n    display: none;\n    transition: all 0.1s ease;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);\n    border-radius: 2px;\n  ";
-
-  // 创建选中节点的常驻高亮框（实线边框）
-  var selectedBox = document.createElement("div");
-  selectedBox.id = "iframe-selected-box";
-  selectedBox.style.cssText = "\n    position: absolute;\n    border: 2px solid #007AFF;\n    pointer-events: none;\n    display: none;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 107, 53, 0.4);\n    border-radius: 2px;\n    z-index: 1000000;\n  ";
-
-  // 创建悬停标签显示
-  var tagLabel = document.createElement("div");
-  tagLabel.id = "iframe-tag-label";
-  tagLabel.style.cssText = "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 2px 6px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 2px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000001;\n    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);\n    font-weight: 500;\n  ";
-
-  // 创建选中节点标签
-  var selectedLabel = document.createElement("div");
-  selectedLabel.id = "iframe-selected-label";
-  selectedLabel.style.cssText = "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 3px 8px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 3px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000002;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);\n    font-weight: 600;\n  ";
-  overlay.appendChild(highlightBox);
-  overlay.appendChild(selectedBox);
-  overlay.appendChild(tagLabel);
-  overlay.appendChild(selectedLabel);
-  document.body.appendChild(overlay);
-
-  // 存储当前选中的元素
-  var selectedElement = null;
-  var highlightEnabled = false;
-
-  // 更新选中元素的高亮显示
-  function updateSelectedHighlight(element) {
-    console.log("updateSelectedHighlight called with:", element);
-    if (!element) {
-      selectedBox.style.display = "none";
-      selectedLabel.style.display = "none";
-      selectedElement = null;
-      console.log("Cleared selected highlight");
-      return;
-    }
-    selectedElement = element;
-    var rect = element.getBoundingClientRect();
-    console.log("Selected element rect:", rect);
-
-    // 更新选中高亮框位置
-    selectedBox.style.display = "block";
-    selectedBox.style.left = "".concat(rect.left - 2, "px");
-    selectedBox.style.top = "".concat(rect.top - 2, "px");
-    selectedBox.style.width = "".concat(rect.width + 4, "px");
-    selectedBox.style.height = "".concat(rect.height + 4, "px");
-
-    // 更新选中标签位置和内容
-    selectedLabel.style.display = "block";
-    selectedLabel.textContent = "\u2713 <".concat(element.tagName.toLowerCase(), ">");
-
-    // 计算标签位置，确保不超出视窗
-    var labelTop = rect.top - 28;
-    var labelLeft = rect.left;
-
-    // 如果标签会超出顶部，显示在元素下方
-    if (labelTop < 5) {
-      labelTop = rect.bottom + 5;
-    }
-
-    // 如果标签会超出右侧，向左调整
-    var labelWidth = selectedLabel.offsetWidth || 100; // 预估宽度
-    if (labelLeft + labelWidth > window.innerWidth - 10) {
-      labelLeft = window.innerWidth - labelWidth - 10;
-    }
-    selectedLabel.style.left = "".concat(Math.max(5, labelLeft), "px");
-    selectedLabel.style.top = "".concat(labelTop, "px");
-    console.log("Selected highlight positioned at:", {
-      left: selectedBox.style.left,
-      top: selectedBox.style.top,
-      width: selectedBox.style.width,
-      height: selectedBox.style.height
-    });
-  }
-  function getElementSelector(element) {
-    if (!(element instanceof Element)) throw new Error('Argument must be a DOM element');
-    var segments = [];
-    var current = element;
-    while (current !== document.documentElement) {
-      var selector = '';
-      // 优先检查唯一ID
-      if (current.id && document.querySelectorAll("#".concat(current.id)).length === 1) {
-        segments.unshift("#".concat(current.id));
-        break; // ID唯一，无需继续向上
-      }
-
-      // 生成类名选择器（取第一个有效类名）
-      var classes = Array.from(current.classList).filter(function (c) {
-        return !c.startsWith('js-');
-      });
-      var className = classes.length > 0 ? ".".concat(classes[0]) : '';
-
-      // 生成位置索引（nth-child）
-      var tag = current.tagName.toLowerCase();
-      if (!className) {
-        var siblings = Array.from(current.parentNode.children);
-        var index = siblings.findIndex(function (el) {
-          return el === current;
-        }) + 1;
-        selector = "".concat(tag, ":nth-child(").concat(index, ")");
-      } else {
-        selector = className;
-      }
-      segments.unshift(selector);
-      current = current.parentElement;
-    }
-
-    // 处理根元素
-    if (current === document.documentElement) {
-      segments.unshift('html');
-    }
-    return segments.join(' > ');
-  }
-
-  // 获取元素文本内容
-  function getElementText(element) {
-    var _element$textContent;
-    if (element.tagName === "INPUT") {
-      return element.value || element.placeholder || "";
-    }
-    if (element.tagName === "TEXTAREA") {
-      return element.value || element.placeholder || "";
-    }
-    var text = ((_element$textContent = element.textContent) === null || _element$textContent === void 0 ? void 0 : _element$textContent.trim()) || "";
-    return text.length > 50 ? text.substring(0, 50) + "..." : text;
-  }
-
-  // 获取元素属性信息
-  function getElementAttributes(element) {
-    var attrs = {};
-    for (var i = 0; i < element.attributes.length; i++) {
-      var attr = element.attributes[i];
-      attrs[attr.name] = attr.value;
-    }
-    return attrs;
-  }
-
-  // 鼠标悬停事件处理
-  function handleMouseOver(e) {
-    if (!highlightEnabled) return;
-    var target = e.target;
-    if (!target || target === overlay || target === highlightBox || target === tagLabel || target === selectedBox || target === selectedLabel) {
-      return;
-    }
-
-    // 避免高亮 html 和 body 元素
-    if (target === document.documentElement || target === document.body) {
-      return;
-    }
-
-    // 如果是已选中的元素，不显示悬停高亮
-    if (target === selectedElement) {
-      highlightBox.style.display = "none";
-      tagLabel.style.display = "none";
-      return;
-    }
-    var rect = target.getBoundingClientRect();
-    var selector = getElementSelector(target);
-    var text = getElementText(target);
-    var attributes = getElementAttributes(target);
-
-    // 更新悬停高亮框位置
-    highlightBox.style.display = "block";
-    highlightBox.style.left = "".concat(rect.left - 2, "px");
-    highlightBox.style.top = "".concat(rect.top - 2, "px");
-    highlightBox.style.width = "".concat(rect.width + 4, "px");
-    highlightBox.style.height = "".concat(rect.height + 4, "px");
-
-    // 更新标签位置和内容
-    tagLabel.style.display = "block";
-    tagLabel.textContent = "<".concat(target.tagName.toLowerCase(), ">");
-
-    // 计算标签位置，确保不超出视窗
-    var labelTop = rect.top - 22;
-    var labelLeft = rect.left;
-
-    // 如果标签会超出顶部，显示在元素下方
-    if (labelTop < 0) {
-      labelTop = rect.bottom + 5;
-    }
-
-    // 如果标签会超出右侧，向左调整
-    if (labelLeft + tagLabel.offsetWidth > window.innerWidth) {
-      labelLeft = window.innerWidth - tagLabel.offsetWidth - 5;
-    }
-    tagLabel.style.left = "".concat(Math.max(0, labelLeft), "px");
-    tagLabel.style.top = "".concat(labelTop, "px");
-
-    // 发送消息到父窗口
-    var elementInfo = {
-      tagName: target.tagName.toLowerCase(),
-      rect: {
-        left: rect.left,
-        top: rect.top,
-        right: rect.right,
-        bottom: rect.bottom,
-        width: rect.width,
-        height: rect.height,
-        x: rect.x,
-        y: rect.y
-      },
-      selector: selector,
-      text: text,
-      attributes: attributes,
-      url: window.location.href,
-      path: window.location.pathname,
-      timestamp: Date.now()
-    };
-    try {
-      window.parent.postMessage({
-        type: "iframe-element-hover",
-        data: elementInfo,
-        source: "iframe-highlight-injector"
-      }, "*");
-    } catch (error) {
-      console.warn("无法发送消息到父窗口:", error);
-    }
-  }
-
-  // 鼠标离开事件处理
-  function handleMouseOut(e) {
-    if (!highlightEnabled) return;
-    var relatedTarget = e.relatedTarget;
-
-    // 如果鼠标移动到高亮相关元素上，不隐藏高亮
-    if (relatedTarget && (relatedTarget === highlightBox || relatedTarget === tagLabel || relatedTarget === overlay || relatedTarget === selectedBox || relatedTarget === selectedLabel)) {
-      return;
-    }
-    highlightBox.style.display = "none";
-    tagLabel.style.display = "none";
-    try {
-      window.parent.postMessage({
-        type: "iframe-element-hover",
-        data: null,
-        source: "iframe-highlight-injector"
-      }, "*");
-    } catch (error) {
-      console.warn("无法发送消息到父窗口:", error);
-    }
-  }
-
-  // 点击事件处理
-  function handleClick(e) {
-    var target = e.target;
-    if (!target || target === overlay || target === highlightBox || target === tagLabel || target === selectedBox || target === selectedLabel) {
-      return;
-    }
-
-    // 避免处理 html 和 body 元素
-    if (target === document.documentElement || target === document.body) {
-      return;
-    }
-
-    // 检查是否是交互元素，这些元素需要保留默认行为
-    var isInteractiveElement = ['input', 'textarea', 'select', 'button', 'a'].includes(target.tagName.toLowerCase());
-
-    // 如果高亮功能启用，对于非交互元素阻止默认行为和事件传播
-    if (highlightEnabled) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    var rect = target.getBoundingClientRect();
-    var selector = getElementSelector(target);
-    var text = getElementText(target);
-    var attributes = getElementAttributes(target);
-    console.log("Element clicked:", {
-      tagName: target.tagName,
-      selector: selector,
-      rect: rect
-    });
-
-    // 立即更新选中高亮
-    updateSelectedHighlight(target);
-
-    // 隐藏悬停高亮，因为现在是选中状态
-    highlightBox.style.display = "none";
-    tagLabel.style.display = "none";
-    var elementInfo = {
-      tagName: target.tagName.toLowerCase(),
-      rect: {
-        left: rect.left,
-        top: rect.top,
-        right: rect.right,
-        bottom: rect.bottom,
-        width: rect.width,
-        height: rect.height,
-        x: rect.x,
-        y: rect.y
-      },
-      selector: selector,
-      text: text,
-      attributes: attributes,
-      url: window.location.href,
-      path: window.location.pathname,
-      timestamp: Date.now()
-    };
-    try {
-      window.parent.postMessage({
-        type: "iframe-element-click",
-        data: elementInfo,
-        source: "iframe-highlight-injector"
-      }, "*");
-    } catch (error) {
-      console.warn("无法发送消息到父窗口:", error);
-    }
-  }
-
-  // 监听来自父窗口的消息
-  function handleParentMessage(event) {
-    console.log("Received message from parent:", event.data);
-    if (event.data.type === "iframe-highlight-toggle") {
-      var enabled = event.data.enabled;
-      console.log("Highlight toggle:", enabled);
-      if (enabled) {
-        enableHighlight();
-      } else {
-        disableHighlight();
-      }
-    } else if (event.data.type === "enable-iframe-highlight") {
-      console.log("Enable iframe highlight");
-      enableHighlight();
-    } else if (event.data.type === "disable-iframe-highlight") {
-      console.log("Disable iframe highlight");
-      disableHighlight();
-    } else if (event.data.type === "toggle-iframe-highlight") {
-      var _enabled = event.data.enabled !== undefined ? event.data.enabled : !highlightEnabled;
-      console.log("Toggle iframe highlight to:", _enabled);
-      if (_enabled) {
-        enableHighlight();
-      } else {
-        disableHighlight();
-      }
-    } else if (event.data.type === "update-selected-element") {
-      var selector = event.data.selector;
-      console.log("Update selected element with selector:", selector);
-      if (selector) {
-        try {
-          var element = document.querySelector(selector);
-          console.log("Found element by selector:", element);
-          updateSelectedHighlight(element);
-        } catch (error) {
-          console.warn("Failed to select element:", error);
-          updateSelectedHighlight(null);
-        }
-      } else {
-        updateSelectedHighlight(null);
-      }
-    } else if (event.data.type === "clear-selected-element") {
-      console.log("Clear selected element");
-      updateSelectedHighlight(null);
-    }
-  }
-
-  // 启用高亮功能
-  function enableHighlight() {
-    console.log("Enabling highlight");
-    document.addEventListener("mouseover", handleMouseOver, true);
-    document.addEventListener("mouseout", handleMouseOut, true);
-    document.addEventListener("click", handleClick, true);
-    highlightEnabled = true;
-    overlay.style.display = "block";
-  }
-
-  // 禁用高亮功能
-  function disableHighlight() {
-    console.log("Disabling highlight");
-    highlightEnabled = false;
-    // 保持事件监听器，但通过 highlightEnabled 变量控制行为
-    // 这样可以保留选中状态的显示
-    highlightBox.style.display = "none";
-    tagLabel.style.display = "none";
-    // 不隐藏 selectedBox 和 selectedLabel，保留选中状态
-  }
-
-  // 完全禁用高亮功能（移除所有监听器）
-  function fullyDisableHighlight() {
-    console.log("Fully disabling highlight");
-    highlightEnabled = false;
-    document.removeEventListener("mouseover", handleMouseOver, true);
-    document.removeEventListener("mouseout", handleMouseOut, true);
-    document.removeEventListener("click", handleClick, true);
-    overlay.style.display = "none";
-    highlightBox.style.display = "none";
-    tagLabel.style.display = "none";
-    selectedBox.style.display = "none";
-    selectedLabel.style.display = "none";
-  }
-
-  // 添加事件监听
-  enableHighlight();
-  window.addEventListener("message", handleParentMessage);
-
-  // 暴露全局函数供外部调用
-  window.__iframeHighlightControl = {
-    enable: enableHighlight,
-    disable: disableHighlight,
-    fullyDisable: fullyDisableHighlight,
-    isEnabled: function isEnabled() {
-      return highlightEnabled;
-    },
-    getSelectedElement: function getSelectedElement() {
-      return selectedElement;
-    },
-    updateSelected: updateSelectedHighlight,
-    // 通过消息发送开关控制
-    sendToggleMessage: function sendToggleMessage(enabled) {
-      window.parent.postMessage({
-        type: 'iframe-highlight-status',
-        enabled: enabled || highlightEnabled,
-        source: 'iframe-highlight-injector'
-      }, '*');
-    }
-  };
-
-  // 通知父窗口脚本已加载
-  try {
-    window.parent.postMessage({
-      type: "iframe-highlight-ready",
-      data: {
-        url: window.location.href,
-        userAgent: navigator.userAgent,
-        timestamp: Date.now()
-      },
-      source: "iframe-highlight-injector"
-    }, "*");
-  } catch (error) {
-    console.warn("无法发送就绪消息到父窗口:", error);
-  }
-
-  // 清理函数
-  window.__iframeHighlightCleanup = function () {
-    fullyDisableHighlight();
-    window.removeEventListener("message", handleParentMessage);
-    if (overlay.parentElement) {
-      overlay.parentElement.removeChild(overlay);
-    }
-    delete window.__iframeHighlightInitialized;
-    delete window.__iframeHighlightCleanup;
-  };
-})();
-
-</script>
+        // Start the game
+        window.addEventListener('load', init);
+    </script>
 </body>
 </html>
