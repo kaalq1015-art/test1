@@ -109,7 +109,6 @@ h1{
     -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 .light-mode h1{background:linear-gradient(135deg,var(--correct-color)0%,#121213 50%,var(--present-color)100%);-webkit-background-clip:text;background-clip:text;}
-/* زر الرجوع */
 .back-btn{
     display:flex;align-items:center;justify-content:center;
     width:36px;height:36px;border-radius:10px;
@@ -119,7 +118,6 @@ h1{
     flex-shrink:0;
 }
 .back-btn:hover{opacity:0.88;transform:scale(1.05);}
-/* زر الثيم */
 .theme-btn{
     width:36px;height:36px;border-radius:10px;
     background:var(--surface-color);
@@ -130,7 +128,6 @@ h1{
     backdrop-filter:blur(8px);
 }
 .theme-btn:hover{border-color:var(--border-active);}
-/* زر إعادة اللعبة */
 #newGameHeaderBtn{
     width:36px;height:36px;border-radius:10px;
     background:var(--surface-color);border:1px solid var(--border-color);
@@ -141,7 +138,6 @@ h1{
 }
 #newGameHeaderBtn:hover{border-color:var(--correct-color);color:var(--correct-color);}
 #newGameHeaderBtn:active{transform:scale(0.92) rotate(-30deg);}
-/* زر الإحصائيات */
 .stats-btn-header{
     width:36px;height:36px;border-radius:10px;
     background:var(--surface-color);border:1px solid var(--border-color);
@@ -151,7 +147,6 @@ h1{
     backdrop-filter:blur(8px);
 }
 .stats-btn-header:hover{border-color:var(--border-active);}
-/* تعديل زر الصعوبة ليكون متناسقاً */
 #difficultyToggle{
     width:auto !important;
     min-width:80px;
@@ -159,7 +154,6 @@ h1{
     gap:6px;
     font-size:0.8rem;
 }
-/* ضمان اتجاه الأرقام من اليسار إلى اليمين */
 .grid-row{
     display:flex;
     flex-direction:row !important;
@@ -176,7 +170,6 @@ h1{
     unicode-bidi:plaintext;
 }
 #message{font-size:1rem;min-height:40px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;padding:0 10px;text-align:center;gap:8px;flex-wrap:wrap;font-weight:700;}
-/* MODAL */
 .modal-overlay{background-color:rgba(0,0,0,0.75);backdrop-filter:blur(8px);}
 .modal-content{
     width:95%;max-width:460px;max-height:90vh;overflow-y:auto;margin:10px;
@@ -184,11 +177,9 @@ h1{
     background:var(--surface-color);
     backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
 }
-/* scrollbar */
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border-active);border-radius:10px;}
-/* modal inner */
 .correct-word,.correct-arrows,.correct-number{
     background:linear-gradient(135deg,var(--correct-color),#2d6b2d);
     color:white;padding:12px 18px;border-radius:12px;margin:10px 0;
@@ -235,9 +226,14 @@ h1{
 .result-buttons{display:flex;gap:8px;margin-top:16px;}
 .result-buttons button{flex:1;padding:13px;border-radius:12px;font-weight:800;font-size:0.95rem;transition:all 0.2s;cursor:pointer;}
 @media(max-width:480px){.result-buttons{flex-direction:column;gap:8px;}}
-/* difficulty */
+/* difficulty fixed position */
 .difficulty-dropdown{position:relative;display:inline-block;}
-.difficulty-menu{position:absolute;top:100%;left:0;right:0;margin-top:5px;background:var(--surface-color);backdrop-filter:blur(16px);border:1px solid var(--border-color);border-radius:10px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,0.3);display:none;}
+.difficulty-menu{
+    position:absolute;top:100%;right:0;width:130px;
+    margin-top:5px;background:var(--surface-color);backdrop-filter:blur(16px);
+    border:1px solid var(--border-color);border-radius:10px;z-index:100;
+    box-shadow:0 8px 24px rgba(0,0,0,0.3);display:none;
+}
 .difficulty-menu.show{display:block;}
 .difficulty-option{width:100%;padding:10px 14px;text-align:center;border:none;background:none;color:var(--text-color);font-size:0.88rem;cursor:pointer;display:block;border-bottom:1px solid var(--border-color);font-weight:600;}
 .difficulty-option:last-child{border-bottom:none;}
@@ -267,11 +263,12 @@ h1{
 
 <div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">طريقة اللعب</h2><button id="closeHelp" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div class="mb-6"><p class="text-base mb-5 text-center" id="helpAttemptsText">خمّن الرقم المكون من 5 خانات في 6 محاولات.</p><div class="color-example"><div class="color-box correct">5</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأخضر</h3><p>الرقم صحيح وفي المكان الصحيح.</p></div></div><div class="color-example"><div class="color-box present">2</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأصفر</h3><p>الرقم صحيح ولكن في المكان الخطأ.</p></div></div><div class="color-example"><div class="color-box absent">7</div><div class="color-description"><h3 class="font-bold mb-1">اللون الرمادي</h3><p>الرقم غير موجود في الرقم السري.</p></div></div></div><div class="text-center mt-5"><button id="startGameBtn" class="bg-[var(--correct-color)] text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 text-base">فهمت، ابدأ اللعب</button></div></div></div></div>
 
-<div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">الإحصائيات</h2><button id="closeStats" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div id="gameResultInfo" class="mb-4"></div><div id="attemptsTableContainer" class="attempts-table-container"><div class="attempts-title">سجل المحاولات</div><div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة. ابدأ اللعب الآن!</div><table class="attempts-table"><thead><th>#</th><th>المحاولة</th><th>النتيجة</th> </thead><tbody id="attemptsTableBody"></tbody>    </table</div><div> class="flex justify-around mb-6"><div class="text-center"><div id="playedCount" class="text-2xl font-bold">0</div><div class="text-xs">العب</div></div><div class="text-center"><div id="winPercent" class="text-2xl font-bold">0%</div><div class="text-xs">فوز</div></div><div class="text-center"><div id="currentStreak" class="text-2xl font-bold">0</div><div class="text-xs">تتابع</div></div><div class="text-center"><div id="maxStreak" class="text-2xl font-bold">0</div><div class="text-xs">أعلى تتابع</div></div></div><div class="space-y-2"><button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-2.5 rounded font-bold hover:bg-[var(--default-color)] text-sm">لعبة جديدة</button></div></div></div></div>
+<div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">الإحصائيات</h2><button id="closeStats" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div id="gameResultInfo" class="mb-4"></div><div id="attemptsTableContainer" class="attempts-table-container"><div class="attempts-title">سجل المحاولات</div><div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة. ابدأ اللعب الآن!</div><table class="attempts-table"><thead><th>#</th><th>المحاولة</th><th>النتيجة</th> </thead><tbody id="attemptsTableBody"></tbody></table></div><div class="flex justify-around mb-6"><div class="text-center"><div id="playedCount" class="text-2xl font-bold">0</div><div class="text-xs">العب</div></div><div class="text-center"><div id="winPercent" class="text-2xl font-bold">0%</div><div class="text-xs">فوز</div></div><div class="text-center"><div id="currentStreak" class="text-2xl font-bold">0</div><div class="text-xs">تتابع</div></div><div class="text-center"><div id="maxStreak" class="text-2xl font-bold">0</div><div class="text-xs">أعلى تتابع</div></div></div><div class="space-y-2"><button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-2.5 rounded font-bold hover:bg-[var(--default-color)] text-sm">لعبة جديدة</button></div></div></div></div>
 
 <div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold" id="resultModalTitle">نتيجة اللعبة</h2><button id="closeGameResult" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div id="gameResultDetails" class="text-center mb-4"></div><div id="attemptMatrixContainer" class="attempt-matrix-container"><h3 class="matrix-title">خريطة رحلتك في التفكير</h3><div id="matrixGrid" class="matrix-grid"></div><div class="matrix-legend"><div class="legend-item"><div class="legend-color correct"></div><span>صحيح</span></div><div class="legend-item"><div class="legend-color present"></div><span>موجود بموقع آخر</span></div><div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div></div></div><div class="result-buttons"><button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90"><i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى</button><button id="viewStatsBtn" class="border border-[var(--border-color)] hover:bg-[var(--default-color)]"><i class="fas fa-chart-bar ml-2"></i>عرض الإحصائيات</button></div></div></div></div>
 
 <script>
+// Logic preserved exactly as original
 const MAX_DIGITS = 5;
 let targetNumber = "";
 let currentRow = 0;
@@ -481,7 +478,7 @@ function updateStatsDisplay() {
         body.innerHTML = '';
         [...attemptsHistory].reverse().forEach(a => {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td class="attempt-number">${a.number}    </td><td>${a.attempts}</td><td><span class="attempt-result ${a.result}">${a.result === 'win' ? 'فوز ✓' : 'خسارة ✗'}</span></td>`;
+            tr.innerHTML = `<td class="attempt-number">${a.number}</td><td>${a.attempts}</td><td><span class="attempt-result ${a.result}">${a.result === 'win' ? 'فوز ✓' : 'خسارة ✗'}</span></td>`;
             body.appendChild(tr);
         });
     } else {
@@ -662,7 +659,6 @@ function setupEventListeners() {
     document.querySelectorAll('.difficulty-option').forEach(opt => {
         opt.addEventListener('click', function() { changeDifficulty(this.dataset.difficulty); });
     });
-    // helpBtn removed
     document.getElementById('statsBtn').addEventListener('click', () => { updateStatsDisplay(); document.getElementById('statsModal').classList.remove('hidden'); });
     document.getElementById('newGameHeaderBtn').addEventListener('click', startNewGame);
     document.getElementById('newGameFromStats').addEventListener('click', () => { startNewGame(); document.getElementById('statsModal').classList.add('hidden'); });
