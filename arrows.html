@@ -51,8 +51,24 @@ body{
     display:flex;flex-direction:column;
     overflow:hidden;touch-action:manipulation;
 }
-.game-wrapper{flex:1;display:flex;flex-direction:column;justify-content:space-between;width:100%;max-width:600px;margin:0 auto;padding:6px 10px;overflow:hidden;min-height:0;}
-.tile{--tile-size:62px;width:var(--tile-size);height:var(--tile-size);border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:calc(var(--tile-size)*0.50);font-weight:800;user-select:none;transition:all 0.3s ease;border-radius:6px;flex-shrink:0;}
+.game-wrapper{flex:1;display:flex;flex-direction:column;justify-content:space-between;width:100%;max-width:640px;margin:0 auto;padding:6px 10px;overflow:hidden;min-height:0;}
+
+/* TILE: arrow fills the cell nicely */
+.tile{
+    --tile-size:58px;
+    width:var(--tile-size);
+    height:var(--tile-size);
+    border:2px solid var(--border-color);
+    display:flex;align-items:center;justify-content:center;
+    /* Large enough so the arrow glyph fills the cell like an emoji */
+    font-size:calc(var(--tile-size)*0.68);
+    font-weight:800;
+    line-height:1;
+    user-select:none;
+    transition:all 0.3s ease;
+    border-radius:6px;
+    flex-shrink:0;
+}
 .tile.filled{border-color:rgba(255,255,255,0.3);animation:pop 0.1s ease;}
 @keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.12);}100%{transform:scale(1);}}
 .tile.correct{background-color:var(--correct-color);border-color:var(--correct-color);color:white;box-shadow:0 0 14px var(--correct-glow);}
@@ -60,161 +76,146 @@ body{
 .tile.absent{background-color:var(--absent-color);border-color:var(--absent-color);color:white;}
 .flip{animation:flip 0.6s ease;}
 @keyframes flip{0%{transform:rotateX(0);}50%{transform:rotateX(90deg);}100%{transform:rotateX(0);}}
-.keyboard-row{display:flex;justify-content:center;gap:4px;margin-bottom:6px;width:100%;}
+
+/* KEYBOARD */
+.keyboard-row{display:flex;justify-content:center;gap:6px;margin-bottom:6px;width:100%;}
+
+/* Arrow keys: square, large arrow glyph */
 .key{
-    height:clamp(42px,6vh,58px);min-width:clamp(28px,6vw,43px);
+    height:clamp(48px,7vh,64px);
+    width:clamp(48px,7vh,64px);
+    min-width:clamp(48px,7vh,64px);
+    max-width:clamp(48px,7vh,64px);
     background-color:var(--key-bg);
     color:var(--key-text);
     border:1px solid var(--border-color);
-    border-radius:8px;font-weight:700;
-    font-size:clamp(0.85rem,3vw,1.1rem);
+    border-radius:10px;
+    font-weight:800;
+    /* Arrow glyph fills key like an emoji */
+    font-size:clamp(1.6rem,4.5vw,2.2rem);
+    line-height:1;
     display:flex;align-items:center;justify-content:center;
     cursor:pointer;user-select:none;
     transition:all 0.15s ease;
-    flex:1;margin:0 2px;padding:0 2px;touch-action:manipulation;
+    flex:none;
+    padding:0;
+    touch-action:manipulation;
     backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
 }
-.key.enter{background-color:var(--enter-color);color:white;border-color:var(--enter-color);font-size:clamp(0.7rem,2.5vw,0.9rem);}
-.key.backspace{background-color:var(--backspace-color);color:white;border-color:var(--backspace-color);}
-@media(max-width:480px){
-    .key{height:clamp(38px,5.5vh,50px);min-width:clamp(24px,5vw,34px);font-size:clamp(0.8rem,2.8vw,1rem);margin:0 1px;padding:0 1px;}
-    .key.enter{font-size:clamp(0.65rem,2.2vw,0.8rem);}
-    .keyboard-row{gap:2px;margin-bottom:5px;}
+/* Control keys (Enter / Backspace) – wider, smaller text */
+.key.control{
+    height:clamp(48px,7vh,64px);
+    width:auto;
+    min-width:clamp(70px,16vw,100px);
+    max-width:none;
+    font-size:clamp(0.75rem,2.2vw,0.95rem);
+    padding:0 10px;
 }
+.key.enter{background-color:var(--enter-color);color:white;border-color:var(--enter-color);}
+.key.backspace{background-color:var(--backspace-color);color:white;border-color:var(--backspace-color);}
+
+@media(max-width:480px){
+    .key{
+        height:clamp(42px,6.5vh,56px);
+        width:clamp(42px,6.5vh,56px);
+        min-width:clamp(42px,6.5vh,56px);
+        max-width:clamp(42px,6.5vh,56px);
+        font-size:clamp(1.4rem,4vw,2rem);
+    }
+    .key.control{
+        height:clamp(42px,6.5vh,56px);
+        min-width:clamp(60px,14vw,88px);
+        max-width:none;
+        font-size:clamp(0.68rem,2vw,0.88rem);
+    }
+    .keyboard-row{gap:4px;margin-bottom:5px;}
+}
+
 .key:hover{background-color:var(--border-active);transform:translateY(-1px);}
 .key:active{transform:translateY(0);}
-.key.wide{min-width:65px;}
-@media(max-width:640px){.key.wide{min-width:56px;}}
-@media(max-width:480px){.key.wide{min-width:50px;}}
 .key.correct{background-color:var(--correct-color);border-color:var(--correct-color);color:white;box-shadow:0 0 8px var(--correct-glow);}
 .key.present{background-color:var(--present-color);border-color:var(--present-color);color:white;box-shadow:0 0 8px var(--present-glow);}
 .key.absent{background-color:var(--absent-color)!important;border-color:var(--absent-color)!important;color:rgba(255,255,255,0.4)!important;}
+
 .shake{animation:shake 0.5s ease;}
 @keyframes shake{0%,100%{transform:translateX(0);}10%,30%,50%,70%,90%{transform:translateX(-5px);}20%,40%,60%,80%{transform:translateX(5px);}}
 .bounce{animation:bounce 0.5s ease;}
 @keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+
 /* HEADER */
-header {
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--header-border);
-    background: rgba(18, 18, 19, 0.8);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+header{
+    padding:10px 16px;
+    border-bottom:1px solid var(--header-border);
+    background:rgba(18,18,19,0.8);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    position:sticky;top:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
 }
-
-.light-mode header {
-    background: rgba(248, 249, 250, 0.85);
+.light-mode header{background:rgba(248,249,250,0.85);}
+h1{
+    position:absolute;left:50%;transform:translateX(-50%);
+    font-size:1.5rem;font-weight:800;margin:0;color:#ffffff;white-space:nowrap;
 }
-
-h1 {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 1.5rem;
-    font-weight: 800;
-    margin: 0;
-    color: #ffffff;
-    white-space: nowrap;
+.light-mode h1{color:#121213;background:none;-webkit-text-fill-color:initial;}
+.back-btn{
+    display:flex;align-items:center;justify-content:center;
+    width:36px;height:36px;border-radius:10px;
+    background:var(--correct-color);color:white!important;text-decoration:none;
+    transition:all 0.2s;box-shadow:0 2px 8px rgba(83,141,78,0.4);flex-shrink:0;
 }
-
-.light-mode h1 {
-    color: #121213;
-    background: none;
-    -webkit-text-fill-color: initial;
-}
-
-.back-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: var(--correct-color);
-    color: white !important;
-    text-decoration: none;
-    transition: all 0.2s;
-    box-shadow: 0 2px 8px rgba(83,141,78,0.4);
-    flex-shrink: 0;
-}
-
-.back-btn:hover {
-    opacity: 0.88;
-    transform: scale(1.05);
-}
-
-.stats-btn-header, #difficultyToggle, .theme-btn, #newGameHeaderBtn {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: var(--surface-color);
-    border: 1px solid var(--border-color);
-    color: var(--text-color) !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.stats-btn-header span, .stats-btn-header i {
-    color: inherit;
-}
-
-.theme-btn:hover, .stats-btn-header:hover {
-    border-color: var(--border-active);
-}
-
-#newGameHeaderBtn:hover {
-    border-color: var(--correct-color);
-    color: var(--correct-color) !important;
-}
-
-#newGameHeaderBtn:active {
-    transform: scale(0.92) rotate(-30deg);
-}
-/* زر الإحصائيات */
-.stats-btn-header{
+.back-btn:hover{opacity:0.88;transform:scale(1.05);}
+.stats-btn-header,.theme-btn,#newGameHeaderBtn{
     width:36px;height:36px;border-radius:10px;
     background:var(--surface-color);border:1px solid var(--border-color);
-    color:var(--text-color);
+    color:var(--text-color)!important;
     display:flex;align-items:center;justify-content:center;
     cursor:pointer;transition:all 0.2s;
-    backdrop-filter:blur(8px);
 }
-.stats-btn-header:hover{border-color:var(--border-active);}
-.grid-row{display:flex;justify-content:center;gap:6px;margin-bottom:5px;}
-#message{font-size:1rem;min-height:40px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;padding:0 10px;text-align:center;gap:8px;flex-wrap:wrap;font-weight:700;}
+.theme-btn:hover,.stats-btn-header:hover{border-color:var(--border-active);}
+#newGameHeaderBtn:hover{border-color:var(--correct-color);color:var(--correct-color)!important;}
+#newGameHeaderBtn:active{transform:scale(0.92) rotate(-30deg);}
+
+/* DIFFICULTY BUTTON */
+#difficultyBtn{
+    height:36px;padding:0 10px;border-radius:10px;
+    border:1px solid var(--border-color);
+    background:var(--surface-color);
+    color:var(--text-color);
+    display:flex;align-items:center;justify-content:center;gap:4px;
+    cursor:pointer;transition:all 0.2s;
+    font-weight:800;font-size:0.78rem;white-space:nowrap;
+}
+#difficultyBtn.hard-mode{
+    border-color:#e67e22;color:#e67e22;
+    background:rgba(230,126,34,0.12);
+}
+#difficultyBtn:hover{border-color:var(--border-active);}
+
+.grid-row{display:flex;justify-content:center;gap:5px;margin-bottom:4px;}
+#message{font-size:1rem;min-height:38px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;padding:0 10px;text-align:center;gap:8px;flex-wrap:wrap;font-weight:700;}
+
 /* MODAL */
 .modal-overlay{background-color:rgba(0,0,0,0.75);backdrop-filter:blur(8px);}
 .modal-content{
-    width:95%;max-width:460px;max-height:90vh;overflow-y:auto;margin:10px;
+    width:95%;max-width:480px;max-height:90vh;overflow-y:auto;margin:10px;
     border-radius:20px;border:1px solid var(--border-color);
     background:var(--surface-color);
     backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
 }
-/* scrollbar */
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border-active);border-radius:10px;}
-/* modal inner */
 .correct-word,.correct-arrows,.correct-number{
     background:linear-gradient(135deg,var(--correct-color),#2d6b2d);
     color:white;padding:12px 18px;border-radius:12px;margin:10px 0;
-    text-align:center;font-size:1.5rem;font-weight:900;letter-spacing:0.12em;
+    text-align:center;font-size:1.6rem;font-weight:900;letter-spacing:0.1em;
     animation:pulse 2s infinite;box-shadow:0 4px 20px var(--correct-glow);
-    direction:ltr;
+    direction:ltr;line-height:1.4;
 }
 @keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.04);}100%{transform:scale(1);}}
 .color-example{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding:10px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid var(--border-color);}
 .light-mode .color-example{background:rgba(0,0,0,0.03);}
-.color-box{width:44px;height:44px;border:none;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800;flex-shrink:0;}
+.color-box{width:44px;height:44px;border:none;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;flex-shrink:0;line-height:1;}
 .color-box.correct{background:var(--correct-color);color:white;}
 .color-box.present{background:var(--present-color);color:white;}
 .color-box.absent{background:var(--absent-color);color:white;}
@@ -229,15 +230,20 @@ h1 {
 .attempt-result.win{color:var(--correct-color);}
 .attempt-result.loss{color:#e74c3c;}
 .attempts-title{font-size:1rem;font-weight:800;margin:10px 0 6px;text-align:center;color:var(--text-color);opacity:0.6;letter-spacing:0.05em;}
-.win-celebration{animation:winCelebration 2s ease infinite;}
-@keyframes winCelebration{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
 .no-attempts-message{text-align:center;padding:16px;opacity:0.35;font-size:0.9rem;}
 .attempt-matrix-container{margin:16px 0;padding:14px;border:1px solid var(--border-color);border-radius:14px;background:rgba(255,255,255,0.03);}
 .matrix-title{font-size:0.8rem;font-weight:700;margin-bottom:10px;text-align:center;color:var(--text-color);opacity:0.45;letter-spacing:0.08em;text-transform:uppercase;}
 .matrix-grid{display:flex;flex-direction:column;align-items:center;gap:5px;margin-bottom:10px;}
-.matrix-row{display:flex;justify-content:center;gap:5px;}
-.matrix-tile{--mt-size:40px;width:var(--mt-size);height:var(--mt-size);border:none;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:calc(var(--mt-size)*0.46);color:white;user-select:none;}
-@media(max-width:400px){.matrix-tile{--mt-size:33px;}}
+.matrix-row{display:flex;justify-content:center;gap:4px;flex-wrap:wrap;}
+.matrix-tile{
+    --mt-size:36px;
+    width:var(--mt-size);height:var(--mt-size);
+    border:none;border-radius:5px;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:calc(var(--mt-size)*0.62);
+    color:white;user-select:none;line-height:1;
+}
+@media(max-width:420px){.matrix-tile{--mt-size:28px;}}
 .matrix-tile.correct{background:var(--correct-color);}
 .matrix-tile.present{background:var(--present-color);}
 .matrix-tile.absent{background:var(--absent-color);}
@@ -250,52 +256,115 @@ h1 {
 .result-buttons{display:flex;gap:8px;margin-top:16px;}
 .result-buttons button{flex:1;padding:13px;border-radius:12px;font-weight:800;font-size:0.95rem;transition:all 0.2s;cursor:pointer;}
 @media(max-width:480px){.result-buttons{flex-direction:column;gap:8px;}}
-/* difficulty */
-.difficulty-dropdown{position:relative;display:inline-block;}
-.difficulty-menu{position:absolute;top:100%;left:0;right:0;margin-top:5px;background:var(--surface-color);backdrop-filter:blur(16px);border:1px solid var(--border-color);border-radius:10px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,0.3);display:none;}
-.difficulty-menu.show{display:block;}
-.difficulty-option{width:100%;padding:10px 14px;text-align:center;border:none;background:none;color:var(--text-color);font-size:0.88rem;cursor:pointer;display:block;border-bottom:1px solid var(--border-color);font-weight:600;}
-.difficulty-option:last-child{border-bottom:none;}
-.difficulty-option.active{color:var(--correct-color);font-weight:800;}
-.suggest-btn{background:rgba(83,141,78,0.2);color:var(--correct-color);padding:3px 10px;border-radius:6px;font-size:0.8rem;margin-right:8px;cursor:pointer;border:1px solid var(--correct-color);transition:0.2s;font-weight:700;}
-.suggest-btn:hover{background:var(--correct-color);color:white;}
-.suggest-btn:disabled{opacity:0.4;cursor:not-allowed;}
-.hard-word-btn{background:linear-gradient(135deg,#e67e22,#d35400);color:white;padding:11px;border-radius:12px;font-weight:800;width:100%;margin-top:12px;cursor:pointer;border:none;transition:all 0.2s;font-size:0.9rem;}
-.hard-word-btn:hover{opacity:0.88;}
-.hard-word-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* Force LTR on all game elements */
 #grid,.grid-row,.keyboard-row,.key,.tile,.matrix-grid,.matrix-row,.correct-arrows,.matrix-tile{direction:ltr!important;unicode-bidi:plaintext;}
 .keyboard-row:last-child{flex-direction:row-reverse;}
 .correct-arrows{direction:ltr;}
-
 </style>
 </head>
 <body>
 <header class="sticky top-0 z-50 flex items-center justify-between px-4 py-2.5 min-h-[58px]">
-<div class="flex items-center gap-2">
+  <div class="flex items-center gap-2">
     <button id="statsBtn" class="stats-btn-header"><i class="fas fa-chart-bar text-sm"></i></button>
     <a href="index.html" class="back-btn" title="تغيير اللعبة"><i class="fas fa-th-large text-sm"></i></a>
-</div>
-<h1>الأسهم</h1>
-<div class="flex items-center gap-2">
-<button id="newGameHeaderBtn"><i class="fas fa-redo-alt text-sm"></i></button>
-<button id="themeToggle" class="theme-btn"><i class="fas fa-sun text-sm text-yellow-400"></i></button>
-</div>
+  </div>
+  <h1>الأسهم</h1>
+  <div class="flex items-center gap-2">
+    <button id="difficultyBtn" title="تغيير الصعوبة">سهل&nbsp;7</button>
+    <button id="newGameHeaderBtn"><i class="fas fa-redo-alt text-sm"></i></button>
+    <button id="themeToggle" class="theme-btn"><i class="fas fa-sun text-sm text-yellow-400"></i></button>
+  </div>
 </header>
-<div class="game-wrapper"><div id="message" class="text-center font-bold"></div><div id="grid" class="mb-4"></div><div id="keyboard" class="w-full"></div></div>
 
-<div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">طريقة اللعب</h2><button id="closeHelp" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div class="mb-6"><p class="text-base mb-5 text-center" id="helpAttemptsText">خمّن تسلسل الأسهم المكون من 6 أسهم في 6 محاولات.</p><div class="color-example"><div class="color-box correct">↑</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأخضر</h3><p>السهم صحيح وفي المكان الصحيح.</p></div></div><div class="color-example"><div class="color-box present">↓</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأصفر</h3><p>السهم صحيح ولكن في المكان الخطأ.</p></div></div><div class="color-example"><div class="color-box absent">←</div><div class="color-description"><h3 class="font-bold mb-1">اللون الرمادي</h3><p>السهم غير موجود في التسلسل السري.</p></div></div></div><div class="text-center mt-5"><button id="startGameBtn" class="bg-[var(--correct-color)] text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 text-base">فهمت، ابدأ اللعب</button></div></div></div></div>
+<div class="game-wrapper">
+  <div id="message" class="text-center font-bold"></div>
+  <div id="grid" class="mb-3"></div>
+  <div id="keyboard" class="w-full"></div>
+</div>
 
-<div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">الإحصائيات</h2><button id="closeStats" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div id="gameResultInfo" class="mb-4"></div><div id="attemptsTableContainer" class="attempts-table-container"><div class="attempts-title">سجل المحاولات</div><div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة. ابدأ اللعب الآن!</div><table class="attempts-table"><thead><th>#</th><th>المحاولة</th><th>النتيجة</th> </thead><tbody id="attemptsTableBody"></tbody>     </table></div><div class="flex justify-around mb-6"><div class="text-center"><div id="playedCount" class="text-2xl font-bold">0</div><div class="text-xs">العب</div></div><div class="text-center"><div id="winPercent" class="text-2xl font-bold">0%</div><div class="text-xs">فوز</div></div><div class="text-center"><div id="currentStreak" class="text-2xl font-bold">0</div><div class="text-xs">تتابع</div></div><div class="text-center"><div id="maxStreak" class="text-2xl font-bold">0</div><div class="text-xs">أعلى تتابع</div></div></div><div class="space-y-2"><button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-2.5 rounded font-bold hover:bg-[var(--default-color)] text-sm">لعبة جديدة</button></div></div></div></div>
+<!-- Help Modal -->
+<div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
+  <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
+    <div class="p-5">
+      <div class="flex justify-between items-center mb-5">
+        <h2 class="text-xl font-bold">طريقة اللعب</h2>
+        <button id="closeHelp" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
+      </div>
+      <p class="text-base mb-5 text-center">خمّن تسلسل الأسهم في 6 محاولات.<br><small class="opacity-60">سهل: 7 أسهم &nbsp;|&nbsp; صعب: 8 أسهم</small></p>
+      <div class="color-example"><div class="color-box correct">↑</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأخضر</h3><p>السهم صحيح وفي المكان الصحيح.</p></div></div>
+      <div class="color-example"><div class="color-box present">↓</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأصفر</h3><p>السهم صحيح ولكن في المكان الخطأ.</p></div></div>
+      <div class="color-example"><div class="color-box absent">←</div><div class="color-description"><h3 class="font-bold mb-1">اللون الرمادي</h3><p>السهم غير موجود في التسلسل السري.</p></div></div>
+      <div class="text-center mt-5">
+        <button id="startGameBtn" class="bg-[var(--correct-color)] text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 text-base">فهمت، ابدأ اللعب</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-<div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold" id="resultModalTitle">نتيجة اللعبة</h2><button id="closeGameResult" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div id="gameResultDetails" class="text-center mb-4"></div><div id="attemptMatrixContainer" class="attempt-matrix-container"><h3 class="matrix-title">خريطة رحلتك في التفكير</h3><div id="matrixGrid" class="matrix-grid"></div><div class="matrix-legend"><div class="legend-item"><div class="legend-color correct"></div><span>صحيح</span></div><div class="legend-item"><div class="legend-color present"></div><span>موجود بموقع آخر</span></div><div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div></div></div><div class="result-buttons"><button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90"><i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى</button><button id="viewStatsBtn" class="border border-[var(--border-color)] hover:bg-[var(--default-color)]"><i class="fas fa-chart-bar ml-2"></i>عرض الإحصائيات</button></div></div></div></div>
+<!-- Stats Modal -->
+<div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
+  <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
+    <div class="p-5">
+      <div class="flex justify-between items-center mb-5">
+        <h2 class="text-xl font-bold">الإحصائيات</h2>
+        <button id="closeStats" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
+      </div>
+      <div id="gameResultInfo" class="mb-4"></div>
+      <div id="attemptsTableContainer" class="attempts-table-container">
+        <div class="attempts-title">سجل المحاولات</div>
+        <div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة. ابدأ اللعب الآن!</div>
+        <table class="attempts-table"><thead><th>#</th><th>المحاولة</th><th>النتيجة</th></thead><tbody id="attemptsTableBody"></tbody></table>
+      </div>
+      <div class="flex justify-around mb-6">
+        <div class="text-center"><div id="playedCount" class="text-2xl font-bold">0</div><div class="text-xs">العب</div></div>
+        <div class="text-center"><div id="winPercent" class="text-2xl font-bold">0%</div><div class="text-xs">فوز</div></div>
+        <div class="text-center"><div id="currentStreak" class="text-2xl font-bold">0</div><div class="text-xs">تتابع</div></div>
+        <div class="text-center"><div id="maxStreak" class="text-2xl font-bold">0</div><div class="text-xs">أعلى تتابع</div></div>
+      </div>
+      <button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-2.5 rounded font-bold hover:bg-[var(--default-color)] text-sm">لعبة جديدة</button>
+    </div>
+  </div>
+</div>
+
+<!-- Game Result Modal -->
+<div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
+  <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
+    <div class="p-5">
+      <div class="flex justify-between items-center mb-5">
+        <h2 class="text-xl font-bold" id="resultModalTitle">نتيجة اللعبة</h2>
+        <button id="closeGameResult" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
+      </div>
+      <div id="gameResultDetails" class="text-center mb-4"></div>
+      <div id="attemptMatrixContainer" class="attempt-matrix-container">
+        <h3 class="matrix-title">خريطة رحلتك في التفكير</h3>
+        <div id="matrixGrid" class="matrix-grid"></div>
+        <div class="matrix-legend">
+          <div class="legend-item"><div class="legend-color correct"></div><span>صحيح</span></div>
+          <div class="legend-item"><div class="legend-color present"></div><span>موجود بموقع آخر</span></div>
+          <div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div>
+        </div>
+      </div>
+      <div class="result-buttons">
+        <button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90"><i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى</button>
+        <button id="viewStatsBtn" class="border border-[var(--border-color)] hover:bg-[var(--default-color)]"><i class="fas fa-chart-bar ml-2"></i>الإحصائيات</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-const MAX_ARROWS = 6;
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
 const MAX_ATTEMPTS = 6;
 const ARROW_SYMBOLS = ['↑', '↓', '←', '→'];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let difficulty = localStorage.getItem('arrowle_difficulty') || 'easy';
+let MAX_ARROWS = difficulty === 'hard' ? 8 : 7;
+
 let targetSequence = [];
 let currentRow = 0;
-let currentGuess = Array(MAX_ARROWS).fill('');
+let currentGuess = [];
 let gameOver = false;
 let gameWon = false;
 let startTime = null;
@@ -306,18 +375,37 @@ let attemptMatrices = [];
 let isProcessing = false;
 let inputLock = false;
 
-function generateRandomSequence() {
-    const seq = [];
-    for (let i = 0; i < MAX_ARROWS; i++) {
-        seq.push(ARROW_SYMBOLS[Math.floor(Math.random() * ARROW_SYMBOLS.length)]);
+// ─── DIFFICULTY ───────────────────────────────────────────────────────────────
+function applyDifficulty() {
+    MAX_ARROWS = difficulty === 'hard' ? 8 : 7;
+    const btn = document.getElementById('difficultyBtn');
+    if (difficulty === 'hard') {
+        btn.textContent = 'صعب 8';
+        btn.classList.add('hard-mode');
+    } else {
+        btn.textContent = 'سهل 7';
+        btn.classList.remove('hard-mode');
     }
-    return seq;
+}
+
+function toggleDifficulty() {
+    difficulty = difficulty === 'easy' ? 'hard' : 'easy';
+    localStorage.setItem('arrowle_difficulty', difficulty);
+    applyDifficulty();
+    startNewGame();
+}
+
+// ─── GAME LOGIC ───────────────────────────────────────────────────────────────
+function generateRandomSequence() {
+    return Array.from({ length: MAX_ARROWS }, () =>
+        ARROW_SYMBOLS[Math.floor(Math.random() * ARROW_SYMBOLS.length)]
+    );
 }
 
 function calculateGuessResult(guessArr, targetArr) {
     const result = Array(MAX_ARROWS).fill('absent');
     const targetCount = {};
-    for (const arrow of targetArr) targetCount[arrow] = (targetCount[arrow] || 0) + 1;
+    for (const a of targetArr) targetCount[a] = (targetCount[a] || 0) + 1;
     for (let i = 0; i < MAX_ARROWS; i++) {
         if (guessArr[i] === targetArr[i]) {
             result[i] = 'correct';
@@ -337,11 +425,9 @@ function updateKeyboard(arrow, status) {
     const key = document.querySelector(`.key[data-key="${arrow}"]`);
     if (!key) return;
     if (status === 'correct') {
-        key.classList.add('correct');
-        key.classList.remove('present', 'absent');
+        key.classList.add('correct'); key.classList.remove('present', 'absent');
     } else if (status === 'present' && !key.classList.contains('correct')) {
-        key.classList.add('present');
-        key.classList.remove('absent');
+        key.classList.add('present'); key.classList.remove('absent');
     } else if (status === 'absent' && !key.classList.contains('correct') && !key.classList.contains('present')) {
         key.classList.add('absent');
     }
@@ -356,10 +442,9 @@ function updateCurrentRow() {
 
 function showMessage(msg, duration = 3000) {
     const msgDiv = document.getElementById('message');
-    const original = msgDiv.innerHTML;
     msgDiv.innerHTML = msg;
     if (window._msgTimeout) clearTimeout(window._msgTimeout);
-    window._msgTimeout = setTimeout(() => { if (msgDiv.innerHTML === msg) msgDiv.innerHTML = original; }, duration);
+    window._msgTimeout = setTimeout(() => { if (msgDiv.innerHTML === msg) msgDiv.innerHTML = ''; }, duration);
 }
 
 function shakeRow() {
@@ -384,12 +469,9 @@ function evaluateGuess() {
                 if (completed === MAX_ARROWS) {
                     setTimeout(() => {
                         if (JSON.stringify(currentGuess) === JSON.stringify(targetSequence)) {
-                            gameWon = true;
-                            gameOver = true;
-                            handleWin();
+                            gameWon = true; gameOver = true; handleWin();
                         } else if (currentRow === MAX_ATTEMPTS - 1) {
-                            gameOver = true;
-                            handleLoss();
+                            gameOver = true; handleLoss();
                         } else {
                             currentRow++;
                             currentGuess = Array(MAX_ARROWS).fill('');
@@ -400,23 +482,29 @@ function evaluateGuess() {
                     }, 300);
                 }
             }, 300);
-        }, i * 300);
+        }, i * 250);
     }
 }
 
-function handleWin() {
-    showMessage('🎉 أحسنت! لقد فزت!');
+function collectMatrix(upToRow) {
     const matrix = [];
-    for (let r = 0; r <= currentRow; r++) {
+    for (let r = 0; r <= upToRow; r++) {
         const rowColors = [];
         for (let c = 0; c < MAX_ARROWS; c++) {
             const tile = document.getElementById(`tile-${r}-${c}`);
+            if (!tile) { rowColors.push('absent'); continue; }
             if (tile.classList.contains('correct')) rowColors.push('correct');
             else if (tile.classList.contains('present')) rowColors.push('present');
             else rowColors.push('absent');
         }
         matrix.push(rowColors);
     }
+    return matrix;
+}
+
+function handleWin() {
+    showMessage('🎉 أحسنت! لقد فزت!');
+    const matrix = collectMatrix(currentRow);
     attemptMatrices.unshift({ matrix, result: 'win', attempts: currentRow + 1, word: targetSequence.join('') });
     if (attemptMatrices.length > 50) attemptMatrices.pop();
     localStorage.setItem('arrowle_matrices', JSON.stringify(attemptMatrices));
@@ -433,18 +521,8 @@ function handleWin() {
 }
 
 function handleLoss() {
-    showMessage(`💔 انتهت المحاولات! التسلسل الصحيح: ${targetSequence.join('')}`);
-    const matrix = [];
-    for (let r = 0; r < MAX_ATTEMPTS; r++) {
-        const rowColors = [];
-        for (let c = 0; c < MAX_ARROWS; c++) {
-            const tile = document.getElementById(`tile-${r}-${c}`);
-            if (tile.classList.contains('correct')) rowColors.push('correct');
-            else if (tile.classList.contains('present')) rowColors.push('present');
-            else rowColors.push('absent');
-        }
-        matrix.push(rowColors);
-    }
+    showMessage(`💔 انتهت المحاولات! التسلسل الصحيح: ${targetSequence.join(' ')}`);
+    const matrix = collectMatrix(MAX_ATTEMPTS - 1);
     attemptMatrices.unshift({ matrix, result: 'loss', attempts: MAX_ATTEMPTS, word: targetSequence.join('') });
     localStorage.setItem('arrowle_matrices', JSON.stringify(attemptMatrices));
 
@@ -457,26 +535,19 @@ function handleLoss() {
     setTimeout(() => showGameResultModal(false), 1500);
 }
 
+// ─── MATRIX RENDER ────────────────────────────────────────────────────────────
 function renderAttemptMatrix() {
     const container = document.getElementById('matrixGrid');
     container.innerHTML = '';
     const used = attemptResults.filter(r => r && r.length);
-    const guessedArrows = [];
-    for (let r = 0; r < used.length; r++) {
-        let seq = '';
-        for (let c = 0; c < MAX_ARROWS; c++) {
-            const tile = document.getElementById(`tile-${r}-${c}`);
-            seq += tile ? (tile.textContent || '') : '';
-        }
-        guessedArrows.push(seq);
-    }
     used.forEach((res, idx) => {
         const rowDiv = document.createElement('div');
         rowDiv.className = 'matrix-row';
         res.forEach((st, col) => {
             const tile = document.createElement('div');
             tile.className = `matrix-tile ${st}`;
-            tile.textContent = guessedArrows[idx]?.[col] || '';
+            const srcTile = document.getElementById(`tile-${idx}-${col}`);
+            tile.textContent = srcTile ? (srcTile.textContent || '') : '';
             rowDiv.appendChild(tile);
         });
         container.appendChild(rowDiv);
@@ -487,18 +558,21 @@ function showGameResultModal(isWin) {
     const modal = document.getElementById('gameResultModal');
     document.getElementById('resultModalTitle').textContent = isWin ? '🎉 مبروك! فزت!' : '💔 انتهت المحاولات!';
     document.getElementById('gameResultDetails').innerHTML = `
-        <div class="${isWin ? 'text-green-600' : 'text-red-600'} font-bold text-lg mb-2">${isWin ? 'لقد فزت في المحاولة ' + (currentRow + 1) : 'انتهت محاولاتك!'}</div>
-        <div class="text-gray-600 dark:text-gray-400 mb-3">التسلسل الصحيح:</div>
+        <div class="${isWin ? 'text-green-500' : 'text-red-500'} font-bold text-lg mb-2">
+            ${isWin ? 'لقد فزت في المحاولة ' + (currentRow + 1) : 'انتهت محاولاتك!'}
+        </div>
+        <div class="opacity-60 mb-3 text-sm">التسلسل الصحيح:</div>
         <div class="correct-arrows">${targetSequence.join(' ')}</div>
     `;
     renderAttemptMatrix();
     modal.classList.remove('hidden');
 }
 
+// ─── STATS ────────────────────────────────────────────────────────────────────
 function updateStatsDisplay() {
     document.getElementById('playedCount').textContent = stats.played;
-    const winPercent = stats.played ? Math.round((stats.wins / stats.played) * 100) : 0;
-    document.getElementById('winPercent').textContent = winPercent + '%';
+    const wp = stats.played ? Math.round((stats.wins / stats.played) * 100) : 0;
+    document.getElementById('winPercent').textContent = wp + '%';
     document.getElementById('currentStreak').textContent = stats.currentStreak;
     document.getElementById('maxStreak').textContent = stats.maxStreak;
 
@@ -506,87 +580,36 @@ function updateStatsDisplay() {
     const noMsg = document.getElementById('noAttemptsMessage');
     const table = document.querySelector('.attempts-table');
     if (attemptsHistory.length > 0) {
-        noMsg.classList.add('hidden');
-        table.classList.remove('hidden');
+        noMsg.classList.add('hidden'); table.classList.remove('hidden');
         body.innerHTML = '';
         [...attemptsHistory].reverse().forEach(a => {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td class="attempt-number">${a.number} </td><td>${a.attempts}</td><td><span class="attempt-result ${a.result}">${a.result === 'win' ? 'فوز ✓' : 'خسارة ✗'}</span></td>`;
+            tr.innerHTML = `<td class="attempt-number">${a.number}</td><td>${a.attempts}</td><td><span class="attempt-result ${a.result}">${a.result === 'win' ? 'فوز ✓' : 'خسارة ✗'}</span></td>`;
             body.appendChild(tr);
         });
     } else {
-        noMsg.classList.remove('hidden');
-        table.classList.add('hidden');
+        noMsg.classList.remove('hidden'); table.classList.add('hidden');
     }
 }
 
-function startNewGame() {
-    targetSequence = generateRandomSequence();
-    currentRow = 0;
-    currentGuess = Array(MAX_ARROWS).fill('');
-    gameOver = false;
-    gameWon = false;
-    isProcessing = false;
-    inputLock = false;
-    startTime = new Date();
-    attemptResults = [];
-
-    const grid = document.getElementById('grid');
-    grid.innerHTML = '';
-    for (let r = 0; r < MAX_ATTEMPTS; r++) {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'grid-row';
-        rowDiv.id = `row-${r}`;
-        for (let c = 0; c < MAX_ARROWS; c++) {
-            const tile = document.createElement('div');
-            tile.className = 'tile';
-            tile.id = `tile-${r}-${c}`;
-            rowDiv.appendChild(tile);
-        }
-        grid.appendChild(rowDiv);
-    }
-    document.querySelectorAll('.key').forEach(k => k.classList.remove('correct', 'present', 'absent'));
-    updateCurrentRow();
-    document.getElementById('message').innerHTML = '';
-    document.getElementById('gameResultModal').classList.add('hidden');
-    document.getElementById('statsModal').classList.add('hidden');
-}
-
+// ─── INPUT ────────────────────────────────────────────────────────────────────
 function handleInput(value) {
     if (inputLock || gameOver || isProcessing) return;
     if (value === 'Enter') {
         const empty = currentGuess.some(cell => cell === '');
-        if (empty) {
-            showMessage(`يجب إدخال ${MAX_ARROWS} أسهم`);
-            shakeRow();
-            return;
-        }
+        if (empty) { showMessage(`يجب إدخال ${MAX_ARROWS} أسهم`); shakeRow(); return; }
         isProcessing = true;
         evaluateGuess();
     } else if (value === 'Backspace') {
-        let lastFilled = -1;
-        for (let i = currentGuess.length - 1; i >= 0; i--) {
-            if (currentGuess[i] !== '') {
-                lastFilled = i;
-                break;
-            }
-        }
-        if (lastFilled !== -1) {
-            currentGuess[lastFilled] = '';
-            updateCurrentRow();
-        }
+        let last = -1;
+        for (let i = currentGuess.length - 1; i >= 0; i--) { if (currentGuess[i] !== '') { last = i; break; } }
+        if (last !== -1) { currentGuess[last] = ''; updateCurrentRow(); }
     } else if (ARROW_SYMBOLS.includes(value)) {
-        let firstEmpty = -1;
-        for (let i = 0; i < MAX_ARROWS; i++) {
-            if (currentGuess[i] === '') {
-                firstEmpty = i;
-                break;
-            }
-        }
-        if (firstEmpty !== -1) {
-            currentGuess[firstEmpty] = value;
+        let first = currentGuess.indexOf('');
+        if (first !== -1) {
+            currentGuess[first] = value;
             updateCurrentRow();
-            const tile = document.getElementById(`tile-${currentRow}-${firstEmpty}`);
+            const tile = document.getElementById(`tile-${currentRow}-${first}`);
             if (tile) { tile.classList.add('filled'); setTimeout(() => tile.classList.remove('filled'), 100); }
         } else {
             showMessage(`لا يمكن إضافة المزيد من الأسهم`, 1000);
@@ -594,15 +617,15 @@ function handleInput(value) {
     }
 }
 
+// ─── KEYBOARD ─────────────────────────────────────────────────────────────────
 function createKeyboard() {
     const keyboardDiv = document.getElementById('keyboard');
-    const arrowRow = ['↑', '↓', '←', '→'];
-    // ترتيب أزرار التحكم: Backspace ثم Enter (سيتم عكس ترتيبهما بصرياً بواسطة CSS)
-    const controlRow = ['Backspace', 'Enter'];
     keyboardDiv.innerHTML = '';
+
+    // Row 1: arrow keys (square, large glyph)
     const row1 = document.createElement('div');
     row1.className = 'keyboard-row';
-    arrowRow.forEach(arrow => {
+    ARROW_SYMBOLS.forEach(arrow => {
         const btn = document.createElement('button');
         btn.className = 'key';
         btn.textContent = arrow;
@@ -611,14 +634,14 @@ function createKeyboard() {
         row1.appendChild(btn);
     });
     keyboardDiv.appendChild(row1);
+
+    // Row 2: control keys
     const row2 = document.createElement('div');
     row2.className = 'keyboard-row';
-    controlRow.forEach(key => {
+    [['Backspace', '⌫ حذف', 'backspace'], ['Enter', '✓ تأكيد', 'enter']].forEach(([key, label, cls]) => {
         const btn = document.createElement('button');
-        btn.className = 'key';
-        if (key === 'Enter') btn.classList.add('enter');
-        if (key === 'Backspace') btn.classList.add('backspace');
-        btn.textContent = key === 'Backspace' ? '⌫' : key;
+        btn.className = `key control ${cls}`;
+        btn.textContent = label;
         btn.dataset.key = key;
         btn.addEventListener('click', () => handleInput(key));
         row2.appendChild(btn);
@@ -626,16 +649,56 @@ function createKeyboard() {
     keyboardDiv.appendChild(row2);
 }
 
-function loadData() {
-    const savedStats = localStorage.getItem('arrowle_stats');
-    if (savedStats) stats = JSON.parse(savedStats);
-    const savedHistory = localStorage.getItem('arrowle_history');
-    if (savedHistory) attemptsHistory = JSON.parse(savedHistory);
-    const savedMatrices = localStorage.getItem('arrowle_matrices');
-    if (savedMatrices) attemptMatrices = JSON.parse(savedMatrices);
-    updateStatsDisplay();
+// ─── GRID ─────────────────────────────────────────────────────────────────────
+function buildGrid() {
+    const grid = document.getElementById('grid');
+    grid.innerHTML = '';
+    for (let r = 0; r < MAX_ATTEMPTS; r++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'grid-row'; rowDiv.id = `row-${r}`;
+        for (let c = 0; c < MAX_ARROWS; c++) {
+            const tile = document.createElement('div');
+            tile.className = 'tile'; tile.id = `tile-${r}-${c}`;
+            rowDiv.appendChild(tile);
+        }
+        grid.appendChild(rowDiv);
+    }
+    requestAnimationFrame(updateGridTileSize);
 }
 
+// ─── TILE SIZE ────────────────────────────────────────────────────────────────
+function updateGridTileSize() {
+    const headerH = document.querySelector('header')?.offsetHeight || 60;
+    const keyboardH = document.getElementById('keyboard')?.offsetHeight || 200;
+    const msgH = 42, padding = 24;
+    const gridGaps = (MAX_ATTEMPTS - 1) * 4;
+    const availableH = window.innerHeight - headerH - keyboardH - msgH - padding - gridGaps;
+    const tileByHeight = Math.floor(availableH / MAX_ATTEMPTS);
+    const maxW = Math.min(window.innerWidth, 640);
+    const tileByWidth = Math.floor((maxW - 40 - (MAX_ARROWS - 1) * 5) / MAX_ARROWS);
+    const tileSize = Math.max(Math.min(tileByHeight, tileByWidth, 70), 28);
+    document.querySelectorAll('.tile').forEach(t => t.style.setProperty('--tile-size', tileSize + 'px'));
+}
+
+// ─── NEW GAME ─────────────────────────────────────────────────────────────────
+function startNewGame() {
+    applyDifficulty();
+    targetSequence = generateRandomSequence();
+    currentRow = 0;
+    currentGuess = Array(MAX_ARROWS).fill('');
+    gameOver = false; gameWon = false;
+    isProcessing = false; inputLock = false;
+    startTime = new Date();
+    attemptResults = [];
+    document.querySelectorAll('.key').forEach(k => k.classList.remove('correct', 'present', 'absent'));
+    buildGrid();
+    updateCurrentRow();
+    document.getElementById('message').innerHTML = '';
+    document.getElementById('gameResultModal').classList.add('hidden');
+    document.getElementById('statsModal').classList.add('hidden');
+}
+
+// ─── THEME ────────────────────────────────────────────────────────────────────
 function loadTheme() {
     const saved = localStorage.getItem('arrowle_theme');
     const icon = document.querySelector('#themeToggle i');
@@ -644,36 +707,22 @@ function loadTheme() {
         icon.className = 'fas fa-moon text-lg';
     } else {
         document.body.classList.remove('light-mode');
-        icon.className = 'fas fa-sun text-lg';
+        icon.className = 'fas fa-sun text-sm text-yellow-400';
     }
 }
 
-function updateGridTileSize() {
-    const headerH = document.querySelector('header')?.offsetHeight || 60;
-    const keyboardH = document.getElementById('keyboard')?.offsetHeight || 180;
-    const msgH = 44, padding = 24, gridGaps = (MAX_ATTEMPTS - 1) * 5;
-    const availableH = window.innerHeight - headerH - keyboardH - msgH - padding - gridGaps;
-    const tileByHeight = Math.floor(availableH / MAX_ATTEMPTS);
-    const tileByWidth = Math.floor((Math.min(window.innerWidth, 480) - 60) / MAX_ARROWS);
-    const tileSize = Math.min(tileByHeight, tileByWidth, 75);
-    const finalSize = Math.max(tileSize, 32);
-    document.querySelectorAll('.tile').forEach(t => t.style.setProperty('--tile-size', finalSize + 'px'));
-}
-
+// ─── EVENTS ───────────────────────────────────────────────────────────────────
 function setupEventListeners() {
     document.addEventListener('keydown', (e) => {
         if (e.ctrlKey || e.metaKey || e.altKey) return;
-        const key = e.key;
-        if (key === 'Enter') { e.preventDefault(); handleInput('Enter'); return; }
-        if (key === 'Backspace') { e.preventDefault(); handleInput('Backspace'); return; }
-        if (key === 'ArrowUp') { e.preventDefault(); handleInput('↑'); return; }
-        if (key === 'ArrowDown') { e.preventDefault(); handleInput('↓'); return; }
-        if (key === 'ArrowLeft') { e.preventDefault(); handleInput('←'); return; }
-        if (key === 'ArrowRight') { e.preventDefault(); handleInput('→'); return; }
+        const map = { Enter:'Enter', Backspace:'Backspace', ArrowUp:'↑', ArrowDown:'↓', ArrowLeft:'←', ArrowRight:'→' };
+        if (map[e.key]) { e.preventDefault(); handleInput(map[e.key]); }
     });
     window.addEventListener('resize', () => requestAnimationFrame(updateGridTileSize));
+
     document.getElementById('statsBtn').addEventListener('click', () => { updateStatsDisplay(); document.getElementById('statsModal').classList.remove('hidden'); });
     document.getElementById('newGameHeaderBtn').addEventListener('click', startNewGame);
+    document.getElementById('difficultyBtn').addEventListener('click', toggleDifficulty);
     document.getElementById('newGameFromStats').addEventListener('click', () => { startNewGame(); document.getElementById('statsModal').classList.add('hidden'); });
     document.getElementById('startGameBtn').addEventListener('click', () => { document.getElementById('helpModal').classList.add('hidden'); startNewGame(); });
     document.getElementById('closeHelp').addEventListener('click', () => document.getElementById('helpModal').classList.add('hidden'));
@@ -684,30 +733,27 @@ function setupEventListeners() {
     document.getElementById('themeToggle').addEventListener('click', () => {
         const isLight = document.body.classList.toggle('light-mode');
         const icon = document.querySelector('#themeToggle i');
-        icon.className = isLight ? 'fas fa-moon text-lg' : 'fas fa-sun text-lg';
+        icon.className = isLight ? 'fas fa-moon text-lg' : 'fas fa-sun text-sm text-yellow-400';
         localStorage.setItem('arrowle_theme', isLight ? 'light' : 'dark');
     });
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function loadData() {
+    const s = localStorage.getItem('arrowle_stats');
+    if (s) stats = JSON.parse(s);
+    const h = localStorage.getItem('arrowle_history');
+    if (h) attemptsHistory = JSON.parse(h);
+    const m = localStorage.getItem('arrowle_matrices');
+    if (m) attemptMatrices = JSON.parse(m);
+    updateStatsDisplay();
 }
 
 function init() {
     loadData();
     loadTheme();
+    applyDifficulty();
     createKeyboard();
-    const grid = document.getElementById('grid');
-    grid.innerHTML = '';
-    for (let r = 0; r < MAX_ATTEMPTS; r++) {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'grid-row';
-        rowDiv.id = `row-${r}`;
-        for (let c = 0; c < MAX_ARROWS; c++) {
-            const tile = document.createElement('div');
-            tile.className = 'tile';
-            tile.id = `tile-${r}-${c}`;
-            rowDiv.appendChild(tile);
-        }
-        grid.appendChild(rowDiv);
-    }
-    requestAnimationFrame(updateGridTileSize);
     startNewGame();
     setupEventListeners();
     if (!localStorage.getItem('arrowle_help_seen')) {
