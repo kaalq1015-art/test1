@@ -75,8 +75,21 @@ body{
     flex:1;margin:0 2px;padding:0 2px;touch-action:manipulation;
     backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
 }
-.key.enter{background-color:var(--enter-color);color:white;border-color:var(--enter-color);font-size:clamp(0.7rem,2.5vw,0.9rem);}
-.key.backspace{background-color:var(--backspace-color);color:white;border-color:var(--backspace-color); font-size: 1.2rem;}
+.key.enter{background-color:var(--enter-color);color:white;border-color:var(--enter-color);font-size:clamp(0.7rem,2.5vw,0.9rem); flex: 1.5;}
+
+/* تعديل سهم الحذف ليكون أعرض */
+.key.backspace{
+    background-color:var(--backspace-color);
+    color:white;
+    border-color:var(--backspace-color);
+    flex: 2 !important; /* جعل الزر أعرض */
+}
+.key.backspace i {
+    font-size: 1.4rem;
+    transform: scaleX(1.6); /* تمطيط السهم عرضياً ليكون أعرض */
+    display: inline-block;
+}
+
 @media(max-width:480px){
     .key{height:clamp(38px,5.5vh,50px);min-width:clamp(24px,5vw,34px);font-size:clamp(0.8rem,2.8vw,1rem);margin:0 1px;padding:0 1px;}
     .key.enter{font-size:clamp(0.65rem,2.2vw,0.8rem);}
@@ -133,8 +146,8 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 42px; /* تم التكبير من 36 */
-    height: 42px; /* تم التكبير من 36 */
+    width: 42px;
+    height: 42px;
     border-radius: 12px;
     background: var(--correct-color);
     color: white !important;
@@ -144,7 +157,7 @@ h1 {
     flex-shrink: 0;
 }
 
-.back-btn i { font-size: 1.2rem; } /* تكبير الأيقونة */
+.back-btn i { font-size: 1.2rem; }
 
 .back-btn:hover {
     opacity: 0.88;
@@ -152,8 +165,8 @@ h1 {
 }
 
 .stats-btn-header, #difficultyToggle, .theme-btn, #newGameHeaderBtn {
-    width: 42px; /* تم التكبير من 36 */
-    height: 42px; /* تم التكبير من 36 */
+    width: 42px;
+    height: 42px;
     border-radius: 12px;
     background: var(--surface-color);
     border: 1px solid var(--border-color);
@@ -165,7 +178,7 @@ h1 {
     transition: all 0.2s;
 }
 
-.stats-btn-header i, .theme-btn i, #newGameHeaderBtn i { font-size: 1.2rem; } /* تكبير الأيقونات داخل الأزرار */
+.stats-btn-header i, .theme-btn i, #newGameHeaderBtn i { font-size: 1.2rem; }
 
 #difficultyToggle {
     width: auto !important;
@@ -599,7 +612,7 @@ function createKeyboard() {
             if (key === 'Enter') btn.classList.add('enter');
             if (key === 'Backspace') {
                 btn.classList.add('backspace');
-                btn.innerHTML = '<i class="fas fa-backspace"></i>'; // استخدام أيقونة سهم أعرض للمسح
+                btn.innerHTML = '<i class="fas fa-backspace"></i>'; // استخدام أيقونة سهم للمسح
             } else {
                 btn.textContent = key;
             }
