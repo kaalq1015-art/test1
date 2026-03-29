@@ -225,7 +225,6 @@ function evaluateGuess() {
 
 function handleWin() {
     showMessage('🎉 أحسنت! لقد فزت!');
-    // حفظ المصفوفة البصرية
     const matrix = [];
     for (let r = 0; r <= currentRow; r++) {
         const rowColors = [];
@@ -280,7 +279,6 @@ function handleLoss() {
 function renderAttemptMatrix() {
     const container = document.getElementById('matrixGrid');
     container.innerHTML = '';
-    // استخدام attemptResults المسجلة أثناء اللعب
     const usedRows = attemptResults.filter(r => r && r.length);
     if (usedRows.length === 0) return;
     
@@ -373,7 +371,6 @@ function startNewGame() {
     document.querySelectorAll('.key').forEach(k => k.classList.remove('correct', 'present', 'absent'));
     updateCurrentRow();
     document.getElementById('message').innerHTML = '';
-    // إخفاء المودال إذا كان ظاهراً
     const modal = document.getElementById('gameResultModal');
     if (modal) modal.classList.add('hidden');
     const statsModal = document.getElementById('statsModal');
@@ -425,8 +422,8 @@ function handleInput(value) {
 function createKeyboard() {
     const keyboardDiv = document.getElementById('keyboard');
     const arrowRow = ['↑', '↓', '←', '→'];
-    // تبديل الترتيب: Backspace (يمين) ثم Enter (يسار)
-    const controlRow = ['Backspace', 'Enter'];
+    // تبديل الترتيب: Enter على اليسار، Backspace على اليمين (حسب طلب المستخدم)
+    const controlRow = ['Enter', 'Backspace'];
     keyboardDiv.innerHTML = '';
     const row1 = document.createElement('div');
     row1.className = 'keyboard-row';
