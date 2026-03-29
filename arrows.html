@@ -15,7 +15,7 @@ body{background-color:var(--bg-color);color:var(--text-color);transition:all 0.3
 .game-wrapper{flex:1;display:flex;flex-direction:column;justify-content:space-between;width:100%;max-width:800px;margin:0 auto;padding:6px 10px;overflow:hidden;min-height:0;}
 @media(max-width:768px){.game-wrapper{max-width:600px;}}
 #grid, .grid-row, .keyboard-row, .key, .tile, .matrix-grid, .matrix-row, .correct-arrows, .matrix-tile{direction:ltr!important;unicode-bidi:plaintext;}
-.tile{--tile-size:62px;width:var(--tile-size);height:var(--tile-size);border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:calc(var(--tile-size)*0.55);font-weight:bold;user-select:none;transition:all 0.3s ease;border-radius:4px;flex-shrink:0;}
+.tile{--tile-size:62px;width:var(--tile-size);height:var(--tile-size);border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:calc(var(--tile-size)*0.7);font-weight:bold;user-select:none;transition:all 0.3s ease;border-radius:4px;flex-shrink:0;}
 .tile.filled{border-color:#878a8c;animation:pop 0.1s ease;}
 @keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.1);}100%{transform:scale(1);}}
 .tile.correct{background-color:var(--correct-color);border-color:var(--correct-color);color:white;box-shadow:0 0 12px var(--correct-glow);}
@@ -24,10 +24,10 @@ body{background-color:var(--bg-color);color:var(--text-color);transition:all 0.3
 .flip{animation:flip 0.6s ease;}
 @keyframes flip{0%{transform:rotateX(0);}50%{transform:rotateX(90deg);}100%{transform:rotateX(0);}}
 .keyboard-row{display:flex;justify-content:center;gap:4px;margin-bottom:6px;width:100%;}
-.key{height:clamp(42px,6vh,58px);min-width:clamp(28px,6vw,43px);background-color:var(--key-bg);color:var(--key-text);border:none;border-radius:4px;font-weight:bold;font-size:clamp(1rem,3vw,1.3rem);display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;transition:all 0.2s ease;flex:1;margin:0 2px;padding:0 2px;touch-action:manipulation;}
-.key.enter{background-color:var(--enter-color);color:white;font-size:clamp(0.7rem,2.5vw,0.9rem);}
-.key.backspace{background-color:var(--backspace-color);color:white;}
-@media(max-width:480px){.key{height:clamp(38px,5.5vh,50px);min-width:clamp(24px,5vw,34px);font-size:clamp(0.8rem,2.8vw,1rem);}.key.enter{font-size:clamp(0.65rem,2.2vw,0.8rem);}.keyboard-row{gap:2px;margin-bottom:5px;}}
+.key{height:clamp(42px,6vh,58px);min-width:clamp(28px,6vw,43px);background-color:var(--key-bg);color:var(--key-text);border:none;border-radius:4px;font-weight:bold;font-size:clamp(1.4rem,4vw,1.8rem);display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;transition:all 0.2s ease;flex:1;margin:0 2px;padding:0 2px;touch-action:manipulation;}
+.key.enter{background-color:var(--enter-color);color:white;font-size:clamp(0.8rem,3vw,1rem);}
+.key.backspace{background-color:var(--backspace-color);color:white;font-size:clamp(1rem,3vw,1.2rem);}
+@media(max-width:480px){.key{height:clamp(38px,5.5vh,50px);min-width:clamp(24px,5vw,34px);font-size:clamp(1.2rem,3.5vw,1.5rem);}.key.enter{font-size:clamp(0.7rem,2.5vw,0.85rem);}.key.backspace{font-size:clamp(0.9rem,2.8vw,1rem);}.keyboard-row{gap:2px;margin-bottom:5px;}}
 .key:hover{opacity:0.85;transform:translateY(-1px);}
 .key:active{transform:translateY(0);opacity:1;}
 .key.correct{background-color:var(--correct-color);color:white;box-shadow:0 0 8px var(--correct-glow);}
@@ -48,10 +48,10 @@ h1{font-size:1.6rem;text-align:center;letter-spacing:0.08em;background:linear-gr
 .grid-row{display:flex;justify-content:center;gap:6px;margin-bottom:5px;}
 #message{font-size:1rem;min-height:40px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;padding:0 10px;text-align:center;gap:8px;flex-wrap:wrap;}
 .modal-content{width:95%;max-width:500px;max-height:90vh;overflow-y:auto;margin:10px;}
-.correct-arrows{background:linear-gradient(135deg,var(--correct-color),#2d7a34);color:white;padding:14px 20px;border-radius:10px;margin:12px 0;text-align:center;font-size:1.6rem;font-weight:bold;letter-spacing:0.15em;animation:pulse 2s infinite;box-shadow:0 4px 20px var(--correct-glow);direction:ltr;}
+.correct-arrows{background:linear-gradient(135deg,var(--correct-color),#2d7a34);color:white;padding:14px 20px;border-radius:10px;margin:12px 0;text-align:center;font-size:2rem;font-weight:bold;letter-spacing:0.15em;animation:pulse 2s infinite;box-shadow:0 4px 20px var(--correct-glow);direction:ltr;}
 @keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);}}
 .color-example{display:flex;align-items:center;gap:12px;margin-bottom:15px;padding:10px;border-radius:8px;background-color:rgba(129,131,132,0.1);}
-.color-box{width:45px;height:45px;border:2px solid var(--border-color);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:bold;flex-shrink:0;}
+.color-box{width:55px;height:55px;border:2px solid var(--border-color);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:bold;flex-shrink:0;}
 .color-box.correct{background-color:var(--correct-color);border-color:var(--correct-color);color:white;}
 .color-box.present{background-color:var(--present-color);border-color:var(--present-color);color:white;}
 .color-box.absent{background-color:var(--absent-color);border-color:var(--absent-color);color:white;}
@@ -72,14 +72,14 @@ h1{font-size:1.6rem;text-align:center;letter-spacing:0.08em;background:linear-gr
 .matrix-title{font-size:1.2rem;font-weight:bold;margin-bottom:12px;text-align:center;color:var(--text-color);}
 .matrix-grid{display:flex;flex-direction:column;align-items:center;gap:5px;margin-bottom:12px;}
 .matrix-row{display:flex;justify-content:center;gap:5px;}
-.matrix-tile{--mt-size:42px;width:var(--mt-size);height:var(--mt-size);border:2px solid transparent;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:calc(var(--mt-size)*0.48);color:white;user-select:none;}
-@media(max-width:400px){.matrix-tile{--mt-size:34px;}}
+.matrix-tile{--mt-size:42px;width:var(--mt-size);height:var(--mt-size);border:2px solid transparent;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:calc(var(--mt-size)*0.7);color:white;user-select:none;}
+@media(max-width:400px){.matrix-tile{--mt-size:38px;}}
 .matrix-tile.correct{background-color:var(--correct-color);border-color:var(--correct-color);}
 .matrix-tile.present{background-color:var(--present-color);border-color:var(--present-color);}
 .matrix-tile.absent{background-color:var(--absent-color);border-color:var(--absent-color);}
 .matrix-legend{display:flex;justify-content:center;gap:15px;margin-top:10px;flex-wrap:wrap;}
 .legend-item{display:flex;align-items:center;gap:6px;font-size:0.8rem;}
-.legend-color{width:16px;height:16px;border-radius:3px;}
+.legend-color{width:20px;height:20px;border-radius:3px;}
 .legend-color.correct{background-color:var(--correct-color);}
 .legend-color.present{background-color:var(--present-color);}
 .legend-color.absent{background-color:var(--absent-color);}
@@ -416,7 +416,8 @@ function handleInput(value) {
 function createKeyboard() {
     const keyboardDiv = document.getElementById('keyboard');
     const arrowRow = ['↑', '↓', '←', '→'];
-    const controlRow = ['Enter', 'Backspace'];
+    // تبديل الترتيب: Backspace أولاً (على اليمين) ثم Enter (على اليسار)
+    const controlRow = ['Backspace', 'Enter'];
     keyboardDiv.innerHTML = '';
     const row1 = document.createElement('div');
     row1.className = 'keyboard-row';
