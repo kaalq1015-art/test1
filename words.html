@@ -220,19 +220,22 @@ h1{
 .difficulty-dropdown{position:relative;display:inline-block;}
 .difficulty-menu{position:absolute;top:100%;left:0;right:0;margin-top:5px;background:var(--surface-color);backdrop-filter:blur(16px);border:1px solid var(--border-color);border-radius:10px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,0.3);display:none;}
 .difficulty-menu.show{display:block;}
-.difficulty-option{
-    width:100%;
-    padding:12px 20px;
-    text-align:center;
-    border:none;
-    background:none;
-    color:var(--text-color);
-    font-size:1rem;
-    cursor:pointer;
-    display:block;
-    border-bottom:1px solid var(--border-color);
-    font-weight:700;
-    min-width:130px;
+.difficulty-menu {
+    position: absolute;
+    top: 100%;
+    right: 0; /* لمحاذاة القائمة مع يمين الزر */
+    left: auto; /* لفك الارتباط بجهة اليسار */
+    width: max-content; /* ليتمدد العرض حسب النص */
+    min-width: 120px;
+    margin-top: 8px;
+    background: var(--surface-color);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    z-index: 100;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    display: none;
+    overflow: hidden;
 }
 .difficulty-option:last-child{border-bottom:none;}
 .difficulty-option.active{color:var(--correct-color);font-weight:800;}
