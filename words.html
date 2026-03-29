@@ -220,7 +220,20 @@ h1{
 .difficulty-dropdown{position:relative;display:inline-block;}
 .difficulty-menu{position:absolute;top:100%;left:0;right:0;margin-top:5px;background:var(--surface-color);backdrop-filter:blur(16px);border:1px solid var(--border-color);border-radius:10px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,0.3);display:none;}
 .difficulty-menu.show{display:block;}
-.difficulty-option{width:100%;padding:10px 14px;text-align:center;border:none;background:none;color:var(--text-color);font-size:0.88rem;cursor:pointer;display:block;border-bottom:1px solid var(--border-color);font-weight:600;}
+.difficulty-option{
+    width:100%;
+    padding:12px 20px;
+    text-align:center;
+    border:none;
+    background:none;
+    color:var(--text-color);
+    font-size:1rem;
+    cursor:pointer;
+    display:block;
+    border-bottom:1px solid var(--border-color);
+    font-weight:700;
+    min-width:130px;
+}
 .difficulty-option:last-child{border-bottom:none;}
 .difficulty-option.active{color:var(--correct-color);font-weight:800;}
 .suggest-btn{background:rgba(83,141,78,0.2);color:var(--correct-color);padding:3px 10px;border-radius:6px;font-size:0.8rem;margin-right:8px;cursor:pointer;border:1px solid var(--correct-color);transition:0.2s;font-weight:700;}
