@@ -221,18 +221,17 @@ h1{
 .difficulty-menu{position:absolute;top:100%;left:0;right:0;margin-top:5px;background:var(--surface-color);backdrop-filter:blur(16px);border:1px solid var(--border-color);border-radius:10px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,0.3);display:none;}
 .difficulty-menu {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 8px);
     right: 0;
-    width: 140px;
-    margin-top: 8px;
+    width: 130px;
     background: var(--surface-color);
-    backdrop-filter: blur(16px);
+    backdrop-filter: blur(20px);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    z-index: 100;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    z-index: 999;
     display: none;
     flex-direction: column;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     overflow: hidden;
 }
 
