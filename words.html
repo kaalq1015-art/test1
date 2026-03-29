@@ -54,35 +54,8 @@ body{
     overflow:hidden;touch-action:manipulation;
 }
 .game-wrapper{flex:1;display:flex;flex-direction:column;justify-content:space-between;width:100%;max-width:600px;margin:0 auto;padding:6px 10px;overflow:hidden;min-height:0;}
-.grid-row{display:flex;justify-content:center;gap:6px;margin-bottom:5px;}
-.tile{--tile-size:62px;width:var(--tile-size);height:var(--tile-size);border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:calc(var(--tile-size)*0.50);font-weight:800;user-select:none;transition:all 0.3s ease;border-radius:6px;flex-shrink:0;}
-.tile.filled{border-color:rgba(255,255,255,0.3);animation:pop 0.1s ease;}
-@keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.12);}100%{transform:scale(1);}}
-.tile.correct{background-color:var(--correct-color);border-color:var(--correct-color);color:white;box-shadow:0 0 14px var(--correct-glow);}
-.tile.present{background-color:var(--present-color);border-color:var(--present-color);color:white;box-shadow:0 0 14px var(--present-glow);}
-.tile.absent{background-color:var(--absent-color);border-color:var(--absent-color);color:white;}
-.flip{animation:flip 0.6s ease;}
-@keyframes flip{0%{transform:rotateX(0);}50%{transform:rotateX(90deg);}100%{transform:rotateX(0);}}
-.keyboard-row{display:flex;justify-content:center;gap:4px;margin-bottom:6px;width:100%;}
-.key{
-    height:clamp(42px,6vh,58px);min-width:clamp(28px,6vw,43px);
-    background-color:var(--key-bg);
-    color:var(--key-text);
-    border:1px solid var(--border-color);
-    border-radius:8px;font-weight:700;
-    font-size:clamp(0.85rem,3vw,1.1rem);
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;user-select:none;
-    transition:all 0.15s ease;
-    flex:1;margin:0 2px;padding:0 2px;touch-action:manipulation;
-    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-}
-.key.enter{background-color:var(--enter-color);color:white;border-color:var(--enter-color);font-size:clamp(0.7rem,2.5vw,0.9rem);}
-.key.backspace{background-color:var(--backspace-color);color:white;border-color:var(--backspace-color);}
-.key:hover{background-color:var(--border-active);transform:translateY(-1px);}
-.key.correct{background-color:var(--correct-color);color:white;}
-.key.present{background-color:var(--present-color);color:white;}
-.key.absent{background-color:var(--absent-color)!important;color:rgba(255,255,255,0.4)!important;}
+
+/* HEADER - المعادلة المطلوبة */
 header {
     padding: 10px 16px;
     border-bottom: 1px solid var(--header-border);
@@ -113,7 +86,55 @@ h1 {
     cursor: pointer; transition: all 0.2s;
 }
 #difficultyToggle { width: auto !important; padding: 0 10px !important; font-size: 0.8rem; }
-.difficulty-dropdown { position: relative; display: inline-block; }
+
+/* GRID & TILES */
+.grid-row{display:flex;justify-content:center;gap:6px;margin-bottom:5px;}
+.tile{--tile-size:62px;width:var(--tile-size);height:var(--tile-size);border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:calc(var(--tile-size)*0.50);font-weight:800;user-select:none;transition:all 0.3s ease;border-radius:6px;flex-shrink:0;}
+.tile.filled{border-color:rgba(255,255,255,0.3);animation:pop 0.1s ease;}
+@keyframes pop{50%{transform:scale(1.12);}}
+.tile.correct{background-color:var(--correct-color);border-color:var(--correct-color);color:white;box-shadow:0 0 14px var(--correct-glow);}
+.tile.present{background-color:var(--present-color);border-color:var(--present-color);color:white;box-shadow:0 0 14px var(--present-glow);}
+.tile.absent{background-color:var(--absent-color);border-color:var(--absent-color);color:white;}
+.flip{animation:flip 0.6s ease;}
+@keyframes flip{0%{transform:rotateX(0);}50%{transform:rotateX(90deg);}100%{transform:rotateX(0);}}
+
+/* KEYBOARD */
+.keyboard-row{display:flex;justify-content:center;gap:4px;margin-bottom:6px;width:100%;}
+.key{
+    height:clamp(42px,6vh,58px);min-width:clamp(28px,6vw,43px);
+    background-color:var(--key-bg); color:var(--key-text);
+    border:1px solid var(--border-color); border-radius:8px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer; transition:all 0.15s ease; flex:1;
+}
+.key.enter{background-color:var(--enter-color);color:white;}
+.key.backspace{background-color:var(--backspace-color);color:white;}
+.key.correct{background-color:var(--correct-color);color:white;}
+.key.present{background-color:var(--present-color);color:white;}
+.key.absent{background-color:var(--absent-color)!important;color:rgba(255,255,255,0.4)!important;}
+
+/* MODALS & RESULT SCREEN - إصلاح التداخل */
+.modal-overlay{background-color:rgba(0,0,0,0.75);backdrop-filter:blur(8px);position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;}
+.modal-content{width:95%;max-width:460px;max-height:90vh;overflow-y:auto;border-radius:20px;border:1px solid var(--border-color);background:var(--surface-color);backdrop-filter:blur(20px);padding:20px;}
+.correct-word{background:linear-gradient(135deg,var(--correct-color),#2d6b2d);color:white;padding:12px;border-radius:12px;text-align:center;font-size:1.5rem;font-weight:900;margin:10px 0;}
+
+/* MATRIX (خريطة التفكير) */
+.attempt-matrix-container{margin:16px 0;padding:14px;border:1px solid var(--border-color);border-radius:14px;background:rgba(255,255,255,0.03);}
+.matrix-grid{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.matrix-row{display:flex;justify-content:center;gap:5px;}
+.matrix-tile{width:35px;height:35px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:1rem;}
+.matrix-tile.correct{background:var(--correct-color);}
+.matrix-tile.present{background:var(--present-color);}
+.matrix-tile.absent{background:var(--absent-color);}
+
+/* BUTTONS IN MODAL */
+.result-buttons{display:flex;gap:8px;margin-top:16px;}
+.result-buttons button{flex:1;padding:13px;border-radius:12px;font-weight:800;cursor:pointer;transition:0.2s;border:none;}
+#playAgainBtn{background:var(--correct-color);color:white;}
+#viewStatsBtn{background:var(--key-bg);color:var(--text-color);border:1px solid var(--border-color);}
+
+/* MISC */
+#message{min-height:40px;text-align:center;font-weight:700;display:flex;align-items:center;justify-content:center;}
 .difficulty-menu {
     position: absolute; top: 100%; right: 0; width: 130px;
     margin-top: 5px; background: var(--surface-color); backdrop-filter: blur(16px);
@@ -123,11 +144,9 @@ h1 {
 .difficulty-menu.show { display: flex; }
 .difficulty-option { width: 100%; padding: 10px 14px; text-align: center; border: none; background: none; color: var(--text-color); font-size: 0.88rem; cursor: pointer; border-bottom: 1px solid var(--border-color); font-weight: 600; }
 .difficulty-option.active { color: var(--correct-color); font-weight: 800; }
-.modal-overlay{background-color:rgba(0,0,0,0.75);backdrop-filter:blur(8px);position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;}
-.modal-content{width:95%;max-width:460px;max-height:90vh;overflow-y:auto;border-radius:20px;border:1px solid var(--border-color);background:var(--surface-color);backdrop-filter:blur(20px);padding:20px;}
-.correct-word{background:linear-gradient(135deg,var(--correct-color),#2d6b2d);color:white;padding:12px;border-radius:12px;text-align:center;font-size:1.5rem;font-weight:900;}
 .suggest-btn { background: rgba(83,141,78,0.2); color: var(--correct-color); padding: 3px 10px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; border: 1px solid var(--correct-color); font-weight: 700; margin-right: 8px; }
-.hard-word-btn { background: linear-gradient(135deg,#e67e22,#d35400); color: white; padding: 11px; border-radius: 12px; font-weight: 800; width: 100%; margin-top: 12px; cursor: pointer; border: none; font-size: 0.9rem; }</style>
+.hard-word-btn { background: linear-gradient(135deg,#e67e22,#d35400); color: white; padding: 11px; border-radius: 12px; font-weight: 800; width: 100%; margin-top: 12px; cursor: pointer; border: none; font-size: 0.9rem; }
+</style>
 </head>
 <body>
 <header class="sticky top-0 z-50 flex items-center justify-between px-4 py-2.5 min-h-[58px]">
