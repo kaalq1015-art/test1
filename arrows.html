@@ -10,293 +10,218 @@
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
 *{font-family:'Tajawal',sans-serif;box-sizing:border-box;}
 :root{
-    --correct-color:#538d4e;
-    --present-color:#b59f3b;
-    --absent-color:#3a3a3c;
-    --default-color:#565758;
-    --bg-color:#121213;
-    --bg-gradient:linear-gradient(180deg,#121213 0%,#050505 100%);
-    --surface-color:rgba(30,30,32,0.85);
-    --text-color:#ffffff;
-    --border-color:rgba(255,255,255,0.1);
-    --border-active:rgba(255,255,255,0.2);
-    --key-bg:rgba(255,255,255,0.08);
-    --key-text:#ffffff;
-    --enter-color:#538d4e;
-    --backspace-color:#9b2335;
-    --newgame-color:#538d4e;
-    --newgame-hover:#6aad65;
-    --correct-glow:rgba(83,141,78,0.35);
-    --present-glow:rgba(181,159,59,0.35);
+    --correct-color:#538d4e;--present-color:#b59f3b;--absent-color:#3a3a3c;--default-color:#565758;
+    --bg-color:#121213;--bg-gradient:linear-gradient(180deg,#121213 0%,#050505 100%);
+    --surface-color:rgba(30,30,32,0.85);--text-color:#ffffff;
+    --border-color:rgba(255,255,255,0.1);--border-active:rgba(255,255,255,0.2);
+    --key-bg:rgba(255,255,255,0.08);--key-text:#ffffff;
+    --enter-color:#538d4e;--backspace-color:#9b2335;
+    --correct-glow:rgba(83,141,78,0.35);--present-glow:rgba(181,159,59,0.35);
     --header-border:rgba(255,255,255,0.07);
+    --danger:#e74c3c;--warning:#e67e22;
 }
 .light-mode{
-    --bg-color:#f8f9fa;
-    --bg-gradient:linear-gradient(180deg,#f8f9fa 0%,#e9ecef 100%);
-    --surface-color:rgba(255,255,255,0.85);
-    --text-color:#121213;
-    --border-color:rgba(0,0,0,0.1);
-    --border-active:rgba(0,0,0,0.2);
-    --key-bg:rgba(0,0,0,0.07);
-    --key-text:#121213;
-    --default-color:#d3d6da;
+    --bg-color:#f8f9fa;--bg-gradient:linear-gradient(180deg,#f8f9fa 0%,#e9ecef 100%);
+    --surface-color:rgba(255,255,255,0.85);--text-color:#121213;
+    --border-color:rgba(0,0,0,0.1);--border-active:rgba(0,0,0,0.2);
+    --key-bg:rgba(0,0,0,0.07);--key-text:#121213;--default-color:#d3d6da;
     --header-border:rgba(0,0,0,0.08);
 }
-body{
-    background:var(--bg-gradient);
-    color:var(--text-color);
-    transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
-    margin:0;padding:0;
-    height:100dvh;max-height:100dvh;
-    display:flex;flex-direction:column;
-    overflow:hidden;touch-action:manipulation;
-}
-.game-wrapper{flex:1;display:flex;flex-direction:column;justify-content:space-between;width:100%;max-width:640px;margin:0 auto;padding:6px 10px;overflow:hidden;min-height:0;}
+body{background:var(--bg-gradient);color:var(--text-color);transition:all 0.4s ease;
+    margin:0;padding:0;height:100dvh;max-height:100dvh;display:flex;flex-direction:column;overflow:hidden;touch-action:manipulation;}
+header{padding:10px 14px;border-bottom:1px solid var(--header-border);
+    background:rgba(18,18,19,0.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;}
+.light-mode header{background:rgba(248,249,250,0.88);}
+h1{position:absolute;left:50%;transform:translateX(-50%);font-size:1.4rem;font-weight:800;margin:0;color:#fff;white-space:nowrap;}
+.light-mode h1{color:#121213;}
+.hdr-btn{width:34px;height:34px;border-radius:9px;background:var(--surface-color);border:1px solid var(--border-color);
+    color:var(--text-color);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.18s;flex-shrink:0;}
+.hdr-btn:hover{border-color:var(--border-active);}
+.back-btn{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:9px;
+    background:var(--correct-color);color:white!important;text-decoration:none;transition:all 0.18s;box-shadow:0 2px 8px rgba(83,141,78,0.4);}
+.back-btn:hover{opacity:0.88;transform:scale(1.05);}
+#difficultyBtn{height:34px;padding:0 10px;border-radius:9px;border:1px solid var(--border-color);
+    background:var(--surface-color);color:var(--text-color);display:flex;align-items:center;gap:4px;
+    cursor:pointer;transition:all 0.18s;font-weight:800;font-size:0.78rem;white-space:nowrap;}
+#difficultyBtn.hard-mode{border-color:var(--danger);color:var(--danger);background:rgba(231,76,60,0.12);}
 
-/* TILE: arrow fills the cell nicely */
-.tile{
-    --tile-size:58px;
-    width:var(--tile-size);
-    height:var(--tile-size);
-    border:2px solid var(--border-color);
-    display:flex;align-items:center;justify-content:center;
-    /* Large enough so the arrow glyph fills the cell like an emoji */
-    font-size:calc(var(--tile-size)*0.68);
-    font-weight:800;
-    line-height:1;
-    user-select:none;
-    transition:all 0.3s ease;
-    border-radius:6px;
-    flex-shrink:0;
-}
-.tile.filled{border-color:rgba(255,255,255,0.3);animation:pop 0.1s ease;}
-@keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.12);}100%{transform:scale(1);}}
-.tile.correct{background-color:var(--correct-color);border-color:var(--correct-color);color:white;box-shadow:0 0 14px var(--correct-glow);}
-.tile.present{background-color:var(--present-color);border-color:var(--present-color);color:white;box-shadow:0 0 14px var(--present-glow);}
-.tile.absent{background-color:var(--absent-color);border-color:var(--absent-color);color:white;}
-.flip{animation:flip 0.6s ease;}
-@keyframes flip{0%{transform:rotateX(0);}50%{transform:rotateX(90deg);}100%{transform:rotateX(0);}}
+/* TIMER */
+#timerWrapper{height:0;overflow:hidden;transition:height 0.3s;}
+#timerWrapper.visible{height:28px;}
+#timerBar-bg{background:rgba(255,255,255,0.05);height:100%;display:flex;align-items:center;padding:0 12px;gap:8px;}
+#timerTrack{flex:1;height:5px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden;}
+#timerFill{height:100%;background:var(--correct-color);border-radius:99px;transition:width 1s linear,background 0.5s;}
+#timerLabel{font-size:0.78rem;font-weight:800;min-width:36px;text-align:left;opacity:0.8;}
+
+.game-wrapper{flex:1;display:flex;flex-direction:column;justify-content:space-between;
+    width:100%;max-width:700px;margin:0 auto;padding:5px 8px;overflow:hidden;min-height:0;}
+#hardHint{display:none;background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.25);
+    border-radius:8px;padding:5px 10px;margin-bottom:5px;text-align:center;font-size:0.76rem;font-weight:700;color:var(--danger);}
+#message{font-size:0.93rem;min-height:34px;margin-bottom:5px;display:flex;align-items:center;
+    justify-content:center;padding:0 8px;text-align:center;gap:6px;flex-wrap:wrap;font-weight:700;}
+
+/* GRID */
+.grid-row{display:flex;justify-content:center;align-items:center;gap:4px;margin-bottom:4px;direction:ltr!important;}
+.tile{--tile-size:52px;width:var(--tile-size);height:var(--tile-size);
+    border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;
+    font-size:calc(var(--tile-size)*0.68);font-weight:800;line-height:1;
+    user-select:none;transition:all 0.25s;border-radius:6px;flex-shrink:0;direction:ltr!important;}
+.tile.filled{border-color:rgba(255,255,255,0.28);animation:pop 0.1s ease;}
+@keyframes pop{50%{transform:scale(1.12);}}
+.tile.correct{background:var(--correct-color);border-color:var(--correct-color);color:white;box-shadow:0 0 12px var(--correct-glow);}
+.tile.present{background:var(--present-color);border-color:var(--present-color);color:white;box-shadow:0 0 12px var(--present-glow);}
+.tile.absent{background:var(--absent-color);border-color:var(--absent-color);color:white;}
+.tile.submitted{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.16);color:var(--text-color);}
+.light-mode .tile.submitted{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.18);}
+.flip{animation:flip 0.55s ease;}
+@keyframes flip{50%{transform:rotateX(90deg);}}
+
+/* MASTERMIND DOTS */
+.mm-panel{display:flex;flex-direction:column;gap:2px;padding:4px 5px;border-radius:6px;
+    background:rgba(255,255,255,0.04);border:1px solid var(--border-color);flex-shrink:0;margin-right:4px;}
+.light-mode .mm-panel{background:rgba(0,0,0,0.04);}
+.mm-row{display:flex;gap:2px;}
+.mm-dot{width:7px;height:7px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.14);background:transparent;transition:all 0.35s;}
+.light-mode .mm-dot{border-color:rgba(0,0,0,0.14);}
+.mm-dot.correct{background:var(--correct-color);border-color:var(--correct-color);box-shadow:0 0 4px var(--correct-glow);}
+.mm-dot.present{background:var(--present-color);border-color:var(--present-color);box-shadow:0 0 4px var(--present-glow);}
 
 /* KEYBOARD */
-.keyboard-row{display:flex;justify-content:center;gap:6px;margin-bottom:6px;width:100%;}
-
-/* Arrow keys: square, large arrow glyph */
-.key{
-    height:clamp(48px,7vh,64px);
-    width:clamp(48px,7vh,64px);
-    min-width:clamp(48px,7vh,64px);
-    max-width:clamp(48px,7vh,64px);
-    background-color:var(--key-bg);
-    color:var(--key-text);
-    border:1px solid var(--border-color);
-    border-radius:10px;
-    font-weight:800;
-    /* Arrow glyph fills key like an emoji */
-    font-size:clamp(1.6rem,4.5vw,2.2rem);
-    line-height:1;
+#keyboard{width:100%;}
+.keyboard-row{display:flex;justify-content:center;gap:5px;margin-bottom:5px;direction:ltr!important;}
+.compass-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;max-width:210px;margin:0 auto 5px;}
+.key-empty{pointer-events:none;}
+.key{height:clamp(44px,6.5vh,60px);width:clamp(44px,6.5vh,60px);min-width:clamp(44px,6.5vh,60px);
+    background:var(--key-bg);color:var(--key-text);border:1px solid var(--border-color);border-radius:9px;
+    font-weight:800;font-size:clamp(1.45rem,3.8vw,2rem);line-height:1;
     display:flex;align-items:center;justify-content:center;
-    cursor:pointer;user-select:none;
-    transition:all 0.15s ease;
-    flex:none;
-    padding:0;
-    touch-action:manipulation;
-    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-}
-/* Control keys (Enter / Backspace) – wider, smaller text */
-.key.control{
-    height:clamp(48px,7vh,64px);
-    width:auto;
-    min-width:clamp(70px,16vw,100px);
-    max-width:none;
-    font-size:clamp(0.75rem,2.2vw,0.95rem);
-    padding:0 10px;
-}
-.key.enter{background-color:var(--enter-color);color:white;border-color:var(--enter-color);}
-.key.backspace{background-color:var(--backspace-color);color:white;border-color:var(--backspace-color);}
-
-@media(max-width:480px){
-    .key{
-        height:clamp(42px,6.5vh,56px);
-        width:clamp(42px,6.5vh,56px);
-        min-width:clamp(42px,6.5vh,56px);
-        max-width:clamp(42px,6.5vh,56px);
-        font-size:clamp(1.4rem,4vw,2rem);
-    }
-    .key.control{
-        height:clamp(42px,6.5vh,56px);
-        min-width:clamp(60px,14vw,88px);
-        max-width:none;
-        font-size:clamp(0.68rem,2vw,0.88rem);
-    }
-    .keyboard-row{gap:4px;margin-bottom:5px;}
-}
-
-.key:hover{background-color:var(--border-active);transform:translateY(-1px);}
+    cursor:pointer;user-select:none;transition:all 0.14s;flex:none;padding:0;touch-action:manipulation;
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);direction:ltr!important;}
+.key.control{height:clamp(44px,6.5vh,60px);width:auto;min-width:clamp(66px,14vw,92px);max-width:none;
+    font-size:clamp(0.7rem,1.9vw,0.88rem);padding:0 10px;}
+.key.enter{background:var(--enter-color);color:white;border-color:var(--enter-color);}
+.key.backspace{background:var(--backspace-color);color:white;border-color:var(--backspace-color);}
+.key:hover{filter:brightness(1.18);transform:translateY(-1px);}
 .key:active{transform:translateY(0);}
-.key.correct{background-color:var(--correct-color);border-color:var(--correct-color);color:white;box-shadow:0 0 8px var(--correct-glow);}
-.key.present{background-color:var(--present-color);border-color:var(--present-color);color:white;box-shadow:0 0 8px var(--present-glow);}
-.key.absent{background-color:var(--absent-color)!important;border-color:var(--absent-color)!important;color:rgba(255,255,255,0.4)!important;}
-
+.key.correct{background:var(--correct-color);border-color:var(--correct-color);color:white;}
+.key.present{background:var(--present-color);border-color:var(--present-color);color:white;}
+.key.absent{background:var(--absent-color)!important;border-color:var(--absent-color)!important;color:rgba(255,255,255,0.3)!important;}
+.key.tried{border-color:rgba(255,255,255,0.28);}
+.light-mode .key.tried{border-color:rgba(0,0,0,0.25);}
+@media(max-width:480px){
+    .key{height:clamp(38px,6vh,52px);width:clamp(38px,6vh,52px);min-width:clamp(38px,6vh,52px);font-size:clamp(1.25rem,3.6vw,1.75rem);}
+    .key.control{height:clamp(38px,6vh,52px);min-width:clamp(58px,13vw,82px);font-size:clamp(0.63rem,1.7vw,0.8rem);}
+    .keyboard-row{gap:4px;margin-bottom:4px;}
+    .compass-grid{gap:4px;max-width:175px;}
+}
 .shake{animation:shake 0.5s ease;}
-@keyframes shake{0%,100%{transform:translateX(0);}10%,30%,50%,70%,90%{transform:translateX(-5px);}20%,40%,60%,80%{transform:translateX(5px);}}
-.bounce{animation:bounce 0.5s ease;}
-@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+@keyframes shake{0%,100%{transform:translateX(0);}15%,45%,75%{transform:translateX(-5px);}30%,60%,90%{transform:translateX(5px);}}
 
-/* HEADER */
-header{
-    padding:10px 16px;
-    border-bottom:1px solid var(--header-border);
-    background:rgba(18,18,19,0.8);
-    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-    position:sticky;top:0;z-index:50;
-    display:flex;align-items:center;justify-content:space-between;
-}
-.light-mode header{background:rgba(248,249,250,0.85);}
-h1{
-    position:absolute;left:50%;transform:translateX(-50%);
-    font-size:1.5rem;font-weight:800;margin:0;color:#ffffff;white-space:nowrap;
-}
-.light-mode h1{color:#121213;background:none;-webkit-text-fill-color:initial;}
-.back-btn{
-    display:flex;align-items:center;justify-content:center;
-    width:36px;height:36px;border-radius:10px;
-    background:var(--correct-color);color:white!important;text-decoration:none;
-    transition:all 0.2s;box-shadow:0 2px 8px rgba(83,141,78,0.4);flex-shrink:0;
-}
-.back-btn:hover{opacity:0.88;transform:scale(1.05);}
-.stats-btn-header,.theme-btn,#newGameHeaderBtn{
-    width:36px;height:36px;border-radius:10px;
-    background:var(--surface-color);border:1px solid var(--border-color);
-    color:var(--text-color)!important;
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;transition:all 0.2s;
-}
-.theme-btn:hover,.stats-btn-header:hover{border-color:var(--border-active);}
-#newGameHeaderBtn:hover{border-color:var(--correct-color);color:var(--correct-color)!important;}
-#newGameHeaderBtn:active{transform:scale(0.92) rotate(-30deg);}
-
-/* DIFFICULTY BUTTON */
-#difficultyBtn{
-    height:36px;padding:0 10px;border-radius:10px;
-    border:1px solid var(--border-color);
-    background:var(--surface-color);
-    color:var(--text-color);
-    display:flex;align-items:center;justify-content:center;gap:4px;
-    cursor:pointer;transition:all 0.2s;
-    font-weight:800;font-size:0.78rem;white-space:nowrap;
-}
-#difficultyBtn.hard-mode{
-    border-color:#e67e22;color:#e67e22;
-    background:rgba(230,126,34,0.12);
-}
-#difficultyBtn:hover{border-color:var(--border-active);}
-
-.grid-row{display:flex;justify-content:center;gap:5px;margin-bottom:4px;}
-#message{font-size:1rem;min-height:38px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;padding:0 10px;text-align:center;gap:8px;flex-wrap:wrap;font-weight:700;}
-
-/* MODAL */
-.modal-overlay{background-color:rgba(0,0,0,0.75);backdrop-filter:blur(8px);}
-.modal-content{
-    width:95%;max-width:480px;max-height:90vh;overflow-y:auto;margin:10px;
-    border-radius:20px;border:1px solid var(--border-color);
-    background:var(--surface-color);
-    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-}
-::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--border-active);border-radius:10px;}
-.correct-word,.correct-arrows,.correct-number{
-    background:linear-gradient(135deg,var(--correct-color),#2d6b2d);
-    color:white;padding:12px 18px;border-radius:12px;margin:10px 0;
-    text-align:center;font-size:1.6rem;font-weight:900;letter-spacing:0.1em;
-    animation:pulse 2s infinite;box-shadow:0 4px 20px var(--correct-glow);
-    direction:ltr;line-height:1.4;
-}
-@keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.04);}100%{transform:scale(1);}}
-.color-example{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding:10px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid var(--border-color);}
+/* MODALS */
+.modal-overlay{background:rgba(0,0,0,0.78);backdrop-filter:blur(9px);}
+.modal-content{width:95%;max-width:480px;max-height:90vh;overflow-y:auto;margin:10px;
+    border-radius:20px;border:1px solid var(--border-color);background:var(--surface-color);
+    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:var(--border-active);border-radius:10px;}
+.correct-arrows{background:linear-gradient(135deg,var(--correct-color),#2d6b2d);color:white;
+    padding:12px 18px;border-radius:12px;margin:10px 0;text-align:center;font-size:1.5rem;
+    font-weight:900;letter-spacing:0.06em;animation:pulse 2s infinite;
+    box-shadow:0 4px 20px var(--correct-glow);direction:ltr;line-height:1.6;}
+@keyframes pulse{50%{transform:scale(1.03);}}
+.color-example{display:flex;align-items:center;gap:12px;margin-bottom:10px;padding:9px;
+    border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid var(--border-color);}
 .light-mode .color-example{background:rgba(0,0,0,0.03);}
-.color-box{width:44px;height:44px;border:none;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;flex-shrink:0;line-height:1;}
+.color-box{width:42px;height:42px;border:none;border-radius:8px;display:flex;align-items:center;
+    justify-content:center;font-size:1.4rem;font-weight:800;flex-shrink:0;line-height:1;}
 .color-box.correct{background:var(--correct-color);color:white;}
 .color-box.present{background:var(--present-color);color:white;}
 .color-box.absent{background:var(--absent-color);color:white;}
-.color-description{flex:1;font-size:0.9rem;}
-.attempts-table-container{max-height:220px;overflow-y:auto;margin:12px 0;border:1px solid var(--border-color);border-radius:12px;padding:8px;}
-.attempts-table{width:100%;border-collapse:collapse;font-size:0.88rem;}
-.attempts-table th{padding:8px;text-align:center;border-bottom:1px solid var(--border-color);font-size:0.75rem;opacity:0.5;font-weight:700;}
-.attempts-table td{padding:7px;text-align:center;border-bottom:1px solid var(--border-color);}
+.attempts-table-container{max-height:200px;overflow-y:auto;margin:10px 0;border:1px solid var(--border-color);border-radius:10px;padding:7px;}
+.attempts-table{width:100%;border-collapse:collapse;font-size:0.85rem;}
+.attempts-table th{padding:7px;text-align:center;border-bottom:1px solid var(--border-color);font-size:0.72rem;opacity:0.5;font-weight:700;}
+.attempts-table td{padding:6px;text-align:center;border-bottom:1px solid var(--border-color);}
 .attempts-table tr:last-child td{border-bottom:none;}
 .attempt-number{font-weight:800;color:var(--correct-color);}
-.attempt-result{font-size:0.95rem;font-weight:700;}
-.attempt-result.win{color:var(--correct-color);}
-.attempt-result.loss{color:#e74c3c;}
-.attempts-title{font-size:1rem;font-weight:800;margin:10px 0 6px;text-align:center;color:var(--text-color);opacity:0.6;letter-spacing:0.05em;}
-.no-attempts-message{text-align:center;padding:16px;opacity:0.35;font-size:0.9rem;}
-.attempt-matrix-container{margin:16px 0;padding:14px;border:1px solid var(--border-color);border-radius:14px;background:rgba(255,255,255,0.03);}
-.matrix-title{font-size:0.8rem;font-weight:700;margin-bottom:10px;text-align:center;color:var(--text-color);opacity:0.45;letter-spacing:0.08em;text-transform:uppercase;}
-.matrix-grid{display:flex;flex-direction:column;align-items:center;gap:5px;margin-bottom:10px;}
-.matrix-row{display:flex;justify-content:center;gap:4px;flex-wrap:wrap;}
-.matrix-tile{
-    --mt-size:36px;
-    width:var(--mt-size);height:var(--mt-size);
-    border:none;border-radius:5px;
-    display:flex;align-items:center;justify-content:center;
-    font-weight:800;font-size:calc(var(--mt-size)*0.62);
-    color:white;user-select:none;line-height:1;
-}
-@media(max-width:420px){.matrix-tile{--mt-size:28px;}}
+.attempt-result.win{color:var(--correct-color);font-weight:700;}
+.attempt-result.loss{color:var(--danger);font-weight:700;}
+.attempts-title{font-size:0.92rem;font-weight:800;margin:8px 0 5px;text-align:center;opacity:0.55;}
+.no-attempts-message{text-align:center;padding:14px;opacity:0.32;font-size:0.88rem;}
+.attempt-matrix-container{margin:14px 0;padding:12px;border:1px solid var(--border-color);border-radius:12px;background:rgba(255,255,255,0.02);}
+.matrix-title{font-size:0.74rem;font-weight:700;margin-bottom:8px;text-align:center;opacity:0.4;letter-spacing:0.08em;text-transform:uppercase;}
+.matrix-grid{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:8px;}
+.matrix-row-wrap{display:flex;justify-content:center;gap:3px;flex-wrap:wrap;}
+.matrix-tile{--mt:32px;width:var(--mt);height:var(--mt);border:none;border-radius:5px;display:flex;
+    align-items:center;justify-content:center;font-weight:800;font-size:calc(var(--mt)*0.65);color:white;line-height:1;direction:ltr;}
+@media(max-width:420px){.matrix-tile{--mt:27px;}}
 .matrix-tile.correct{background:var(--correct-color);}
 .matrix-tile.present{background:var(--present-color);}
 .matrix-tile.absent{background:var(--absent-color);}
-.matrix-legend{display:flex;justify-content:center;gap:12px;margin-top:8px;flex-wrap:wrap;}
-.legend-item{display:flex;align-items:center;gap:5px;font-size:0.75rem;opacity:0.6;}
-.legend-color{width:14px;height:14px;border-radius:3px;}
+.matrix-tile.hard-tile{background:rgba(255,255,255,0.09);color:var(--text-color);}
+.matrix-legend{display:flex;justify-content:center;gap:10px;margin-top:7px;flex-wrap:wrap;}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:0.72rem;opacity:0.58;}
+.legend-color{width:11px;height:11px;border-radius:3px;}
 .legend-color.correct{background:var(--correct-color);}
 .legend-color.present{background:var(--present-color);}
 .legend-color.absent{background:var(--absent-color);}
-.result-buttons{display:flex;gap:8px;margin-top:16px;}
-.result-buttons button{flex:1;padding:13px;border-radius:12px;font-weight:800;font-size:0.95rem;transition:all 0.2s;cursor:pointer;}
-@media(max-width:480px){.result-buttons{flex-direction:column;gap:8px;}}
-
-/* Force LTR on all game elements */
-#grid,.grid-row,.keyboard-row,.key,.tile,.matrix-grid,.matrix-row,.correct-arrows,.matrix-tile{direction:ltr!important;unicode-bidi:plaintext;}
-.keyboard-row:last-child{flex-direction:row-reverse;}
-.correct-arrows{direction:ltr;}
+.result-buttons{display:flex;gap:8px;margin-top:14px;}
+.result-buttons button{flex:1;padding:12px;border-radius:11px;font-weight:800;font-size:0.9rem;transition:all 0.18s;cursor:pointer;}
+@media(max-width:480px){.result-buttons{flex-direction:column;}}
+.mm-info-box{display:flex;align-items:flex-start;gap:10px;padding:9px;border-radius:8px;
+    background:rgba(231,76,60,0.07);border:1px solid rgba(231,76,60,0.2);margin:10px 0;font-size:0.82rem;}
 </style>
 </head>
 <body>
-<header class="sticky top-0 z-50 flex items-center justify-between px-4 py-2.5 min-h-[58px]">
-  <div class="flex items-center gap-2">
-    <button id="statsBtn" class="stats-btn-header"><i class="fas fa-chart-bar text-sm"></i></button>
-    <a href="index.html" class="back-btn" title="تغيير اللعبة"><i class="fas fa-th-large text-sm"></i></a>
+<header>
+  <div style="display:flex;align-items:center;gap:6px;">
+    <button id="statsBtn" class="hdr-btn"><i class="fas fa-chart-bar" style="font-size:0.78rem;"></i></button>
+    <a href="index.html" class="back-btn"><i class="fas fa-th-large" style="font-size:0.78rem;"></i></a>
   </div>
   <h1>الأسهم</h1>
-  <div class="flex items-center gap-2">
-    <button id="difficultyBtn" title="تغيير الصعوبة">سهل&nbsp;7</button>
-    <button id="newGameHeaderBtn"><i class="fas fa-redo-alt text-sm"></i></button>
-    <button id="themeToggle" class="theme-btn"><i class="fas fa-sun text-sm text-yellow-400"></i></button>
+  <div style="display:flex;align-items:center;gap:6px;">
+    <button id="difficultyBtn">سهل&nbsp;7</button>
+    <button id="newGameHeaderBtn" class="hdr-btn"><i class="fas fa-redo-alt" style="font-size:0.78rem;"></i></button>
+    <button id="themeToggle" class="hdr-btn"><i class="fas fa-sun" style="font-size:0.78rem;color:#facc15;"></i></button>
   </div>
 </header>
 
+<div id="timerWrapper">
+  <div id="timerBar-bg">
+    <i class="fas fa-stopwatch" style="font-size:0.73rem;color:var(--danger);"></i>
+    <div id="timerTrack"><div id="timerFill" style="width:100%;"></div></div>
+    <span id="timerLabel">1:30</span>
+  </div>
+</div>
+
 <div class="game-wrapper">
-  <div id="message" class="text-center font-bold"></div>
-  <div id="grid" class="mb-3"></div>
-  <div id="keyboard" class="w-full"></div>
+  <div id="hardHint">🧠 وضع ماستر مايند — 8 اتجاهات · 4 محاولات · 90 ثانية · النقاط فقط (بدون ألوان على الخانات)</div>
+  <div id="message"></div>
+  <div id="grid" style="margin-bottom:6px;"></div>
+  <div id="keyboard"></div>
 </div>
 
 <!-- Help Modal -->
 <div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
   <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
     <div class="p-5">
-      <div class="flex justify-between items-center mb-5">
+      <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold">طريقة اللعب</h2>
-        <button id="closeHelp" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
+        <button id="closeHelp" class="text-2xl hover:opacity-60">&times;</button>
       </div>
-      <p class="text-base mb-5 text-center">خمّن تسلسل الأسهم في 6 محاولات.<br><small class="opacity-60">سهل: 7 أسهم &nbsp;|&nbsp; صعب: 8 أسهم</small></p>
-      <div class="color-example"><div class="color-box correct">↑</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأخضر</h3><p>السهم صحيح وفي المكان الصحيح.</p></div></div>
-      <div class="color-example"><div class="color-box present">↓</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأصفر</h3><p>السهم صحيح ولكن في المكان الخطأ.</p></div></div>
-      <div class="color-example"><div class="color-box absent">←</div><div class="color-description"><h3 class="font-bold mb-1">اللون الرمادي</h3><p>السهم غير موجود في التسلسل السري.</p></div></div>
+      <p class="text-sm mb-4 text-center opacity-70">خمّن تسلسل الأسهم السري في عدد محدد من المحاولات</p>
+      <div class="color-example"><div class="color-box correct">↑</div><div style="flex:1;font-size:0.87rem;"><strong>أخضر</strong> — السهم صحيح في موقعه الصحيح</div></div>
+      <div class="color-example"><div class="color-box present">↓</div><div style="flex:1;font-size:0.87rem;"><strong>أصفر</strong> — السهم موجود لكن موقعه خطأ</div></div>
+      <div class="color-example"><div class="color-box absent">←</div><div style="flex:1;font-size:0.87rem;"><strong>رمادي</strong> — السهم غير موجود في التسلسل</div></div>
+      <div class="mm-info-box">
+        <span style="font-size:1.3rem;">🔥</span>
+        <div>
+          <strong>الوضع الصعب (8 اتجاهات):</strong><br>
+          <span style="opacity:0.75;">يضيف الأقطار ↗↘↙↖ ويصير عندك 4 محاولات فقط في 90 ثانية.<br>
+          بدل الألوان، تظهر <strong>نقاط صغيرة</strong> بجانب كل صف — 🟢 موقع صحيح، 🟡 موجود في موقع ثاني. الخانات ما تتلون.</span>
+        </div>
+      </div>
       <div class="text-center mt-5">
-        <button id="startGameBtn" class="bg-[var(--correct-color)] text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 text-base">فهمت، ابدأ اللعب</button>
+        <button id="startGameBtn" style="background:var(--correct-color);color:white;padding:10px 24px;border-radius:10px;font-weight:800;cursor:pointer;">ابدأ اللعب</button>
       </div>
     </div>
   </div>
@@ -306,463 +231,440 @@ h1{
 <div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
   <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
     <div class="p-5">
-      <div class="flex justify-between items-center mb-5">
+      <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold">الإحصائيات</h2>
-        <button id="closeStats" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
+        <button id="closeStats" class="text-2xl hover:opacity-60">&times;</button>
       </div>
-      <div id="gameResultInfo" class="mb-4"></div>
-      <div id="attemptsTableContainer" class="attempts-table-container">
+      <div class="flex justify-around mb-5">
+        <div class="text-center"><div id="playedCount" class="text-2xl font-bold">0</div><div class="text-xs opacity-60">العب</div></div>
+        <div class="text-center"><div id="winPercent" class="text-2xl font-bold">0%</div><div class="text-xs opacity-60">فوز</div></div>
+        <div class="text-center"><div id="currentStreak" class="text-2xl font-bold">0</div><div class="text-xs opacity-60">تتابع</div></div>
+        <div class="text-center"><div id="maxStreak" class="text-2xl font-bold">0</div><div class="text-xs opacity-60">أعلى تتابع</div></div>
+      </div>
+      <div class="attempts-table-container">
         <div class="attempts-title">سجل المحاولات</div>
-        <div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة. ابدأ اللعب الآن!</div>
-        <table class="attempts-table"><thead><th>#</th><th>المحاولة</th><th>النتيجة</th></thead><tbody id="attemptsTableBody"></tbody></table>
+        <div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة.</div>
+        <table class="attempts-table"><thead><tr><th>#</th><th>المحاولة</th><th>الوضع</th><th>النتيجة</th></tr></thead><tbody id="attemptsTableBody"></tbody></table>
       </div>
-      <div class="flex justify-around mb-6">
-        <div class="text-center"><div id="playedCount" class="text-2xl font-bold">0</div><div class="text-xs">العب</div></div>
-        <div class="text-center"><div id="winPercent" class="text-2xl font-bold">0%</div><div class="text-xs">فوز</div></div>
-        <div class="text-center"><div id="currentStreak" class="text-2xl font-bold">0</div><div class="text-xs">تتابع</div></div>
-        <div class="text-center"><div id="maxStreak" class="text-2xl font-bold">0</div><div class="text-xs">أعلى تتابع</div></div>
-      </div>
-      <button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-2.5 rounded font-bold hover:bg-[var(--default-color)] text-sm">لعبة جديدة</button>
+      <button id="newGameFromStats" style="width:100%;border:1px solid var(--border-color);padding:10px;border-radius:9px;font-weight:800;font-size:0.87rem;cursor:pointer;margin-top:10px;">لعبة جديدة</button>
     </div>
   </div>
 </div>
 
-<!-- Game Result Modal -->
+<!-- Result Modal -->
 <div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
   <div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content">
     <div class="p-5">
-      <div class="flex justify-between items-center mb-5">
+      <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold" id="resultModalTitle">نتيجة اللعبة</h2>
-        <button id="closeGameResult" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
+        <button id="closeGameResult" class="text-2xl hover:opacity-60">&times;</button>
       </div>
-      <div id="gameResultDetails" class="text-center mb-4"></div>
+      <div id="gameResultDetails" class="text-center mb-3"></div>
       <div id="attemptMatrixContainer" class="attempt-matrix-container">
-        <h3 class="matrix-title">خريطة رحلتك في التفكير</h3>
+        <h3 class="matrix-title">خريطة رحلتك</h3>
         <div id="matrixGrid" class="matrix-grid"></div>
-        <div class="matrix-legend">
-          <div class="legend-item"><div class="legend-color correct"></div><span>صحيح</span></div>
-          <div class="legend-item"><div class="legend-color present"></div><span>موجود بموقع آخر</span></div>
-          <div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div>
-        </div>
+        <div class="matrix-legend" id="matrixLegend"></div>
       </div>
       <div class="result-buttons">
-        <button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90"><i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى</button>
-        <button id="viewStatsBtn" class="border border-[var(--border-color)] hover:bg-[var(--default-color)]"><i class="fas fa-chart-bar ml-2"></i>الإحصائيات</button>
+        <button id="playAgainBtn" style="background:var(--correct-color);color:white;"><i class="fas fa-redo-alt" style="margin-left:6px;"></i>العب مرة أخرى</button>
+        <button id="viewStatsBtn" style="border:1px solid var(--border-color);"><i class="fas fa-chart-bar" style="margin-left:6px;"></i>الإحصائيات</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-// ─── CONFIG ───────────────────────────────────────────────────────────────────
-const MAX_ATTEMPTS = 6;
-const ARROW_SYMBOLS = ['↑', '↓', '←', '→'];
+// ══ CONFIG ══════════════════════════════════════════════════════════
+const DIFFICULTY_CONFIG = {
+    easy: { symbols:['↑','↓','←','→'], tiles:7, attempts:6, timerSec:0,  mastermind:false },
+    hard: { symbols:['↑','↓','←','→','↗','↘','↙','↖'], tiles:8, attempts:4, timerSec:90, mastermind:true  }
+};
 
-// ─── STATE ────────────────────────────────────────────────────────────────────
+// ══ STATE ════════════════════════════════════════════════════════════
 let difficulty = localStorage.getItem('arrowle_difficulty') || 'easy';
-let MAX_ARROWS = difficulty === 'hard' ? 8 : 7;
+let cfg = DIFFICULTY_CONFIG[difficulty];
+let targetSequence=[], currentRow=0, currentGuess=[];
+let gameOver=false, isProcessing=false, inputLock=false;
+let attemptResults=[], attemptGuesses=[];
+let stats={played:0,wins:0,currentStreak:0,maxStreak:0};
+let attemptsHistory=[];
+let timerInterval=null, timeLeft=0;
 
-let targetSequence = [];
-let currentRow = 0;
-let currentGuess = [];
-let gameOver = false;
-let gameWon = false;
-let startTime = null;
-let attemptResults = [];
-let stats = { played: 0, wins: 0, currentStreak: 0, maxStreak: 0 };
-let attemptsHistory = [];
-let attemptMatrices = [];
-let isProcessing = false;
-let inputLock = false;
-
-// ─── DIFFICULTY ───────────────────────────────────────────────────────────────
-function applyDifficulty() {
-    MAX_ARROWS = difficulty === 'hard' ? 8 : 7;
+// ══ DIFFICULTY ═══════════════════════════════════════════════════════
+function applyDifficulty(){
+    cfg = DIFFICULTY_CONFIG[difficulty];
     const btn = document.getElementById('difficultyBtn');
-    if (difficulty === 'hard') {
-        btn.textContent = 'صعب 8';
-        btn.classList.add('hard-mode');
+    const hint= document.getElementById('hardHint');
+    const tw  = document.getElementById('timerWrapper');
+    if(difficulty==='hard'){
+        btn.textContent='🔥 صعب 8'; btn.classList.add('hard-mode');
+        hint.style.display='block'; tw.classList.add('visible');
     } else {
-        btn.textContent = 'سهل 7';
-        btn.classList.remove('hard-mode');
+        btn.textContent='سهل 7'; btn.classList.remove('hard-mode');
+        hint.style.display='none'; tw.classList.remove('visible');
     }
 }
-
-function toggleDifficulty() {
-    difficulty = difficulty === 'easy' ? 'hard' : 'easy';
+function toggleDifficulty(){
+    difficulty = difficulty==='easy'?'hard':'easy';
     localStorage.setItem('arrowle_difficulty', difficulty);
-    applyDifficulty();
-    startNewGame();
+    applyDifficulty(); startNewGame();
 }
 
-// ─── GAME LOGIC ───────────────────────────────────────────────────────────────
-function generateRandomSequence() {
-    return Array.from({ length: MAX_ARROWS }, () =>
-        ARROW_SYMBOLS[Math.floor(Math.random() * ARROW_SYMBOLS.length)]
-    );
+// ══ TIMER ════════════════════════════════════════════════════════════
+function startTimer(){
+    clearInterval(timerInterval);
+    if(!cfg.timerSec) return;
+    timeLeft=cfg.timerSec; renderTimer();
+    timerInterval=setInterval(()=>{
+        timeLeft--; renderTimer();
+        if(timeLeft<=0){ clearInterval(timerInterval); if(!gameOver){gameOver=true;handleTimerLoss();} }
+    },1000);
+}
+function stopTimer(){ clearInterval(timerInterval); }
+function renderTimer(){
+    const fill=document.getElementById('timerFill'), label=document.getElementById('timerLabel');
+    if(!fill||!label) return;
+    const pct=Math.max(0,(timeLeft/cfg.timerSec)*100);
+    fill.style.width=pct+'%';
+    const m=Math.floor(timeLeft/60), s=timeLeft%60;
+    label.textContent=`${m}:${s.toString().padStart(2,'0')}`;
+    fill.style.background=pct>50?'var(--correct-color)':pct>20?'var(--warning)':'var(--danger)';
+}
+function handleTimerLoss(){
+    showMessage('⏰ انتهى الوقت! التسلسل: '+targetSequence.join(' '));
+    saveResult(false); setTimeout(()=>showGameResultModal(false),1200);
 }
 
-function calculateGuessResult(guessArr, targetArr) {
-    const result = Array(MAX_ARROWS).fill('absent');
-    const targetCount = {};
-    for (const a of targetArr) targetCount[a] = (targetCount[a] || 0) + 1;
-    for (let i = 0; i < MAX_ARROWS; i++) {
-        if (guessArr[i] === targetArr[i]) {
-            result[i] = 'correct';
-            targetCount[guessArr[i]]--;
-        }
-    }
-    for (let i = 0; i < MAX_ARROWS; i++) {
-        if (result[i] !== 'correct' && targetCount[guessArr[i]] > 0) {
-            result[i] = 'present';
-            targetCount[guessArr[i]]--;
-        }
-    }
-    return result;
+// ══ GAME LOGIC ═══════════════════════════════════════════════════════
+function generateSeq(){
+    return Array.from({length:cfg.tiles},()=>cfg.symbols[Math.floor(Math.random()*cfg.symbols.length)]);
+}
+function calcResult(guess,target){
+    const n=cfg.tiles, res=Array(n).fill('absent'), tc={};
+    for(const a of target) tc[a]=(tc[a]||0)+1;
+    for(let i=0;i<n;i++) if(guess[i]===target[i]){res[i]='correct';tc[guess[i]]--;}
+    for(let i=0;i<n;i++) if(res[i]!=='correct'&&tc[guess[i]]>0){res[i]='present';tc[guess[i]]--;}
+    return res;
 }
 
-function updateKeyboard(arrow, status) {
-    const key = document.querySelector(`.key[data-key="${arrow}"]`);
-    if (!key) return;
-    if (status === 'correct') {
-        key.classList.add('correct'); key.classList.remove('present', 'absent');
-    } else if (status === 'present' && !key.classList.contains('correct')) {
-        key.classList.add('present'); key.classList.remove('absent');
-    } else if (status === 'absent' && !key.classList.contains('correct') && !key.classList.contains('present')) {
-        key.classList.add('absent');
-    }
-}
-
-function updateCurrentRow() {
-    for (let i = 0; i < MAX_ARROWS; i++) {
-        const tile = document.getElementById(`tile-${currentRow}-${i}`);
-        if (tile) tile.textContent = currentGuess[i] || '';
-    }
-}
-
-function showMessage(msg, duration = 3000) {
-    const msgDiv = document.getElementById('message');
-    msgDiv.innerHTML = msg;
-    if (window._msgTimeout) clearTimeout(window._msgTimeout);
-    window._msgTimeout = setTimeout(() => { if (msgDiv.innerHTML === msg) msgDiv.innerHTML = ''; }, duration);
-}
-
-function shakeRow() {
-    const row = document.getElementById(`row-${currentRow}`);
-    if (row) { row.classList.add('shake'); setTimeout(() => row.classList.remove('shake'), 500); }
-}
-
-function evaluateGuess() {
-    const result = calculateGuessResult(currentGuess, targetSequence);
-    attemptResults[currentRow] = result;
-    inputLock = true;
-    let completed = 0;
-    for (let i = 0; i < MAX_ARROWS; i++) {
-        const tile = document.getElementById(`tile-${currentRow}-${i}`);
-        if (!tile) continue;
-        setTimeout(() => {
+function evaluateGuess(){
+    const result=calcResult(currentGuess,targetSequence);
+    attemptResults[currentRow]=result;
+    attemptGuesses[currentRow]=[...currentGuess];
+    inputLock=true;
+    let done=0;
+    for(let i=0;i<cfg.tiles;i++){
+        const tile=document.getElementById(`tile-${currentRow}-${i}`);
+        if(!tile) continue;
+        setTimeout(()=>{
             tile.classList.add('flip');
-            setTimeout(() => {
-                tile.classList.add(result[i]);
-                updateKeyboard(currentGuess[i], result[i]);
-                completed++;
-                if (completed === MAX_ARROWS) {
-                    setTimeout(() => {
-                        if (JSON.stringify(currentGuess) === JSON.stringify(targetSequence)) {
-                            gameWon = true; gameOver = true; handleWin();
-                        } else if (currentRow === MAX_ATTEMPTS - 1) {
-                            gameOver = true; handleLoss();
-                        } else {
-                            currentRow++;
-                            currentGuess = Array(MAX_ARROWS).fill('');
-                            inputLock = false;
-                            updateCurrentRow();
-                        }
-                        isProcessing = false;
-                    }, 300);
+            setTimeout(()=>{
+                if(cfg.mastermind){
+                    tile.classList.add('submitted');
+                } else {
+                    tile.classList.add(result[i]);
+                    easyKeyColor(currentGuess[i],result[i]);
                 }
-            }, 300);
-        }, i * 250);
+                done++;
+                if(done===cfg.tiles){
+                    if(cfg.mastermind) revealDots(currentRow,result);
+                    setTimeout(()=>afterEval(result), cfg.mastermind?450:300);
+                }
+            },275);
+        },i*200);
     }
 }
 
-function collectMatrix(upToRow) {
-    const matrix = [];
-    for (let r = 0; r <= upToRow; r++) {
-        const rowColors = [];
-        for (let c = 0; c < MAX_ARROWS; c++) {
-            const tile = document.getElementById(`tile-${r}-${c}`);
-            if (!tile) { rowColors.push('absent'); continue; }
-            if (tile.classList.contains('correct')) rowColors.push('correct');
-            else if (tile.classList.contains('present')) rowColors.push('present');
-            else rowColors.push('absent');
+function revealDots(row,result){
+    const panel=document.getElementById(`mm-${row}`);
+    if(!panel) return;
+    const sorted=[...result].sort((a,b)=>({correct:0,present:1,absent:2}[a]-{correct:0,present:1,absent:2}[b]));
+    panel.innerHTML='';
+    const half=Math.ceil(cfg.tiles/2);
+    for(let r=0;r<2;r++){
+        const rd=document.createElement('div'); rd.className='mm-row';
+        for(let c=0;c<half;c++){
+            const idx=r*half+c;
+            const dot=document.createElement('div'); dot.className='mm-dot';
+            const st=sorted[idx];
+            if(st==='correct'||st==='present') setTimeout(()=>dot.classList.add(st),(r*half+c)*75);
+            rd.appendChild(dot);
         }
-        matrix.push(rowColors);
+        panel.appendChild(rd);
     }
-    return matrix;
+    // mark tried keys with subtle border only
+    currentGuess.forEach(a=>{ const k=document.querySelector(`.key[data-key="${a}"]`); if(k) k.classList.add('tried'); });
 }
 
-function handleWin() {
-    showMessage('🎉 أحسنت! لقد فزت!');
-    const matrix = collectMatrix(currentRow);
-    attemptMatrices.unshift({ matrix, result: 'win', attempts: currentRow + 1, word: targetSequence.join('') });
-    if (attemptMatrices.length > 50) attemptMatrices.pop();
-    localStorage.setItem('arrowle_matrices', JSON.stringify(attemptMatrices));
+function easyKeyColor(arrow,status){
+    const key=document.querySelector(`.key[data-key="${arrow}"]`);
+    if(!key) return;
+    if(status==='correct'){key.classList.add('correct');key.classList.remove('present','absent');}
+    else if(status==='present'&&!key.classList.contains('correct')){key.classList.add('present');key.classList.remove('absent');}
+    else if(status==='absent'&&!key.classList.contains('correct')&&!key.classList.contains('present')){key.classList.add('absent');}
+}
 
-    attemptsHistory.unshift({ number: attemptsHistory.length + 1, attempts: currentRow + 1, result: 'win', target: targetSequence.join('') });
-    if (attemptsHistory.length > 100) attemptsHistory.pop();
-    localStorage.setItem('arrowle_history', JSON.stringify(attemptsHistory));
+function afterEval(result){
+    isProcessing=false;
+    const won=result.every(r=>r==='correct');
+    if(won){
+        gameOver=true; stopTimer();
+        showMessage('🎉 أحسنت! فزت!');
+        saveResult(true); setTimeout(()=>showGameResultModal(true),1800);
+    } else if(currentRow>=cfg.attempts-1){
+        gameOver=true; stopTimer();
+        showMessage(`💔 انتهت المحاولات! التسلسل: ${targetSequence.join(' ')}`);
+        saveResult(false); setTimeout(()=>showGameResultModal(false),1400);
+    } else {
+        currentRow++;
+        currentGuess=Array(cfg.tiles).fill('');
+        inputLock=false; updateCurrentRow();
+    }
+}
 
-    stats.played++; stats.wins++; stats.currentStreak++;
-    if (stats.currentStreak > stats.maxStreak) stats.maxStreak = stats.currentStreak;
-    localStorage.setItem('arrowle_stats', JSON.stringify(stats));
+// ══ STATS ════════════════════════════════════════════════════════════
+function saveResult(won){
+    const used=won?currentRow+1:cfg.attempts;
+    attemptsHistory.unshift({number:attemptsHistory.length+1,attempts:used,maxAttempts:cfg.attempts,result:won?'win':'loss',target:targetSequence.join(''),mode:difficulty});
+    if(attemptsHistory.length>100) attemptsHistory.pop();
+    localStorage.setItem('arrowle_history',JSON.stringify(attemptsHistory));
+    stats.played++;
+    if(won){stats.wins++;stats.currentStreak++;if(stats.currentStreak>stats.maxStreak)stats.maxStreak=stats.currentStreak;}
+    else stats.currentStreak=0;
+    localStorage.setItem('arrowle_stats',JSON.stringify(stats));
     updateStatsDisplay();
-    setTimeout(() => showGameResultModal(true), 2500);
 }
-
-function handleLoss() {
-    showMessage(`💔 انتهت المحاولات! التسلسل الصحيح: ${targetSequence.join(' ')}`);
-    const matrix = collectMatrix(MAX_ATTEMPTS - 1);
-    attemptMatrices.unshift({ matrix, result: 'loss', attempts: MAX_ATTEMPTS, word: targetSequence.join('') });
-    localStorage.setItem('arrowle_matrices', JSON.stringify(attemptMatrices));
-
-    attemptsHistory.unshift({ number: attemptsHistory.length + 1, attempts: MAX_ATTEMPTS, result: 'loss', target: targetSequence.join('') });
-    localStorage.setItem('arrowle_history', JSON.stringify(attemptsHistory));
-
-    stats.played++; stats.currentStreak = 0;
-    localStorage.setItem('arrowle_stats', JSON.stringify(stats));
-    updateStatsDisplay();
-    setTimeout(() => showGameResultModal(false), 1500);
-}
-
-// ─── MATRIX RENDER ────────────────────────────────────────────────────────────
-function renderAttemptMatrix() {
-    const container = document.getElementById('matrixGrid');
-    container.innerHTML = '';
-    const used = attemptResults.filter(r => r && r.length);
-    used.forEach((res, idx) => {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'matrix-row';
-        res.forEach((st, col) => {
-            const tile = document.createElement('div');
-            tile.className = `matrix-tile ${st}`;
-            const srcTile = document.getElementById(`tile-${idx}-${col}`);
-            tile.textContent = srcTile ? (srcTile.textContent || '') : '';
-            rowDiv.appendChild(tile);
-        });
-        container.appendChild(rowDiv);
-    });
-}
-
-function showGameResultModal(isWin) {
-    const modal = document.getElementById('gameResultModal');
-    document.getElementById('resultModalTitle').textContent = isWin ? '🎉 مبروك! فزت!' : '💔 انتهت المحاولات!';
-    document.getElementById('gameResultDetails').innerHTML = `
-        <div class="${isWin ? 'text-green-500' : 'text-red-500'} font-bold text-lg mb-2">
-            ${isWin ? 'لقد فزت في المحاولة ' + (currentRow + 1) : 'انتهت محاولاتك!'}
-        </div>
-        <div class="opacity-60 mb-3 text-sm">التسلسل الصحيح:</div>
-        <div class="correct-arrows">${targetSequence.join(' ')}</div>
-    `;
-    renderAttemptMatrix();
-    modal.classList.remove('hidden');
-}
-
-// ─── STATS ────────────────────────────────────────────────────────────────────
-function updateStatsDisplay() {
-    document.getElementById('playedCount').textContent = stats.played;
-    const wp = stats.played ? Math.round((stats.wins / stats.played) * 100) : 0;
-    document.getElementById('winPercent').textContent = wp + '%';
-    document.getElementById('currentStreak').textContent = stats.currentStreak;
-    document.getElementById('maxStreak').textContent = stats.maxStreak;
-
-    const body = document.getElementById('attemptsTableBody');
-    const noMsg = document.getElementById('noAttemptsMessage');
-    const table = document.querySelector('.attempts-table');
-    if (attemptsHistory.length > 0) {
-        noMsg.classList.add('hidden'); table.classList.remove('hidden');
-        body.innerHTML = '';
-        [...attemptsHistory].reverse().forEach(a => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td class="attempt-number">${a.number}</td><td>${a.attempts}</td><td><span class="attempt-result ${a.result}">${a.result === 'win' ? 'فوز ✓' : 'خسارة ✗'}</span></td>`;
+function updateStatsDisplay(){
+    document.getElementById('playedCount').textContent=stats.played;
+    document.getElementById('winPercent').textContent=stats.played?Math.round(stats.wins/stats.played*100)+'%':'0%';
+    document.getElementById('currentStreak').textContent=stats.currentStreak;
+    document.getElementById('maxStreak').textContent=stats.maxStreak;
+    const body=document.getElementById('attemptsTableBody');
+    const noMsg=document.getElementById('noAttemptsMessage');
+    const table=document.querySelector('.attempts-table');
+    if(attemptsHistory.length>0){
+        noMsg.classList.add('hidden');table.classList.remove('hidden');body.innerHTML='';
+        [...attemptsHistory].reverse().forEach(a=>{
+            const tr=document.createElement('tr');
+            const ml=a.mode==='hard'?'<span style="color:var(--danger);font-size:0.72rem;">🔥صعب</span>':'<span style="font-size:0.72rem;opacity:0.55;">سهل</span>';
+            tr.innerHTML=`<td class="attempt-number">${a.number}</td><td>${a.attempts}/${a.maxAttempts||6}</td><td>${ml}</td><td><span class="attempt-result ${a.result}">${a.result==='win'?'فوز ✓':'خسارة ✗'}</span></td>`;
             body.appendChild(tr);
         });
+    } else {noMsg.classList.remove('hidden');table.classList.add('hidden');}
+}
+
+// ══ RESULT MODAL ═════════════════════════════════════════════════════
+function renderMatrix(){
+    const cont=document.getElementById('matrixGrid'); cont.innerHTML='';
+    for(let r=0;r<cfg.attempts;r++){
+        if(!attemptGuesses[r]) continue;
+        const row=document.createElement('div'); row.className='matrix-row-wrap';
+        const res=attemptResults[r]||[];
+        for(let c=0;c<cfg.tiles;c++){
+            const tile=document.createElement('div');
+            tile.className=cfg.mastermind?'matrix-tile hard-tile':`matrix-tile ${res[c]||'absent'}`;
+            tile.textContent=(attemptGuesses[r]&&attemptGuesses[r][c])||'';
+            row.appendChild(tile);
+        }
+        cont.appendChild(row);
+    }
+    const leg=document.getElementById('matrixLegend');
+    if(cfg.mastermind){
+        leg.innerHTML='<div class="legend-item" style="opacity:0.55;font-size:0.77rem;">🔥 وضع صعب — الألوان مخفية</div>';
     } else {
-        noMsg.classList.remove('hidden'); table.classList.add('hidden');
+        leg.innerHTML=`
+            <div class="legend-item"><div class="legend-color correct"></div><span>صحيح</span></div>
+            <div class="legend-item"><div class="legend-color present"></div><span>موجود</span></div>
+            <div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div>`;
+    }
+}
+function showGameResultModal(isWin){
+    renderMatrix();
+    document.getElementById('resultModalTitle').textContent=isWin?'🎉 مبروك! فزت!':'💔 انتهت المحاولات!';
+    const used=isWin?currentRow+1:cfg.attempts;
+    document.getElementById('gameResultDetails').innerHTML=`
+        <div style="color:${isWin?'#4ade80':'#f87171'};font-weight:800;font-size:1rem;margin-bottom:6px;">
+            ${isWin?`فزت في المحاولة ${used} من ${cfg.attempts}`:'انتهت محاولاتك!'}
+        </div>
+        <div style="opacity:0.5;font-size:0.84rem;margin-bottom:8px;">التسلسل الصحيح:</div>
+        <div class="correct-arrows">${targetSequence.join('  ')}</div>`;
+    document.getElementById('gameResultModal').classList.remove('hidden');
+}
+
+// ══ INPUT ════════════════════════════════════════════════════════════
+function handleInput(value){
+    if(inputLock||gameOver||isProcessing) return;
+    if(value==='Enter'){
+        if(currentGuess.some(c=>c==='')){showMessage(`يجب إدخال ${cfg.tiles} أسهم`);shakeRow();return;}
+        isProcessing=true; evaluateGuess();
+    } else if(value==='Backspace'){
+        let last=-1;
+        for(let i=currentGuess.length-1;i>=0;i--){if(currentGuess[i]!==''){last=i;break;}}
+        if(last!==-1){currentGuess[last]='';updateCurrentRow();}
+    } else if(cfg.symbols.includes(value)){
+        const first=currentGuess.indexOf('');
+        if(first!==-1){
+            currentGuess[first]=value; updateCurrentRow();
+            const tile=document.getElementById(`tile-${currentRow}-${first}`);
+            if(tile){tile.classList.add('filled');setTimeout(()=>tile.classList.remove('filled'),100);}
+        } else showMessage('لا يمكن إضافة المزيد',900);
     }
 }
 
-// ─── INPUT ────────────────────────────────────────────────────────────────────
-function handleInput(value) {
-    if (inputLock || gameOver || isProcessing) return;
-    if (value === 'Enter') {
-        const empty = currentGuess.some(cell => cell === '');
-        if (empty) { showMessage(`يجب إدخال ${MAX_ARROWS} أسهم`); shakeRow(); return; }
-        isProcessing = true;
-        evaluateGuess();
-    } else if (value === 'Backspace') {
-        let last = -1;
-        for (let i = currentGuess.length - 1; i >= 0; i--) { if (currentGuess[i] !== '') { last = i; break; } }
-        if (last !== -1) { currentGuess[last] = ''; updateCurrentRow(); }
-    } else if (ARROW_SYMBOLS.includes(value)) {
-        let first = currentGuess.indexOf('');
-        if (first !== -1) {
-            currentGuess[first] = value;
-            updateCurrentRow();
-            const tile = document.getElementById(`tile-${currentRow}-${first}`);
-            if (tile) { tile.classList.add('filled'); setTimeout(() => tile.classList.remove('filled'), 100); }
-        } else {
-            showMessage(`لا يمكن إضافة المزيد من الأسهم`, 1000);
-        }
+// ══ KEYBOARD ═════════════════════════════════════════════════════════
+function createKeyboard(){
+    const kbd=document.getElementById('keyboard'); kbd.innerHTML='';
+    if(difficulty==='easy'){
+        const r=document.createElement('div'); r.className='keyboard-row';
+        ['↑','↓','←','→'].forEach(a=>r.appendChild(makeKey(a))); kbd.appendChild(r);
+    } else {
+        const g=document.createElement('div'); g.className='compass-grid';
+        ['↖','↑','↗','←',null,'→','↙','↓','↘'].forEach(a=>{
+            if(!a){const e=document.createElement('div');e.className='key-empty';g.appendChild(e);}
+            else g.appendChild(makeKey(a));
+        });
+        kbd.appendChild(g);
     }
-}
-
-// ─── KEYBOARD ─────────────────────────────────────────────────────────────────
-function createKeyboard() {
-    const keyboardDiv = document.getElementById('keyboard');
-    keyboardDiv.innerHTML = '';
-
-    // Row 1: arrow keys (square, large glyph)
-    const row1 = document.createElement('div');
-    row1.className = 'keyboard-row';
-    ARROW_SYMBOLS.forEach(arrow => {
-        const btn = document.createElement('button');
-        btn.className = 'key';
-        btn.textContent = arrow;
-        btn.dataset.key = arrow;
-        btn.addEventListener('click', () => handleInput(arrow));
-        row1.appendChild(btn);
+    const r2=document.createElement('div'); r2.className='keyboard-row';
+    [['Backspace','⌫ حذف','backspace'],['Enter','✓ تأكيد','enter']].forEach(([k,label,cls])=>{
+        const btn=document.createElement('button');
+        btn.className=`key control ${cls}`;btn.textContent=label;btn.dataset.key=k;
+        btn.addEventListener('click',()=>handleInput(k)); r2.appendChild(btn);
     });
-    keyboardDiv.appendChild(row1);
-
-    // Row 2: control keys
-    const row2 = document.createElement('div');
-    row2.className = 'keyboard-row';
-    [['Backspace', '⌫ حذف', 'backspace'], ['Enter', '✓ تأكيد', 'enter']].forEach(([key, label, cls]) => {
-        const btn = document.createElement('button');
-        btn.className = `key control ${cls}`;
-        btn.textContent = label;
-        btn.dataset.key = key;
-        btn.addEventListener('click', () => handleInput(key));
-        row2.appendChild(btn);
-    });
-    keyboardDiv.appendChild(row2);
+    kbd.appendChild(r2);
+}
+function makeKey(arrow){
+    const btn=document.createElement('button');
+    btn.className='key';btn.textContent=arrow;btn.dataset.key=arrow;
+    btn.addEventListener('click',()=>handleInput(arrow)); return btn;
 }
 
-// ─── GRID ─────────────────────────────────────────────────────────────────────
-function buildGrid() {
-    const grid = document.getElementById('grid');
-    grid.innerHTML = '';
-    for (let r = 0; r < MAX_ATTEMPTS; r++) {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'grid-row'; rowDiv.id = `row-${r}`;
-        for (let c = 0; c < MAX_ARROWS; c++) {
-            const tile = document.createElement('div');
-            tile.className = 'tile'; tile.id = `tile-${r}-${c}`;
-            rowDiv.appendChild(tile);
+// ══ GRID ═════════════════════════════════════════════════════════════
+function buildGrid(){
+    const grid=document.getElementById('grid'); grid.innerHTML='';
+    for(let r=0;r<cfg.attempts;r++){
+        const row=document.createElement('div'); row.className='grid-row'; row.id=`row-${r}`;
+        if(cfg.mastermind){
+            const panel=document.createElement('div'); panel.className='mm-panel'; panel.id=`mm-${r}`;
+            const half=Math.ceil(cfg.tiles/2);
+            for(let dr=0;dr<2;dr++){
+                const dotRow=document.createElement('div'); dotRow.className='mm-row';
+                for(let dc=0;dc<half;dc++){const dot=document.createElement('div');dot.className='mm-dot';dotRow.appendChild(dot);}
+                panel.appendChild(dotRow);
+            }
+            row.appendChild(panel);
         }
-        grid.appendChild(rowDiv);
+        for(let c=0;c<cfg.tiles;c++){
+            const tile=document.createElement('div'); tile.className='tile'; tile.id=`tile-${r}-${c}`;
+            row.appendChild(tile);
+        }
+        grid.appendChild(row);
     }
-    requestAnimationFrame(updateGridTileSize);
+    requestAnimationFrame(updateTileSize);
+}
+function updateCurrentRow(){
+    for(let i=0;i<cfg.tiles;i++){
+        const t=document.getElementById(`tile-${currentRow}-${i}`); if(t) t.textContent=currentGuess[i]||'';
+    }
 }
 
-// ─── TILE SIZE ────────────────────────────────────────────────────────────────
-function updateGridTileSize() {
-    const headerH = document.querySelector('header')?.offsetHeight || 60;
-    const keyboardH = document.getElementById('keyboard')?.offsetHeight || 200;
-    const msgH = 42, padding = 24;
-    const gridGaps = (MAX_ATTEMPTS - 1) * 4;
-    const availableH = window.innerHeight - headerH - keyboardH - msgH - padding - gridGaps;
-    const tileByHeight = Math.floor(availableH / MAX_ATTEMPTS);
-    const maxW = Math.min(window.innerWidth, 640);
-    const tileByWidth = Math.floor((maxW - 40 - (MAX_ARROWS - 1) * 5) / MAX_ARROWS);
-    const tileSize = Math.max(Math.min(tileByHeight, tileByWidth, 70), 28);
-    document.querySelectorAll('.tile').forEach(t => t.style.setProperty('--tile-size', tileSize + 'px'));
+// ══ TILE SIZE ════════════════════════════════════════════════════════
+function updateTileSize(){
+    const hH=document.querySelector('header')?.offsetHeight||58;
+    const tH=document.getElementById('timerWrapper')?.offsetHeight||0;
+    const hintH=difficulty==='hard'?28:0;
+    const kH=document.getElementById('keyboard')?.offsetHeight||200;
+    const mH=34, pad=20, rg=(cfg.attempts-1)*4;
+    const avH=window.innerHeight-hH-tH-hintH-kH-mH-pad-rg;
+    const byH=Math.floor(avH/cfg.attempts);
+    const mmW=cfg.mastermind?42:0;
+    const mxW=Math.min(window.innerWidth,700);
+    const byW=Math.floor((mxW-30-mmW-(cfg.tiles-1)*4)/cfg.tiles);
+    const sz=Math.max(Math.min(byH,byW,66),22);
+    document.querySelectorAll('.tile').forEach(t=>t.style.setProperty('--tile-size',sz+'px'));
 }
 
-// ─── NEW GAME ─────────────────────────────────────────────────────────────────
-function startNewGame() {
-    applyDifficulty();
-    targetSequence = generateRandomSequence();
-    currentRow = 0;
-    currentGuess = Array(MAX_ARROWS).fill('');
-    gameOver = false; gameWon = false;
-    isProcessing = false; inputLock = false;
-    startTime = new Date();
-    attemptResults = [];
-    document.querySelectorAll('.key').forEach(k => k.classList.remove('correct', 'present', 'absent'));
-    buildGrid();
-    updateCurrentRow();
-    document.getElementById('message').innerHTML = '';
+// ══ HELPERS ══════════════════════════════════════════════════════════
+function showMessage(msg,dur=3200){
+    const el=document.getElementById('message'); el.innerHTML=msg;
+    clearTimeout(window._msgT); window._msgT=setTimeout(()=>{if(el.innerHTML===msg)el.innerHTML='';},dur);
+}
+function shakeRow(){
+    const row=document.getElementById(`row-${currentRow}`);
+    if(row){row.classList.add('shake');setTimeout(()=>row.classList.remove('shake'),500);}
+}
+
+// ══ NEW GAME ═════════════════════════════════════════════════════════
+function startNewGame(){
+    stopTimer(); applyDifficulty();
+    targetSequence=generateSeq(); currentRow=0;
+    currentGuess=Array(cfg.tiles).fill('');
+    gameOver=false;isProcessing=false;inputLock=false;
+    attemptResults=[];attemptGuesses=[];
+    document.getElementById('message').innerHTML='';
     document.getElementById('gameResultModal').classList.add('hidden');
     document.getElementById('statsModal').classList.add('hidden');
+    document.querySelectorAll('.key').forEach(k=>k.classList.remove('correct','present','absent','tried'));
+    createKeyboard(); buildGrid(); updateCurrentRow();
+    if(cfg.timerSec) startTimer();
 }
 
-// ─── THEME ────────────────────────────────────────────────────────────────────
-function loadTheme() {
-    const saved = localStorage.getItem('arrowle_theme');
-    const icon = document.querySelector('#themeToggle i');
-    if (saved === 'light') {
-        document.body.classList.add('light-mode');
-        icon.className = 'fas fa-moon text-lg';
-    } else {
-        document.body.classList.remove('light-mode');
-        icon.className = 'fas fa-sun text-sm text-yellow-400';
-    }
+// ══ THEME ════════════════════════════════════════════════════════════
+function loadTheme(){
+    const saved=localStorage.getItem('arrowle_theme');
+    const icon=document.querySelector('#themeToggle i');
+    if(saved==='light'){document.body.classList.add('light-mode');icon.className='fas fa-moon';icon.style.color='';}
+    else{document.body.classList.remove('light-mode');icon.className='fas fa-sun';icon.style.color='#facc15';}
 }
 
-// ─── EVENTS ───────────────────────────────────────────────────────────────────
-function setupEventListeners() {
-    document.addEventListener('keydown', (e) => {
-        if (e.ctrlKey || e.metaKey || e.altKey) return;
-        const map = { Enter:'Enter', Backspace:'Backspace', ArrowUp:'↑', ArrowDown:'↓', ArrowLeft:'←', ArrowRight:'→' };
-        if (map[e.key]) { e.preventDefault(); handleInput(map[e.key]); }
-    });
-    window.addEventListener('resize', () => requestAnimationFrame(updateGridTileSize));
-
-    document.getElementById('statsBtn').addEventListener('click', () => { updateStatsDisplay(); document.getElementById('statsModal').classList.remove('hidden'); });
-    document.getElementById('newGameHeaderBtn').addEventListener('click', startNewGame);
-    document.getElementById('difficultyBtn').addEventListener('click', toggleDifficulty);
-    document.getElementById('newGameFromStats').addEventListener('click', () => { startNewGame(); document.getElementById('statsModal').classList.add('hidden'); });
-    document.getElementById('startGameBtn').addEventListener('click', () => { document.getElementById('helpModal').classList.add('hidden'); startNewGame(); });
-    document.getElementById('closeHelp').addEventListener('click', () => document.getElementById('helpModal').classList.add('hidden'));
-    document.getElementById('closeStats').addEventListener('click', () => document.getElementById('statsModal').classList.add('hidden'));
-    document.getElementById('closeGameResult').addEventListener('click', () => document.getElementById('gameResultModal').classList.add('hidden'));
-    document.getElementById('playAgainBtn').addEventListener('click', () => { startNewGame(); document.getElementById('gameResultModal').classList.add('hidden'); });
-    document.getElementById('viewStatsBtn').addEventListener('click', () => { document.getElementById('gameResultModal').classList.add('hidden'); updateStatsDisplay(); document.getElementById('statsModal').classList.remove('hidden'); });
-    document.getElementById('themeToggle').addEventListener('click', () => {
-        const isLight = document.body.classList.toggle('light-mode');
-        const icon = document.querySelector('#themeToggle i');
-        icon.className = isLight ? 'fas fa-moon text-lg' : 'fas fa-sun text-sm text-yellow-400';
-        localStorage.setItem('arrowle_theme', isLight ? 'light' : 'dark');
-    });
-}
-
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-function loadData() {
-    const s = localStorage.getItem('arrowle_stats');
-    if (s) stats = JSON.parse(s);
-    const h = localStorage.getItem('arrowle_history');
-    if (h) attemptsHistory = JSON.parse(h);
-    const m = localStorage.getItem('arrowle_matrices');
-    if (m) attemptMatrices = JSON.parse(m);
+// ══ DATA ═════════════════════════════════════════════════════════════
+function loadData(){
+    const s=localStorage.getItem('arrowle_stats');if(s)stats=JSON.parse(s);
+    const h=localStorage.getItem('arrowle_history');if(h)attemptsHistory=JSON.parse(h);
     updateStatsDisplay();
 }
 
-function init() {
-    loadData();
-    loadTheme();
-    applyDifficulty();
-    createKeyboard();
-    startNewGame();
-    setupEventListeners();
-    if (!localStorage.getItem('arrowle_help_seen')) {
-        setTimeout(() => document.getElementById('helpModal').classList.remove('hidden'), 500);
-        localStorage.setItem('arrowle_help_seen', 'true');
-    }
+// ══ EVENTS ═══════════════════════════════════════════════════════════
+function setupEvents(){
+    const km={ArrowUp:'↑',ArrowDown:'↓',ArrowLeft:'←',ArrowRight:'→'};
+    // diagonal shortcuts for numpad and keyboard
+    const dm={'7':'↖','9':'↗','1':'↙','3':'↘',q:'↖',e:'↗',z:'↙',c:'↘'};
+    document.addEventListener('keydown',ev=>{
+        if(ev.ctrlKey||ev.metaKey||ev.altKey) return;
+        if(ev.key==='Enter'){ev.preventDefault();handleInput('Enter');return;}
+        if(ev.key==='Backspace'){ev.preventDefault();handleInput('Backspace');return;}
+        if(km[ev.key]){ev.preventDefault();handleInput(km[ev.key]);return;}
+        if(difficulty==='hard'&&dm[ev.key]){ev.preventDefault();handleInput(dm[ev.key]);}
+    });
+    window.addEventListener('resize',()=>requestAnimationFrame(updateTileSize));
+    document.getElementById('statsBtn').addEventListener('click',()=>{updateStatsDisplay();document.getElementById('statsModal').classList.remove('hidden');});
+    document.getElementById('newGameHeaderBtn').addEventListener('click',startNewGame);
+    document.getElementById('difficultyBtn').addEventListener('click',toggleDifficulty);
+    document.getElementById('newGameFromStats').addEventListener('click',()=>{startNewGame();document.getElementById('statsModal').classList.add('hidden');});
+    document.getElementById('startGameBtn').addEventListener('click',()=>{document.getElementById('helpModal').classList.add('hidden');startNewGame();});
+    document.getElementById('closeHelp').addEventListener('click',()=>document.getElementById('helpModal').classList.add('hidden'));
+    document.getElementById('closeStats').addEventListener('click',()=>document.getElementById('statsModal').classList.add('hidden'));
+    document.getElementById('closeGameResult').addEventListener('click',()=>document.getElementById('gameResultModal').classList.add('hidden'));
+    document.getElementById('playAgainBtn').addEventListener('click',()=>{startNewGame();document.getElementById('gameResultModal').classList.add('hidden');});
+    document.getElementById('viewStatsBtn').addEventListener('click',()=>{document.getElementById('gameResultModal').classList.add('hidden');updateStatsDisplay();document.getElementById('statsModal').classList.remove('hidden');});
+    document.getElementById('themeToggle').addEventListener('click',()=>{
+        const isL=document.body.classList.toggle('light-mode');
+        const icon=document.querySelector('#themeToggle i');
+        icon.className=isL?'fas fa-moon':'fas fa-sun'; icon.style.color=isL?'':'#facc15';
+        localStorage.setItem('arrowle_theme',isL?'light':'dark');
+    });
 }
 
-window.addEventListener('load', init);
+// ══ INIT ═════════════════════════════════════════════════════════════
+function init(){
+    loadData(); loadTheme(); applyDifficulty();
+    startNewGame(); setupEvents();
+    if(!localStorage.getItem('arrowle_help_seen')){
+        setTimeout(()=>document.getElementById('helpModal').classList.remove('hidden'),600);
+        localStorage.setItem('arrowle_help_seen','true');
+    }
+}
+window.addEventListener('load',init);
 </script>
 </body>
 </html>
