@@ -1,1425 +1,734 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>لغز الشبكة الحسابية</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Roboto+Mono:wght@400;700&display=swap');
-
-        * {
-            font-family: 'Tajawal', sans-serif;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-primary: #0f0f1a;
-            --bg-surface: #1a1a2e;
-            --bg-gradient: linear-gradient(180deg, #0f0f1a 0%, #050508 100%);
-            --correct-color: #4ade80;
-            --present-color: #fbbf24;
-            --absent-color: #4b5563;
-            --default-color: #374151;
-            --text-primary: #ffffff;
-            --text-secondary: #9ca3af;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --border-active: rgba(255, 255, 255, 0.2);
-            --key-bg: rgba(255, 255, 255, 0.08);
-            --enter-color: #4ade80;
-            --backspace-color: #ef4444;
-            --correct-glow: rgba(74, 222, 128, 0.35);
-            --present-glow: rgba(251, 191, 36, 0.35);
-        }
-
-        .light-mode {
-            --bg-primary: #f3f4f6;
-            --bg-surface: #ffffff;
-            --bg-gradient: linear-gradient(180deg, #f3f4f6 0%, #e5e7eb 100%);
-            --text-primary: #111827;
-            --text-secondary: #6b7280;
-            --border-color: rgba(0, 0, 0, 0.1);
-            --border-active: rgba(0, 0, 0, 0.2);
-            --key-bg: rgba(0, 0, 0, 0.06);
-            --default-color: #d1d5db;
-        }
-
-        body {
-            background: var(--bg-gradient);
-            color: var(--text-primary);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            margin: 0;
-            padding: 0;
-            height: 100dvh;
-            max-height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            touch-action: manipulation;
-        }
-
-        .game-wrapper {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 6px 10px;
-            overflow: hidden;
-            min-height: 0;
-        }
-
-        .tile {
-            --tile-size: 52px;
-            width: var(--tile-size);
-            height: var(--tile-size);
-            border: 2px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Roboto Mono', monospace;
-            font-size: calc(var(--tile-size) * 0.48);
-            font-weight: 700;
-            user-select: none;
-            transition: all 0.3s ease;
-            border-radius: 6px;
-            flex-shrink: 0;
-            background: var(--bg-surface);
-        }
-
-        .tile.filled {
-            border-color: rgba(255, 255, 255, 0.3);
-            animation: pop 0.1s ease;
-        }
-
-        @keyframes pop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.12); }
-            100% { transform: scale(1); }
-        }
-
-        .tile.correct {
-            background-color: var(--correct-color);
-            border-color: var(--correct-color);
-            color: white;
-            box-shadow: 0 0 14px var(--correct-glow);
-        }
-
-        .tile.present {
-            background-color: var(--present-color);
-            border-color: var(--present-color);
-            color: white;
-            box-shadow: 0 0 14px var(--present-glow);
-        }
-
-        .tile.absent {
-            background-color: var(--absent-color);
-            border-color: var(--absent-color);
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        .flip {
-            animation: flip 0.6s ease;
-        }
-
-        @keyframes flip {
-            0% { transform: rotateX(0); }
-            50% { transform: rotateX(90deg); }
-            100% { transform: rotateX(0); }
-        }
-
-        .keyboard-row {
-            display: flex;
-            justify-content: center;
-            gap: 4px;
-            margin-bottom: 6px;
-            width: 100%;
-        }
-
-        .key {
-            height: clamp(42px, 6vh, 58px);
-            min-width: clamp(28px, 6vw, 43px);
-            background-color: var(--key-bg);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-weight: 700;
-            font-family: 'Roboto Mono', monospace;
-            font-size: clamp(0.9rem, 3vw, 1.2rem);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            user-select: none;
-            transition: all 0.15s ease;
-            flex: 1;
-            margin: 0 2px;
-            padding: 0 2px;
-            touch-action: manipulation;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-        }
-
-        .key.enter {
-            background-color: var(--enter-color);
-            color: white;
-            border-color: var(--enter-color);
-            font-size: clamp(0.65rem, 2.2vw, 0.85rem);
-            font-family: 'Tajawal', sans-serif;
-            flex: 1.5;
-        }
-
-        .key.backspace {
-            background-color: var(--backspace-color);
-            color: white;
-            border-color: var(--backspace-color);
-            flex: 2 !important;
-        }
-
-        .key.backspace i {
-            font-size: 1.4rem;
-        }
-
-        @media (max-width: 480px) {
-            .key {
-                height: clamp(38px, 5.5vh, 50px);
-                min-width: clamp(24px, 5vw, 34px);
-                font-size: clamp(0.8rem, 2.8vw, 1rem);
-                margin: 0 1px;
-                padding: 0 1px;
-            }
-            .key.enter {
-                font-size: clamp(0.6rem, 2vw, 0.75rem);
-            }
-            .keyboard-row {
-                gap: 2px;
-                margin-bottom: 5px;
-            }
-        }
-
-        .key:hover {
-            background-color: var(--border-active);
-            transform: translateY(-1px);
-        }
-
-        .key:active {
-            transform: translateY(0);
-        }
-
-        .key.correct {
-            background-color: var(--correct-color) !important;
-            border-color: var(--correct-color) !important;
-            color: white !important;
-            box-shadow: 0 0 8px var(--correct-glow);
-        }
-
-        .key.present {
-            background-color: var(--present-color) !important;
-            border-color: var(--present-color) !important;
-            color: white !important;
-            box-shadow: 0 0 8px var(--present-glow);
-        }
-
-        .key.absent {
-            background-color: var(--absent-color) !important;
-            border-color: var(--absent-color) !important;
-            color: rgba(255, 255, 255, 0.4) !important;
-        }
-
-        .shake {
-            animation: shake 0.5s ease;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-
-        .bounce {
-            animation: bounce 0.5s ease;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        header {
-            padding: 10px 16px;
-            border-bottom: 1px solid var(--border-color);
-            background: rgba(15, 15, 26, 0.8);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .light-mode header {
-            background: rgba(255, 255, 255, 0.85);
-        }
-
-        h1 {
-            font-size: 1.3rem;
-            font-weight: 800;
-            margin: 0;
-            color: var(--text-primary);
-            white-space: nowrap;
-        }
-
-        .header-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .header-btn:hover {
-            border-color: var(--border-active);
-        }
-
-        .header-btn.new-game:hover {
-            border-color: var(--correct-color);
-            color: var(--correct-color);
-        }
-
-        .header-btn i {
-            font-size: 1.2rem;
-        }
-
-        .grid-row {
-            display: flex;
-            flex-direction: row !important;
-            direction: ltr !important;
-            justify-content: center;
-            gap: 5px;
-            margin-bottom: 5px;
-        }
-
-        .grid-row .tile {
-            direction: ltr;
-        }
-
-        #grid, .grid-row, .keyboard-row, .key, .tile {
-            direction: ltr !important;
-            unicode-bidi: plaintext;
-        }
-
-        #message {
-            font-size: 1rem;
-            min-height: 40px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 10px;
-            text-align: center;
-            gap: 8px;
-            flex-wrap: wrap;
-            font-weight: 700;
-        }
-
-        .modal-overlay {
-            background-color: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(8px);
-        }
-
-        .modal-content {
-            width: 95%;
-            max-width: 460px;
-            max-height: 90vh;
-            overflow-y: auto;
-            margin: 10px;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-surface);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
-
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border-active);
-            border-radius: 10px;
-        }
-
-        .equation-example {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-            padding: 10px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-color);
-        }
-
-        .light-mode .equation-example {
-            background: rgba(0, 0, 0, 0.03);
-        }
-
-        .equation-box {
-            width: 44px;
-            height: 44px;
-            border: none;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Roboto Mono', monospace;
-            font-size: 1.3rem;
-            font-weight: 800;
-            flex-shrink: 0;
-        }
-
-        .equation-box.correct {
-            background: var(--correct-color);
-            color: white;
-        }
-
-        .equation-box.present {
-            background: var(--present-color);
-            color: white;
-        }
-
-        .equation-box.absent {
-            background: var(--absent-color);
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        .equation-description {
-            flex: 1;
-            font-size: 0.9rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin: 16px 0;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 12px 8px;
-            background: var(--key-bg);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-        }
-
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--text-primary);
-        }
-
-        .stat-label {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-
-        .result-equation {
-            background: linear-gradient(135deg, var(--correct-color), #22c55e);
-            color: white;
-            padding: 14px 20px;
-            border-radius: 12px;
-            margin: 10px 0;
-            text-align: center;
-            font-family: 'Roboto Mono', monospace;
-            font-size: 1.6rem;
-            font-weight: 900;
-            letter-spacing: 0.08em;
-            animation: pulse 2s infinite;
-            box-shadow: 0 4px 20px var(--correct-glow);
-            direction: ltr;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.04); }
-            100% { transform: scale(1); }
-        }
-
-        .win-celebration {
-            animation: winCelebration 2s ease infinite;
-        }
-
-        @keyframes winCelebration {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.04); }
-        }
-
-        .result-buttons {
-            display: flex;
-            gap: 8px;
-            margin-top: 16px;
-        }
-
-        .result-buttons button {
-            flex: 1;
-            padding: 13px;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: none;
-            font-family: 'Tajawal', sans-serif;
-        }
-
-        @media (max-width: 480px) {
-            .result-buttons {
-                flex-direction: column;
-                gap: 8px;
-            }
-        }
-
-        .equation-hint {
-            font-family: 'Roboto Mono', monospace;
-            direction: ltr;
-            text-align: center;
-            padding: 8px;
-            background: rgba(74, 222, 128, 0.1);
-            border-radius: 8px;
-            margin: 8px 0;
-            font-size: 0.85rem;
-            color: var(--correct-color);
-            border: 1px dashed var(--correct-color);
-        }
-
-        .help-section {
-            margin-bottom: 16px;
-        }
-
-        .help-section h3 {
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-        }
-
-        .help-section p {
-            font-size: 0.88rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        .rule-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            margin-bottom: 10px;
-            padding: 8px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
-        }
-
-        .rule-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            flex-shrink: 0;
-        }
-
-        .rule-icon.forbidden {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-        }
-
-        .rule-icon.allowed {
-            background: rgba(74, 222, 128, 0.2);
-            color: #4ade80;
-        }
-    </style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-69VLD61YBK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-69VLD61YBK');
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<title>ووردلات - وردل الأسهم</title>
+
+<meta name="keywords" content="ووردلات, ووردل بالعربي, ووردل أرقام, ووردل معادلات, ووردل محاولات, وردل الأسهم, ألغاز ذكاء">
+<meta name="description" content="تحدي وردل الأسهم ضمن منصة ووردلات. استمتع بأفضل تجربة ووردل بالعربي مع ألعاب ووردل أرقام ومعادلات. اختبر ذكاءك في أقل محاولات ممكنة!">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+*{font-family:'Tajawal',sans-serif;box-sizing:border-box;}
+:root{
+    --correct-color:#538d4e;
+    --present-color:#b59f3b;
+    --absent-color:#3a3a3c;
+    --default-color:#565758;
+    --bg-color:#121213;
+    --bg-gradient:linear-gradient(180deg,#121213 0%,#050505 100%);
+    --surface-color:rgba(30,30,32,0.85);
+    --text-color:#ffffff;
+    --border-color:rgba(255,255,255,0.1);
+    --border-active:rgba(255,255,255,0.2);
+    --key-bg:rgba(255,255,255,0.08);
+    --key-text:#ffffff;
+    --enter-color:#538d4e;
+    --backspace-color:#9b2335;
+    --newgame-color:#538d4e;
+    --newgame-hover:#6aad65;
+    --correct-glow:rgba(83,141,78,0.35);
+    --present-glow:rgba(181,159,59,0.35);
+    --header-border:rgba(255,255,255,0.07);
+}
+.light-mode{
+    --bg-color:#f8f9fa;
+    --bg-gradient:linear-gradient(180deg,#f8f9fa 0%,#e9ecef 100%);
+    --surface-color:rgba(255,255,255,0.85);
+    --text-color:#121213;
+    --border-color:rgba(0,0,0,0.1);
+    --border-active:rgba(0,0,0,0.2);
+    --key-bg:rgba(0,0,0,0.07);
+    --key-text:#121213;
+    --default-color:#d3d6da;
+    --header-border:rgba(0,0,0,0.08);
+}
+body{
+    background:var(--bg-gradient);
+    color:var(--text-color);
+    transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+    margin:0;padding:0;
+    height:100dvh;max-height:100dvh;
+    display:flex;flex-direction:column;
+    overflow:hidden;touch-action:manipulation;
+}
+.game-wrapper{flex:1;display:flex;flex-direction:column;justify-content:space-between;width:100%;max-width:600px;margin:0 auto;padding:6px 10px;overflow:hidden;min-height:0;}
+.tile{--tile-size:62px;width:var(--tile-size);height:var(--tile-size);border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:calc(var(--tile-size)*0.50);font-weight:800;user-select:none;transition:all 0.3s ease;border-radius:6px;flex-shrink:0;}
+.tile.filled{border-color:rgba(255,255,255,0.3);animation:pop 0.1s ease;}
+@keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.12);}100%{transform:scale(1);}}
+.tile.correct{background-color:var(--correct-color);border-color:var(--correct-color);color:white;box-shadow:0 0 14px var(--correct-glow);}
+.tile.present{background-color:var(--present-color);border-color:var(--present-color);color:white;box-shadow:0 0 14px var(--present-glow);}
+.tile.absent{background-color:var(--absent-color);border-color:var(--absent-color);color:white;}
+.flip{animation:flip 0.6s ease;}
+@keyframes flip{0%{transform:rotateX(0);}50%{transform:rotateX(90deg);}100%{transform:rotateX(0);}}
+.keyboard-row{display:flex;justify-content:center;gap:4px;margin-bottom:6px;width:100%;}
+.key{
+    height:clamp(42px,6vh,58px);min-width:clamp(28px,6vw,43px);
+    background-color:var(--key-bg);
+    color:var(--key-text);
+    border:1px solid var(--border-color);
+    border-radius:8px;font-weight:700;
+    font-size:clamp(0.85rem,3vw,1.1rem);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;user-select:none;
+    transition:all 0.15s ease;
+    flex:1;margin:0 2px;padding:0 2px;touch-action:manipulation;
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.key.enter{background-color:var(--enter-color);color:white;border-color:var(--enter-color);font-size:clamp(0.7rem,2.5vw,0.9rem);}
+.key.backspace{background-color:var(--backspace-color);color:white;border-color:var(--backspace-color);}
+@media(max-width:480px){
+    .key{height:clamp(38px,5.5vh,50px);min-width:clamp(24px,5vw,34px);font-size:clamp(0.8rem,2.8vw,1rem);margin:0 1px;padding:0 1px;}
+    .key.enter{font-size:clamp(0.65rem,2.2vw,0.8rem);}
+    .keyboard-row{gap:2px;margin-bottom:5px;}
+}
+@media(hover:hover){.key:hover{background-color:var(--border-active);transform:translateY(-1px);}}
+.key:active{transform:translateY(0);}
+.key.wide{min-width:65px;}
+@media(max-width:640px){.key.wide{min-width:56px;}}
+@media(max-width:480px){.key.wide{min-width:50px;}}
+.key.correct{background-color:var(--correct-color);border-color:var(--correct-color);color:white;box-shadow:0 0 8px var(--correct-glow);}
+.key.present{background-color:var(--present-color);border-color:var(--present-color);color:white;box-shadow:0 0 8px var(--present-glow);}
+.key.absent{background-color:var(--absent-color)!important;border-color:var(--absent-color)!important;color:rgba(255,255,255,0.4)!important;}
+.shake{animation:shake 0.5s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}10%,30%,50%,70%,90%{transform:translateX(-5px);}20%,40%,60%,80%{transform:translateX(5px);}}
+.bounce{animation:bounce 0.5s ease;}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+/* HEADER */
+header {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--header-border);
+    background: rgba(18, 18, 19, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.light-mode header {
+    background: rgba(248, 249, 250, 0.85);
+}
+
+h1 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0;
+    color: #ffffff;
+    white-space: nowrap;
+}
+
+.light-mode h1 {
+    color: #121213;
+    background: none;
+    -webkit-text-fill-color: initial;
+}
+
+.back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--correct-color);
+    color: white !important;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(83,141,78,0.4);
+    flex-shrink: 0;
+}
+
+.back-btn:hover {
+    opacity: 0.88;
+    transform: scale(1.05);
+}
+
+.stats-btn-header, #difficultyToggle, .theme-btn, #newGameHeaderBtn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.stats-btn-header span, .stats-btn-header i {
+    color: inherit;
+}
+
+.theme-btn:hover, .stats-btn-header:hover {
+    border-color: var(--border-active);
+}
+
+#newGameHeaderBtn:hover {
+    border-color: var(--correct-color);
+    color: var(--correct-color) !important;
+}
+
+#newGameHeaderBtn:active {
+    transform: scale(0.92) rotate(-30deg);
+}
+/* زر الإحصائيات */
+.stats-btn-header{
+    width:36px;height:36px;border-radius:10px;
+    background:var(--surface-color);border:1px solid var(--border-color);
+    color:var(--text-color);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:all 0.2s;
+    backdrop-filter:blur(8px);
+}
+.stats-btn-header:hover{border-color:var(--border-active);}
+.grid-row{display:flex;justify-content:center;gap:6px;margin-bottom:5px;}
+#message{font-size:1rem;min-height:40px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;padding:0 10px;text-align:center;gap:8px;flex-wrap:wrap;font-weight:700;}
+/* MODAL */
+.modal-overlay{background-color:rgba(0,0,0,0.75);backdrop-filter:blur(8px);}
+.modal-content{
+    width:95%;max-width:460px;max-height:90vh;overflow-y:auto;margin:10px;
+    border-radius:20px;border:1px solid var(--border-color);
+    background:var(--surface-color);
+    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
+/* scrollbar */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border-active);border-radius:10px;}
+/* modal inner */
+.correct-word,.correct-arrows,.correct-number{
+    background:linear-gradient(135deg,var(--correct-color),#2d6b2d);
+    color:white;padding:12px 18px;border-radius:12px;margin:10px 0;
+    text-align:center;font-size:1.5rem;font-weight:900;letter-spacing:0.12em;
+    animation:pulse 2s infinite;box-shadow:0 4px 20px var(--correct-glow);
+    direction:ltr;
+}
+@keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.04);}100%{transform:scale(1);}}
+.color-example{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding:10px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid var(--border-color);}
+.light-mode .color-example{background:rgba(0,0,0,0.03);}
+.color-box{width:44px;height:44px;border:none;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800;flex-shrink:0;}
+.color-box.correct{background:var(--correct-color);color:white;}
+.color-box.present{background:var(--present-color);color:white;}
+.color-box.absent{background:var(--absent-color);color:white;}
+.color-description{flex:1;font-size:0.9rem;}
+.attempts-table-container{max-height:220px;overflow-y:auto;margin:12px 0;border:1px solid var(--border-color);border-radius:12px;padding:8px;}
+.attempts-table{width:100%;border-collapse:collapse;font-size:0.88rem;}
+.attempts-table th{padding:8px;text-align:center;border-bottom:1px solid var(--border-color);font-size:0.75rem;opacity:0.5;font-weight:700;}
+.attempts-table td{padding:7px;text-align:center;border-bottom:1px solid var(--border-color);}
+.attempts-table tr:last-child td{border-bottom:none;}
+.attempt-number{font-weight:800;color:var(--correct-color);}
+.attempt-result{font-size:0.95rem;font-weight:700;}
+.attempt-result.win{color:var(--correct-color);}
+.attempt-result.loss{color:#e74c3c;}
+.attempts-title{font-size:1rem;font-weight:800;margin:10px 0 6px;text-align:center;color:var(--text-color);opacity:0.6;letter-spacing:0.05em;}
+.win-celebration{animation:winCelebration 2s ease infinite;}
+@keyframes winCelebration{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
+.no-attempts-message{text-align:center;padding:16px;opacity:0.35;font-size:0.9rem;}
+.attempt-matrix-container{margin:16px 0;padding:14px;border:1px solid var(--border-color);border-radius:14px;background:rgba(255,255,255,0.03);}
+.matrix-title{font-size:0.8rem;font-weight:700;margin-bottom:10px;text-align:center;color:var(--text-color);opacity:0.45;letter-spacing:0.08em;text-transform:uppercase;}
+.matrix-grid{display:flex;flex-direction:column;align-items:stretch;gap:5px;margin-bottom:10px;}
+.matrix-row{display:flex;justify-content:center;gap:5px;width:100%;}
+.matrix-tile{flex:1;max-width:52px;aspect-ratio:1;border:none;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(0.75rem,3.5vw,1.1rem);color:white;user-select:none;}
+.matrix-tile.correct{background:var(--correct-color);}
+.matrix-tile.present{background:var(--present-color);}
+.matrix-tile.absent{background:var(--absent-color);}
+.matrix-legend{display:flex;justify-content:center;gap:12px;margin-top:8px;flex-wrap:wrap;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:0.75rem;opacity:0.6;}
+.legend-color{width:14px;height:14px;border-radius:3px;}
+.legend-color.correct{background:var(--correct-color);}
+.legend-color.present{background:var(--present-color);}
+.legend-color.absent{background:var(--absent-color);}
+.result-buttons{display:flex;gap:8px;margin-top:16px;}
+.result-buttons button{flex:1;padding:13px;border-radius:12px;font-weight:800;font-size:0.95rem;transition:all 0.2s;cursor:pointer;}
+@media(max-width:480px){.result-buttons{flex-direction:column;gap:8px;}}
+/* difficulty */
+.difficulty-dropdown{position:relative;display:inline-block;}
+.difficulty-menu{position:absolute;top:100%;left:0;right:0;margin-top:5px;background:var(--surface-color);backdrop-filter:blur(16px);border:1px solid var(--border-color);border-radius:10px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,0.3);display:none;}
+.difficulty-menu.show{display:block;}
+.difficulty-option{width:100%;padding:10px 14px;text-align:center;border:none;background:none;color:var(--text-color);font-size:0.88rem;cursor:pointer;display:block;border-bottom:1px solid var(--border-color);font-weight:600;}
+.difficulty-option:last-child{border-bottom:none;}
+.difficulty-option.active{color:var(--correct-color);font-weight:800;}
+.suggest-btn{background:rgba(83,141,78,0.2);color:var(--correct-color);padding:3px 10px;border-radius:6px;font-size:0.8rem;margin-right:8px;cursor:pointer;border:1px solid var(--correct-color);transition:0.2s;font-weight:700;}
+.suggest-btn:hover{background:var(--correct-color);color:white;}
+.suggest-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.hard-word-btn{background:linear-gradient(135deg,#e67e22,#d35400);color:white;padding:11px;border-radius:12px;font-weight:800;width:100%;margin-top:12px;cursor:pointer;border:none;transition:all 0.2s;font-size:0.9rem;}
+.hard-word-btn:hover{opacity:0.88;}
+.hard-word-btn:disabled{opacity:0.4;cursor:not-allowed;}
+#grid,.grid-row,.keyboard-row,.key,.tile,.matrix-grid,.matrix-row,.correct-arrows,.matrix-tile{direction:ltr!important;unicode-bidi:plaintext;}
+.keyboard-row:last-child{flex-direction:row-reverse;}
+.correct-arrows{direction:ltr;}
+
+</style>
 </head>
 <body>
-    <header>
-        <div class="flex items-center gap-2">
-            <button id="helpBtn" class="header-btn" title="طريقة اللعب">
-                <i class="fas fa-question-circle"></i>
-            </button>
-            <a href="index.html" class="header-btn" title="القائمة الرئيسية">
-                <i class="fas fa-th-large"></i>
-            </a>
-        </div>
-        <h1>لغز الشبكة الحسابية</h1>
-        <div class="flex items-center gap-2">
-            <button id="statsBtn" class="header-btn" title="الإحصائيات">
-                <i class="fas fa-chart-bar"></i>
-            </button>
-            <button id="newGameBtn" class="header-btn new-game" title="لعبة جديدة">
-                <i class="fas fa-redo-alt"></i>
-            </button>
-            <button id="themeToggle" class="header-btn">
-                <i class="fas fa-sun text-yellow-400"></i>
-            </button>
-        </div>
-    </header>
+<header class="sticky top-0 z-50 flex items-center justify-between px-4 py-2.5 min-h-[58px]">
+<div class="flex items-center gap-2">
+    <button id="statsBtn" class="stats-btn-header"><i class="fas fa-chart-bar text-sm"></i></button>
+    <a href="index.html" class="back-btn" title="تغيير اللعبة"><i class="fas fa-th-large text-sm"></i></a>
+</div>
+<h1>الأسهم</h1>
+<div class="flex items-center gap-2">
+<button id="newGameHeaderBtn"><i class="fas fa-redo-alt text-sm"></i></button>
+<button id="themeToggle" class="theme-btn"><i class="fas fa-sun text-sm text-yellow-400"></i></button>
+</div>
+</header>
+<div class="game-wrapper"><div id="message" class="text-center font-bold"></div><div id="grid" class="mb-4"></div><div id="keyboard" class="w-full"></div></div>
 
-    <div class="game-wrapper">
-        <div id="message" class="text-center font-bold"></div>
-        <div id="grid" class="mb-4"></div>
-        <div id="keyboard" class="w-full"></div>
-    </div>
+<div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">طريقة اللعب</h2><button id="closeHelp" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div class="mb-6"><p class="text-base mb-5 text-center" id="helpAttemptsText">خمّن تسلسل الأسهم المكون من 6 أسهم في 6 محاولات.</p><div class="color-example"><div class="color-box correct">↑</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأخضر</h3><p>السهم صحيح وفي المكان الصحيح.</p></div></div><div class="color-example"><div class="color-box present">↓</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأصفر</h3><p>السهم صحيح ولكن في المكان الخطأ.</p></div></div><div class="color-example"><div class="color-box absent">←</div><div class="color-description"><h3 class="font-bold mb-1">اللون الرمادي</h3><p>السهم غير موجود في التسلسل السري.</p></div></div></div><div class="text-center mt-5"><button id="startGameBtn" class="bg-[var(--correct-color)] text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 text-base">فهمت، ابدأ اللعب</button></div></div></div></div>
 
-    <!-- Help Modal -->
-    <div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
-        <div class="modal-content">
-            <div class="p-5">
-                <div class="flex justify-between items-center mb-5">
-                    <h2 class="text-xl font-bold">طريقة اللعب</h2>
-                    <button id="closeHelp" class="text-xl hover:text-gray-400">&times;</button>
-                </div>
+<div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">الإحصائيات</h2><button id="closeStats" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div id="gameResultInfo" class="mb-4"></div><div id="attemptsTableContainer" class="attempts-table-container"><div class="attempts-title">سجل المحاولات</div><div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة. ابدأ اللعب الآن!</div><table class="attempts-table"><thead><th>#</th><th>المحاولة</th><th>النتيجة</th> </thead><tbody id="attemptsTableBody"></tbody>     </table></div><div class="flex justify-around mb-6"><div class="text-center"><div id="playedCount" class="text-2xl font-bold">0</div><div class="text-xs">العب</div></div><div class="text-center"><div id="winPercent" class="text-2xl font-bold">0%</div><div class="text-xs">فوز</div></div><div class="text-center"><div id="currentStreak" class="text-2xl font-bold">0</div><div class="text-xs">تتابع</div></div><div class="text-center"><div id="maxStreak" class="text-2xl font-bold">0</div><div class="text-xs">أعلى تتابع</div></div></div><div class="space-y-2"><button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-2.5 rounded font-bold hover:bg-[var(--default-color)] text-sm">لعبة جديدة</button></div></div></div></div>
 
-                <div class="help-section">
-                    <h3>الهدف</h3>
-                    <p>اكتشف المعادلة الحسابية الصحيحة في 6 محاولات. كل معادلة تتكون من 8 خانات.</p>
-                </div>
+<div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold" id="resultModalTitle">نتيجة اللعبة</h2><button id="closeGameResult" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div id="gameResultDetails" class="text-center mb-4"></div><div id="attemptMatrixContainer" class="attempt-matrix-container"><h3 class="matrix-title">خريطة رحلتك في التفكير</h3><div id="matrixGrid" class="matrix-grid"></div><div class="matrix-legend"><div class="legend-item"><div class="legend-color correct"></div><span>صحيح</span></div><div class="legend-item"><div class="legend-color present"></div><span>موجود بموقع آخر</span></div><div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div></div></div><div class="result-buttons"><button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90"><i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى</button><button id="viewStatsBtn" class="border border-[var(--border-color)] hover:bg-[var(--default-color)]"><i class="fas fa-chart-bar ml-2"></i>عرض الإحصائيات</button></div></div></div></div>
 
-                <div class="help-section">
-                    <h3>القواعد</h3>
-                    <div class="rule-item">
-                        <div class="rule-icon allowed"><i class="fas fa-check"></i></div>
-                        <div>
-                            <strong>الأرقام المسموحة:</strong> 0-9
-                        </div>
-                    </div>
-                    <div class="rule-item">
-                        <div class="rule-icon allowed"><i class="fas fa-check"></i></div>
-                        <div>
-                            <strong>العمليات المسموحة:</strong> + (جمع)، - (طرح)، * (ضرب)
-                        </div>
-                    </div>
-                    <div class="rule-item">
-                        <div class="rule-icon allowed"><i class="fas fa-check"></i></div>
-                        <div>
-                            <strong>المعادلة الصحيحة:</strong> الطرف الأيسر = الطرف الأيمن
-                        </div>
-                    </div>
-                    <div class="rule-item">
-                        <div class="rule-icon forbidden"><i class="fas fa-times"></i></div>
-                        <div>
-                            <strong>ممنوع:</strong> استخدام القسمة (/) - غير مسموح نهائياً
-                        </div>
-                    </div>
-                </div>
+<script>
+const MAX_ARROWS = 6;
+const MAX_ATTEMPTS = 6;
+const ARROW_SYMBOLS = ['↑', '↓', '←', '→'];
+let targetSequence = [];
+let currentRow = 0;
+let currentGuess = Array(MAX_ARROWS).fill('');
+let gameOver = false;
+let gameWon = false;
+let startTime = null;
+let attemptResults = [];
+let stats = { played: 0, wins: 0, currentStreak: 0, maxStreak: 0 };
+let attemptsHistory = [];
+let attemptMatrices = [];
+let isProcessing = false;
+let inputLock = false;
 
-                <div class="help-section">
-                    <h3>تلميحات الألوان</h3>
-                    <div class="equation-example">
-                        <div class="equation-box correct">5</div>
-                        <div class="equation-description">
-                            <strong class="text-green-400">الأخضر</strong> - الرقم/الرمز صحيح وفي مكانه الصحيح
-                        </div>
-                    </div>
-                    <div class="equation-example">
-                        <div class="equation-box present">+</div>
-                        <div class="equation-description">
-                            <strong class="text-yellow-400">الأصفر</strong> - موجود لكن في مكان خاطئ
-                        </div>
-                    </div>
-                    <div class="equation-example">
-                        <div class="equation-box absent">7</div>
-                        <div class="equation-description">
-                            <strong class="text-gray-400">الرمادي</strong> - غير موجود في المعادلة
-                        </div>
-                    </div>
-                </div>
+function generateRandomSequence() {
+    const seq = [];
+    for (let i = 0; i < MAX_ARROWS; i++) {
+        seq.push(ARROW_SYMBOLS[Math.floor(Math.random() * ARROW_SYMBOLS.length)]);
+    }
+    return seq;
+}
 
-                <div class="help-section">
-                    <h3>مثال</h3>
-                    <div class="equation-hint">
-                        25+10=35
-                    </div>
-                    <p>الطرف الأيسر (25+10=35) يساوي الطرف الأيمن ✓</p>
-                </div>
-
-                <div class="text-center mt-5">
-                    <button id="startGameBtn" class="bg-green-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-600 text-base w-full">
-                        فهمت، ابدأ اللعب!
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Stats Modal -->
-    <div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
-        <div class="modal-content">
-            <div class="p-5">
-                <div class="flex justify-between items-center mb-5">
-                    <h2 class="text-xl font-bold">الإحصائيات</h2>
-                    <button id="closeStats" class="text-xl hover:text-gray-400">&times;</button>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div id="playedCount" class="stat-value">0</div>
-                        <div class="stat-label">الألعاب</div>
-                    </div>
-                    <div class="stat-item">
-                        <div id="winPercent" class="stat-value">0%</div>
-                        <div class="stat-label">نسبة الفوز</div>
-                    </div>
-                    <div class="stat-item">
-                        <div id="currentStreak" class="stat-value">0</div>
-                        <div class="stat-label">التتابع الحالي</div>
-                    </div>
-                    <div class="stat-item">
-                        <div id="maxStreak" class="stat-value">0</div>
-                        <div class="stat-label">أعلى تتابع</div>
-                    </div>
-                </div>
-
-                <div id="guessDistribution" class="mt-4">
-                    <h3 class="text-center font-bold mb-3 text-sm opacity-70">توزيع المحاولات</h3>
-                    <div id="distributionBars"></div>
-                </div>
-
-                <div class="mt-4">
-                    <button id="newGameFromStats" class="w-full bg-green-500 text-white py-3 rounded-lg font-bold hover:bg-green-600 text-sm">
-                        لعبة جديدة
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Game Result Modal -->
-    <div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4">
-        <div class="modal-content">
-            <div class="p-5">
-                <div class="flex justify-between items-center mb-5">
-                    <h2 class="text-xl font-bold" id="resultModalTitle">نتيجة اللعبة</h2>
-                    <button id="closeGameResult" class="text-xl hover:text-gray-400">&times;</button>
-                </div>
-
-                <div id="gameResultDetails" class="text-center mb-4"></div>
-
-                <div class="result-buttons">
-                    <button id="playAgainBtn" class="bg-green-500 text-white hover:bg-green-600">
-                        <i class="fas fa-redo-alt ml-2"></i>
-                        العب مرة أخرى
-                    </button>
-                    <button id="viewStatsBtn" class="bg-gray-700 hover:bg-gray-600 text-white">
-                        <i class="fas fa-chart-bar ml-2"></i>
-                        الإحصائيات
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Game Configuration
-        const GRID_COLS = 8;
-        const MAX_ATTEMPTS = 6;
-
-        // Game State
-        let targetEquation = "";
-        let currentRow = 0;
-        let currentInput = "";
-        let gameOver = false;
-        let gameWon = false;
-        let isProcessing = false;
-        let inputLock = false;
-        let stats = {
-            played: 0,
-            wins: 0,
-            currentStreak: 0,
-            maxStreak: 0,
-            guessDistribution: [0, 0, 0, 0, 0, 0]
-        };
-
-        // DOM Elements
-        const gridEl = document.getElementById('grid');
-        const keyboardEl = document.getElementById('keyboard');
-        const messageEl = document.getElementById('message');
-
-        // Utility Functions
-        function shuffleArray(array) {
-            const arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
+function calculateGuessResult(guessArr, targetArr) {
+    const result = Array(MAX_ARROWS).fill('absent');
+    const targetCount = {};
+    for (const arrow of targetArr) targetCount[arrow] = (targetCount[arrow] || 0) + 1;
+    for (let i = 0; i < MAX_ARROWS; i++) {
+        if (guessArr[i] === targetArr[i]) {
+            result[i] = 'correct';
+            targetCount[guessArr[i]]--;
         }
-
-        // Equation Generation
-        function generateEquation() {
-            const operations = ['+', '-', '*'];
-            const operation = operations[Math.floor(Math.random() * operations.length)];
-
-            let num1, num2, result;
-            const maxNum = 99;
-            const maxResult = 999;
-
-            // Generate based on operation
-            if (operation === '+') {
-                num1 = Math.floor(Math.random() * maxNum) + 1;
-                num2 = Math.floor(Math.random() * maxNum) + 1;
-                result = num1 + num2;
-            } else if (operation === '-') {
-                num1 = Math.floor(Math.random() * maxNum) + 1;
-                num2 = Math.floor(Math.random() * Math.min(num1, maxNum)) + 1;
-                // Ensure num1 > num2 for valid subtraction
-                while (num2 >= num1) {
-                    num1 = Math.floor(Math.random() * maxNum) + 1;
-                    num2 = Math.floor(Math.random() * maxNum) + 1;
-                }
-                result = num1 - num2;
-            } else if (operation === '*') {
-                num1 = Math.floor(Math.random() * 12) + 1; // 1-12 for multiplication
-                num2 = Math.floor(Math.random() * 12) + 1;
-                result = num1 * num2;
-            }
-
-            const equation = `${num1}${operation}${num2}=${result}`;
-
-            // Validate equation is exactly 8 characters
-            if (equation.length === GRID_COLS) {
-                return equation;
-            }
-
-            // Try again if not 8 characters
-            return generateEquation();
+    }
+    for (let i = 0; i < MAX_ARROWS; i++) {
+        if (result[i] !== 'correct' && targetCount[guessArr[i]] > 0) {
+            result[i] = 'present';
+            targetCount[guessArr[i]]--;
         }
+    }
+    return result;
+}
 
-        // Mathematical Evaluation with proper order of operations
-        function evaluateMath(expression) {
-            // Handle left-to-right evaluation with * before +/-
-            try {
-                // First, handle multiplication
-                let result = expression;
+function updateKeyboard(arrow, status) {
+    const key = document.querySelector(`.key[data-key="${arrow}"]`);
+    if (!key) return;
+    if (status === 'correct') {
+        key.classList.add('correct');
+        key.classList.remove('present', 'absent');
+    } else if (status === 'present' && !key.classList.contains('correct')) {
+        key.classList.add('present');
+        key.classList.remove('absent');
+    } else if (status === 'absent' && !key.classList.contains('correct') && !key.classList.contains('present')) {
+        key.classList.add('absent');
+    }
+}
 
-                // Replace * with actual multiplication and evaluate
-                // Split by + and - while keeping the operators
-                const tokens = [];
-                let currentNum = '';
+function updateCurrentRow() {
+    for (let i = 0; i < MAX_ARROWS; i++) {
+        const tile = document.getElementById(`tile-${currentRow}-${i}`);
+        if (tile) tile.textContent = currentGuess[i] || '';
+    }
+}
 
-                for (let i = 0; i < expression.length; i++) {
-                    const char = expression[i];
-                    if ('0123456789'.includes(char)) {
-                        currentNum += char;
-                    } else if ('+-*'.includes(char)) {
-                        if (currentNum || char === '-') {
-                            tokens.push(currentNum || '0');
-                            tokens.push(char);
-                            currentNum = '';
-                        }
-                    }
-                }
-                if (currentNum) tokens.push(currentNum);
+function showMessage(msg, duration = 3000) {
+    const msgDiv = document.getElementById('message');
+    const original = msgDiv.innerHTML;
+    msgDiv.innerHTML = msg;
+    if (window._msgTimeout) clearTimeout(window._msgTimeout);
+    window._msgTimeout = setTimeout(() => { if (msgDiv.innerHTML === msg) msgDiv.innerHTML = original; }, duration);
+}
 
-                // Now evaluate with proper precedence: * first
-                let i = 0;
-                let processedTokens = [];
+function shakeRow() {
+    const row = document.getElementById(`row-${currentRow}`);
+    if (row) { row.classList.add('shake'); setTimeout(() => row.classList.remove('shake'), 500); }
+}
 
-                // First pass: handle multiplication
-                while (i < tokens.length) {
-                    if (tokens[i + 1] === '*') {
-                        const mult = parseInt(tokens[i]) * parseInt(tokens[i + 2]);
-                        processedTokens.push(mult.toString());
-                        i += 3;
-                    } else {
-                        processedTokens.push(tokens[i]);
-                        i++;
-                    }
-                }
-
-                // Second pass: handle addition and subtraction (left to right)
-                if (processedTokens.length === 0) return 0;
-
-                let finalResult = parseInt(processedTokens[0]);
-                i = 1;
-                while (i < processedTokens.length) {
-                    const op = processedTokens[i];
-                    const num = parseInt(processedTokens[i + 1]);
-                    if (op === '+') finalResult += num;
-                    else if (op === '-') finalResult -= num;
-                    i += 2;
-                }
-
-                return finalResult;
-            } catch (e) {
-                return null;
-            }
-        }
-
-        function validateEquation(input) {
-            // Must be 8 characters
-            if (input.length !== GRID_COLS) {
-                return { valid: false, error: `يجب أن تكون المعادلة ${GRID_COLS} خانات` };
-            }
-
-            // Must contain exactly one =
-            const equalsCount = (input.match(/=/g) || []).length;
-            if (equalsCount !== 1) {
-                return { valid: false, error: 'يجب أن تحتوي المعادلة على علامة (=) واحدة' };
-            }
-
-            // = must not be at start or end
-            if (input[0] === '=' || input[input.length - 1] === '=') {
-                return { valid: false, error: 'علامة (=) لا يمكن أن تكون في البداية أو النهاية' };
-            }
-
-            // Split by =
-            const parts = input.split('=');
-            if (parts.length !== 2) {
-                return { valid: false, error: 'صيغة المعادلة غير صحيحة' };
-            }
-
-            const leftSide = parts[0];
-            const rightSide = parts[1];
-
-            // Both sides must have content
-            if (!leftSide || !rightSide) {
-                return { valid: false, error: 'كل طرف يجب أن يحتوي على قيمة' };
-            }
-
-            // Right side must be a number
-            if (!/^\d+$/.test(rightSide)) {
-                return { valid: false, error: 'الناتج يجب أن يكون رقماً' };
-            }
-
-            // Check for division
-            if (input.includes('/')) {
-                return { valid: false, error: 'القسمة (/) غير مسموحة!' };
-            }
-
-            // Evaluate left side
-            const leftResult = evaluateMath(leftSide);
-            const rightResult = parseInt(rightSide);
-
-            if (leftResult === null) {
-                return { valid: false, error: 'صيغة المعادلة غير صحيحة' };
-            }
-
-            if (leftResult !== rightResult) {
-                return { valid: false, error: `${leftSide} = ${leftResult} ≠ ${rightResult}` };
-            }
-
-            // Check for valid characters
-            const validChars = /^[0-9+\-*]+$/;
-            if (!validChars.test(input)) {
-                return { valid: false, error: 'الأحرف المسموحة: أرقام و (+، -، *) فقط' };
-            }
-
-            return { valid: true };
-        }
-
-        // Calculate guess result for color feedback
-        function calculateGuessResult(guess, target) {
-            const result = Array(GRID_COLS).fill('absent');
-            const targetChars = target.split('');
-            const guessChars = guess.split('');
-
-            // Create frequency map for target
-            const targetCount = {};
-            for (const char of targetChars) {
-                targetCount[char] = (targetCount[char] || 0) + 1;
-            }
-
-            // First pass: mark correct positions
-            for (let i = 0; i < GRID_COLS; i++) {
-                if (guessChars[i] === targetChars[i]) {
-                    result[i] = 'correct';
-                    targetCount[guessChars[i]]--;
-                }
-            }
-
-            // Second pass: mark present (but not correct) positions
-            for (let i = 0; i < GRID_COLS; i++) {
-                if (result[i] !== 'correct' && targetCount[guessChars[i]] > 0) {
-                    result[i] = 'present';
-                    targetCount[guessChars[i]]--;
-                }
-            }
-
-            return result;
-        }
-
-        // Update keyboard colors
-        function updateKeyboard(char, status) {
-            const key = document.querySelector(`.key[data-key="${char}"]`);
-            if (!key) return;
-
-            // Only upgrade status, never downgrade
-            if (status === 'correct') {
-                key.classList.remove('present', 'absent');
-                key.classList.add('correct');
-            } else if (status === 'present' && !key.classList.contains('correct')) {
-                key.classList.remove('absent');
-                key.classList.add('present');
-            } else if (status === 'absent' && !key.classList.contains('correct') && !key.classList.contains('present')) {
-                key.classList.add('absent');
-            }
-        }
-
-        // Update current row display
-        function updateCurrentRow() {
-            for (let i = 0; i < GRID_COLS; i++) {
-                const tile = document.getElementById(`tile-${currentRow}-${i}`);
-                if (tile) {
-                    tile.textContent = currentInput[i] || '';
-                    if (currentInput[i]) {
-                        tile.classList.add('filled');
-                    } else {
-                        tile.classList.remove('filled');
-                    }
-                }
-            }
-        }
-
-        // Show message
-        function showMessage(msg, duration = 2500) {
-            const original = messageEl.innerHTML;
-            messageEl.innerHTML = msg;
-            if (window._msgTimeout) clearTimeout(window._msgTimeout);
-            window._msgTimeout = setTimeout(() => {
-                if (messageEl.innerHTML === msg) messageEl.innerHTML = original;
-            }, duration);
-        }
-
-        // Shake row animation
-        function shakeRow() {
-            const row = document.getElementById(`row-${currentRow}`);
-            if (row) {
-                row.classList.add('shake');
-                setTimeout(() => row.classList.remove('shake'), 500);
-            }
-        }
-
-        // Evaluate guess
-        function evaluateGuess() {
-            const validation = validateEquation(currentInput);
-
-            if (!validation.valid) {
-                showMessage(validation.error);
-                shakeRow();
-                return;
-            }
-
-            const guess = currentInput;
-            const result = calculateGuessResult(guess, targetEquation);
-
-            inputLock = true;
-            isProcessing = true;
-
-            let completed = 0;
-
-            for (let i = 0; i < GRID_COLS; i++) {
-                const tile = document.getElementById(`tile-${currentRow}-${i}`);
-                if (!tile) continue;
-
-                setTimeout(() => {
-                    tile.classList.add('flip');
+function evaluateGuess() {
+    const result = calculateGuessResult(currentGuess, targetSequence);
+    attemptResults[currentRow] = result;
+    inputLock = true;
+    let completed = 0;
+    for (let i = 0; i < MAX_ARROWS; i++) {
+        const tile = document.getElementById(`tile-${currentRow}-${i}`);
+        if (!tile) continue;
+        setTimeout(() => {
+            tile.classList.add('flip');
+            setTimeout(() => {
+                tile.classList.add(result[i]);
+                updateKeyboard(currentGuess[i], result[i]);
+                completed++;
+                if (completed === MAX_ARROWS) {
                     setTimeout(() => {
-                        tile.classList.add(result[i]);
-                        updateKeyboard(guess[i], result[i]);
-                        completed++;
-
-                        if (completed === GRID_COLS) {
-                            setTimeout(() => {
-                                if (guess === targetEquation) {
-                                    gameWon = true;
-                                    gameOver = true;
-                                    handleWin();
-                                } else if (currentRow === MAX_ATTEMPTS - 1) {
-                                    gameOver = true;
-                                    handleLoss();
-                                } else {
-                                    currentRow++;
-                                    currentInput = "";
-                                    inputLock = false;
-                                    updateCurrentRow();
-                                }
-                                isProcessing = false;
-                            }, 300);
+                        if (JSON.stringify(currentGuess) === JSON.stringify(targetSequence)) {
+                            gameWon = true;
+                            gameOver = true;
+                            handleWin();
+                        } else if (currentRow === MAX_ATTEMPTS - 1) {
+                            gameOver = true;
+                            handleLoss();
+                        } else {
+                            currentRow++;
+                            currentGuess = Array(MAX_ARROWS).fill('');
+                            inputLock = false;
+                            updateCurrentRow();
                         }
+                        isProcessing = false;
                     }, 300);
-                }, i * 200);
-            }
-        }
-
-        // Handle win
-        function handleWin() {
-            const messages = [
-                '🎉 مبروك! لقد فزت!',
-                '🏆 أحسنت! معادلة صحيحة!',
-                '✨ رائع! لقد وجدت المعادلة!',
-                '🌟 ممتاز! أنت محقق رياضيات!'
-            ];
-            showMessage(messages[Math.floor(Math.random() * messages.length)], 3000);
-
-            // Update stats
-            stats.played++;
-            stats.wins++;
-            stats.currentStreak++;
-            if (stats.currentStreak > stats.maxStreak) {
-                stats.maxStreak = stats.currentStreak;
-            }
-            stats.guessDistribution[currentRow]++;
-
-            saveStats();
-
-            setTimeout(() => showGameResultModal(true), 2000);
-        }
-
-        // Handle loss
-        function handleLoss() {
-            showMessage(`💔 انتهت المحاولات! المعادلة الصحيحة: <span style="font-family: 'Roboto Mono'; direction: ltr;">${targetEquation}</span>`, 4000);
-
-            // Update stats
-            stats.played++;
-            stats.currentStreak = 0;
-
-            saveStats();
-
-            setTimeout(() => showGameResultModal(false), 2000);
-        }
-
-        // Show game result modal
-        function showGameResultModal(isWin) {
-            const modal = document.getElementById('gameResultModal');
-            const title = document.getElementById('resultModalTitle');
-            const details = document.getElementById('gameResultDetails');
-
-            title.textContent = isWin ? '🎉 مبروك! فزت!' : '💔 انتهت المحاولات!';
-
-            details.innerHTML = `
-                <div class="${isWin ? 'text-green-400' : 'text-red-400'} font-bold text-lg mb-2">
-                    ${isWin ? `لقد فزت في المحاولة ${currentRow + 1}` : 'انتهت محاولاتك!'}
-                </div>
-                <div class="text-sm opacity-70 mb-2">المعادلة الصحيحة:</div>
-                <div class="result-equation">${targetEquation}</div>
-            `;
-
-            modal.classList.remove('hidden');
-        }
-
-        // Update stats display
-        function updateStatsDisplay() {
-            document.getElementById('playedCount').textContent = stats.played;
-            const winPercent = stats.played ? Math.round((stats.wins / stats.played) * 100) : 0;
-            document.getElementById('winPercent').textContent = winPercent + '%';
-            document.getElementById('currentStreak').textContent = stats.currentStreak;
-            document.getElementById('maxStreak').textContent = stats.maxStreak;
-
-            // Update distribution bars
-            const distContainer = document.getElementById('distributionBars');
-            const maxDist = Math.max(...stats.guessDistribution, 1);
-
-            let distHTML = '';
-            for (let i = 0; i < MAX_ATTEMPTS; i++) {
-                const count = stats.guessDistribution[i];
-                const percentage = Math.round((count / maxDist) * 100);
-                const isCurrentRow = i === currentRow && gameWon;
-
-                distHTML += `
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="text-xs font-bold w-4">${i + 1}</span>
-                        <div class="flex-1 bg-gray-700 rounded overflow-hidden">
-                            <div class="h-5 rounded transition-all duration-300 ${isCurrentRow ? 'bg-green-500' : 'bg-gray-500'}"
-                                 style="width: ${percentage}%"></div>
-                        </div>
-                        <span class="text-xs font-bold w-6 text-left">${count}</span>
-                    </div>
-                `;
-            }
-            distContainer.innerHTML = distHTML;
-        }
-
-        // Save stats to localStorage
-        function saveStats() {
-            localStorage.setItem('mathgrid_stats', JSON.stringify(stats));
-        }
-
-        // Load stats from localStorage
-        function loadStats() {
-            const saved = localStorage.getItem('mathgrid_stats');
-            if (saved) {
-                stats = JSON.parse(saved);
-            }
-        }
-
-        // Load theme
-        function loadTheme() {
-            const saved = localStorage.getItem('mathgrid_theme');
-            const icon = document.querySelector('#themeToggle i');
-
-            if (saved === 'light') {
-                document.body.classList.add('light-mode');
-                icon.className = 'fas fa-moon';
-            } else {
-                document.body.classList.remove('light-mode');
-                icon.className = 'fas fa-sun';
-            }
-        }
-
-        // Toggle theme
-        function toggleTheme() {
-            const isLight = document.body.classList.toggle('light-mode');
-            const icon = document.querySelector('#themeToggle i');
-            icon.className = isLight ? 'fas fa-moon' : 'fas fa-sun';
-            localStorage.setItem('mathgrid_theme', isLight ? 'light' : 'dark');
-        }
-
-        // Create grid
-        function createGrid() {
-            gridEl.innerHTML = '';
-            for (let r = 0; r < MAX_ATTEMPTS; r++) {
-                const rowDiv = document.createElement('div');
-                rowDiv.className = 'grid-row';
-                rowDiv.id = `row-${r}`;
-
-                for (let c = 0; c < GRID_COLS; c++) {
-                    const tile = document.createElement('div');
-                    tile.className = 'tile';
-                    tile.id = `tile-${r}-${c}`;
-                    rowDiv.appendChild(tile);
                 }
+            }, 300);
+        }, i * 300);
+    }
+}
 
-                gridEl.appendChild(rowDiv);
+function handleWin() {
+    showMessage('🎉 أحسنت! لقد فزت!');
+    const matrix = [];
+    for (let r = 0; r <= currentRow; r++) {
+        const rowColors = [];
+        for (let c = 0; c < MAX_ARROWS; c++) {
+            const tile = document.getElementById(`tile-${r}-${c}`);
+            if (tile.classList.contains('correct')) rowColors.push('correct');
+            else if (tile.classList.contains('present')) rowColors.push('present');
+            else rowColors.push('absent');
+        }
+        matrix.push(rowColors);
+    }
+    attemptMatrices.unshift({ matrix, result: 'win', attempts: currentRow + 1, word: targetSequence.join('') });
+    if (attemptMatrices.length > 50) attemptMatrices.pop();
+    localStorage.setItem('arrowle_matrices', JSON.stringify(attemptMatrices));
+
+    attemptsHistory.unshift({ number: attemptsHistory.length + 1, attempts: currentRow + 1, result: 'win', target: targetSequence.join('') });
+    if (attemptsHistory.length > 100) attemptsHistory.pop();
+    localStorage.setItem('arrowle_history', JSON.stringify(attemptsHistory));
+
+    stats.played++; stats.wins++; stats.currentStreak++;
+    if (stats.currentStreak > stats.maxStreak) stats.maxStreak = stats.currentStreak;
+    localStorage.setItem('arrowle_stats', JSON.stringify(stats));
+    updateStatsDisplay();
+    setTimeout(() => showGameResultModal(true), 2500);
+}
+
+function handleLoss() {
+    showMessage(`💔 انتهت المحاولات! التسلسل الصحيح: ${targetSequence.join('')}`);
+    const matrix = [];
+    for (let r = 0; r < MAX_ATTEMPTS; r++) {
+        const rowColors = [];
+        for (let c = 0; c < MAX_ARROWS; c++) {
+            const tile = document.getElementById(`tile-${r}-${c}`);
+            if (tile.classList.contains('correct')) rowColors.push('correct');
+            else if (tile.classList.contains('present')) rowColors.push('present');
+            else rowColors.push('absent');
+        }
+        matrix.push(rowColors);
+    }
+    attemptMatrices.unshift({ matrix, result: 'loss', attempts: MAX_ATTEMPTS, word: targetSequence.join('') });
+    localStorage.setItem('arrowle_matrices', JSON.stringify(attemptMatrices));
+
+    attemptsHistory.unshift({ number: attemptsHistory.length + 1, attempts: MAX_ATTEMPTS, result: 'loss', target: targetSequence.join('') });
+    localStorage.setItem('arrowle_history', JSON.stringify(attemptsHistory));
+
+    stats.played++; stats.currentStreak = 0;
+    localStorage.setItem('arrowle_stats', JSON.stringify(stats));
+    updateStatsDisplay();
+    setTimeout(() => showGameResultModal(false), 1500);
+}
+
+function renderAttemptMatrix() {
+    const container = document.getElementById('matrixGrid');
+    container.innerHTML = '';
+    const used = attemptResults.filter(r => r && r.length);
+    const guessedArrows = [];
+    for (let r = 0; r < used.length; r++) {
+        let seq = '';
+        for (let c = 0; c < MAX_ARROWS; c++) {
+            const tile = document.getElementById(`tile-${r}-${c}`);
+            seq += tile ? (tile.textContent || '') : '';
+        }
+        guessedArrows.push(seq);
+    }
+    used.forEach((res, idx) => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'matrix-row';
+        res.forEach((st, col) => {
+            const tile = document.createElement('div');
+            tile.className = `matrix-tile ${st}`;
+            tile.textContent = guessedArrows[idx]?.[col] || '';
+            rowDiv.appendChild(tile);
+        });
+        container.appendChild(rowDiv);
+    });
+}
+
+function showGameResultModal(isWin) {
+    const modal = document.getElementById('gameResultModal');
+    document.getElementById('resultModalTitle').textContent = isWin ? '🎉 مبروك! فزت!' : '💔 انتهت المحاولات!';
+    document.getElementById('gameResultDetails').innerHTML = `
+        <div class="${isWin ? 'text-green-600' : 'text-red-600'} font-bold text-lg mb-2">${isWin ? 'لقد فزت في المحاولة ' + (currentRow + 1) : 'انتهت محاولاتك!'}</div>
+        <div class="text-gray-600 dark:text-gray-400 mb-3">التسلسل الصحيح:</div>
+        <div class="correct-arrows">${targetSequence.join(' ')}</div>
+    `;
+    renderAttemptMatrix();
+    modal.classList.remove('hidden');
+}
+
+function updateStatsDisplay() {
+    document.getElementById('playedCount').textContent = stats.played;
+    const winPercent = stats.played ? Math.round((stats.wins / stats.played) * 100) : 0;
+    document.getElementById('winPercent').textContent = winPercent + '%';
+    document.getElementById('currentStreak').textContent = stats.currentStreak;
+    document.getElementById('maxStreak').textContent = stats.maxStreak;
+
+    const body = document.getElementById('attemptsTableBody');
+    const noMsg = document.getElementById('noAttemptsMessage');
+    const table = document.querySelector('.attempts-table');
+    if (attemptsHistory.length > 0) {
+        noMsg.classList.add('hidden');
+        table.classList.remove('hidden');
+        body.innerHTML = '';
+        [...attemptsHistory].reverse().forEach(a => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td class="attempt-number">${a.number} </td><td>${a.attempts}</td><td><span class="attempt-result ${a.result}">${a.result === 'win' ? 'فوز ✓' : 'خسارة ✗'}</span></td>`;
+            body.appendChild(tr);
+        });
+    } else {
+        noMsg.classList.remove('hidden');
+        table.classList.add('hidden');
+    }
+}
+
+function startNewGame() {
+    targetSequence = generateRandomSequence();
+    currentRow = 0;
+    currentGuess = Array(MAX_ARROWS).fill('');
+    gameOver = false;
+    gameWon = false;
+    isProcessing = false;
+    inputLock = false;
+    startTime = new Date();
+    attemptResults = [];
+
+    const grid = document.getElementById('grid');
+    grid.innerHTML = '';
+    for (let r = 0; r < MAX_ATTEMPTS; r++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'grid-row';
+        rowDiv.id = `row-${r}`;
+        for (let c = 0; c < MAX_ARROWS; c++) {
+            const tile = document.createElement('div');
+            tile.className = 'tile';
+            tile.id = `tile-${r}-${c}`;
+            rowDiv.appendChild(tile);
+        }
+        grid.appendChild(rowDiv);
+    }
+    document.querySelectorAll('.key').forEach(k => k.classList.remove('correct', 'present', 'absent'));
+    updateCurrentRow();
+    document.getElementById('message').innerHTML = '';
+    document.getElementById('gameResultModal').classList.add('hidden');
+    document.getElementById('statsModal').classList.add('hidden');
+}
+
+function handleInput(value) {
+    if (inputLock || gameOver || isProcessing) return;
+    if (value === 'Enter') {
+        const empty = currentGuess.some(cell => cell === '');
+        if (empty) {
+            showMessage(`يجب إدخال ${MAX_ARROWS} أسهم`);
+            shakeRow();
+            return;
+        }
+        isProcessing = true;
+        evaluateGuess();
+    } else if (value === 'Backspace') {
+        let lastFilled = -1;
+        for (let i = currentGuess.length - 1; i >= 0; i--) {
+            if (currentGuess[i] !== '') {
+                lastFilled = i;
+                break;
             }
-            updateGridTileSize();
         }
-
-        // Update grid tile size based on screen
-        function updateGridTileSize() {
-            const headerH = document.querySelector('header')?.offsetHeight || 60;
-            const keyboardH = keyboardEl?.offsetHeight || 180;
-            const msgH = 44;
-            const padding = 24;
-            const gridGaps = (MAX_ATTEMPTS - 1) * 5;
-
-            const availableH = window.innerHeight - headerH - keyboardH - msgH - padding - gridGaps;
-            const tileByHeight = Math.floor(availableH / MAX_ATTEMPTS);
-            const tileByWidth = Math.floor((Math.min(window.innerWidth, 600) - 80) / GRID_COLS);
-
-            const tileSize = Math.min(tileByHeight, tileByWidth, 58);
-            const finalSize = Math.max(tileSize, 36);
-
-            document.querySelectorAll('.tile').forEach(t => {
-                t.style.setProperty('--tile-size', finalSize + 'px');
-            });
-        }
-
-        // Create keyboard
-        function createKeyboard() {
-            const layout = [
-                ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-                ['+', '-', '*', '='],
-                ['Enter', 'Backspace']
-            ];
-
-            keyboardEl.innerHTML = '';
-
-            layout.forEach(row => {
-                const rowDiv = document.createElement('div');
-                rowDiv.className = 'keyboard-row';
-
-                row.forEach(key => {
-                    const btn = document.createElement('button');
-                    btn.className = 'key';
-                    btn.dataset.key = key;
-
-                    if (key === 'Enter') {
-                        btn.classList.add('enter');
-                        btn.textContent = 'إدخال';
-                    } else if (key === 'Backspace') {
-                        btn.classList.add('backspace');
-                        btn.innerHTML = '<i class="fas fa-backspace"></i>';
-                    } else {
-                        btn.textContent = key;
-                    }
-
-                    btn.addEventListener('click', () => handleInput(key));
-                    rowDiv.appendChild(btn);
-                });
-
-                keyboardEl.appendChild(rowDiv);
-            });
-        }
-
-        // Handle input
-        function handleInput(value) {
-            if (inputLock || gameOver || isProcessing) return;
-
-            if (value === 'Enter') {
-                if (currentInput.length !== GRID_COLS) {
-                    showMessage(`يجب إدخال ${GRID_COLS} خانات`);
-                    shakeRow();
-                    return;
-                }
-                evaluateGuess();
-            } else if (value === 'Backspace') {
-                if (currentInput.length > 0) {
-                    currentInput = currentInput.slice(0, -1);
-                    updateCurrentRow();
-                }
-            } else if (/^[0-9+\-*=]$/.test(value)) {
-                if (currentInput.length < GRID_COLS) {
-                    currentInput += value;
-                    updateCurrentRow();
-
-                    const tile = document.getElementById(`tile-${currentRow}-${currentInput.length - 1}`);
-                    if (tile) {
-                        tile.classList.add('filled');
-                        setTimeout(() => tile.classList.remove('filled'), 100);
-                    }
-                }
-            }
-        }
-
-        // Start new game
-        function startNewGame() {
-            targetEquation = generateEquation();
-            console.log('Target equation:', targetEquation); // For debugging
-
-            currentRow = 0;
-            currentInput = "";
-            gameOver = false;
-            gameWon = false;
-            isProcessing = false;
-            inputLock = false;
-
-            createGrid();
-
-            // Clear keyboard colors
-            document.querySelectorAll('.key').forEach(k => {
-                k.classList.remove('correct', 'present', 'absent');
-            });
-
+        if (lastFilled !== -1) {
+            currentGuess[lastFilled] = '';
             updateCurrentRow();
-            messageEl.innerHTML = '';
-
-            // Hide modals
-            document.getElementById('gameResultModal').classList.add('hidden');
-            document.getElementById('statsModal').classList.add('hidden');
         }
-
-        // Setup event listeners
-        function setupEventListeners() {
-            // Keyboard input
-            document.addEventListener('keydown', (e) => {
-                if (e.ctrlKey || e.metaKey || e.altKey) return;
-
-                if (e.key === 'Enter') {
-                    handleInput('Enter');
-                } else if (e.key === 'Backspace') {
-                    handleInput('Backspace');
-                } else if (/^[0-9+\-*=]$/.test(e.key)) {
-                    handleInput(e.key);
-                }
-            });
-
-            // Window resize
-            window.addEventListener('resize', () => {
-                requestAnimationFrame(updateGridTileSize);
-            });
-
-            // Header buttons
-            document.getElementById('helpBtn').addEventListener('click', () => {
-                document.getElementById('helpModal').classList.remove('hidden');
-            });
-
-            document.getElementById('closeHelp').addEventListener('click', () => {
-                document.getElementById('helpModal').classList.add('hidden');
-            });
-
-            document.getElementById('startGameBtn').addEventListener('click', () => {
-                document.getElementById('helpModal').classList.add('hidden');
-                startNewGame();
-            });
-
-            document.getElementById('statsBtn').addEventListener('click', () => {
-                updateStatsDisplay();
-                document.getElementById('statsModal').classList.remove('hidden');
-            });
-
-            document.getElementById('closeStats').addEventListener('click', () => {
-                document.getElementById('statsModal').classList.add('hidden');
-            });
-
-            document.getElementById('newGameFromStats').addEventListener('click', () => {
-                document.getElementById('statsModal').classList.add('hidden');
-                startNewGame();
-            });
-
-            document.getElementById('newGameBtn').addEventListener('click', startNewGame);
-
-            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-
-            // Game result modal
-            document.getElementById('closeGameResult').addEventListener('click', () => {
-                document.getElementById('gameResultModal').classList.add('hidden');
-            });
-
-            document.getElementById('playAgainBtn').addEventListener('click', () => {
-                document.getElementById('gameResultModal').classList.add('hidden');
-                startNewGame();
-            });
-
-            document.getElementById('viewStatsBtn').addEventListener('click', () => {
-                document.getElementById('gameResultModal').classList.add('hidden');
-                updateStatsDisplay();
-                document.getElementById('statsModal').classList.remove('hidden');
-            });
-
-            // Close modals on overlay click
-            document.querySelectorAll('.modal-overlay').forEach(overlay => {
-                overlay.addEventListener('click', (e) => {
-                    if (e.target === overlay) {
-                        overlay.classList.add('hidden');
-                    }
-                });
-            });
-        }
-
-        // Initialize game
-        function init() {
-            loadStats();
-            loadTheme();
-            createKeyboard();
-            startNewGame();
-            setupEventListeners();
-
-            // Show help on first visit
-            if (!localStorage.getItem('mathgrid_help_seen')) {
-                setTimeout(() => {
-                    document.getElementById('helpModal').classList.remove('hidden');
-                }, 500);
-                localStorage.setItem('mathgrid_help_seen', 'true');
+    } else if (ARROW_SYMBOLS.includes(value)) {
+        let firstEmpty = -1;
+        for (let i = 0; i < MAX_ARROWS; i++) {
+            if (currentGuess[i] === '') {
+                firstEmpty = i;
+                break;
             }
         }
+        if (firstEmpty !== -1) {
+            currentGuess[firstEmpty] = value;
+            updateCurrentRow();
+            const tile = document.getElementById(`tile-${currentRow}-${firstEmpty}`);
+            if (tile) { tile.classList.add('filled'); setTimeout(() => tile.classList.remove('filled'), 100); }
+        } else {
+            showMessage(`لا يمكن إضافة المزيد من الأسهم`, 1000);
+        }
+    }
+}
 
-        // Start the game
-        window.addEventListener('load', init);
-    </script>
+function createKeyboard() {
+    const keyboardDiv = document.getElementById('keyboard');
+    const arrowRow = ['↑', '↓', '←', '→'];
+    // ترتيب أزرار التحكم: Backspace ثم Enter (سيتم عكس ترتيبهما بصرياً بواسطة CSS)
+    const controlRow = ['Backspace', 'Enter'];
+    keyboardDiv.innerHTML = '';
+    const row1 = document.createElement('div');
+    row1.className = 'keyboard-row';
+    arrowRow.forEach(arrow => {
+        const btn = document.createElement('button');
+        btn.className = 'key';
+        btn.textContent = arrow;
+        btn.dataset.key = arrow;
+        btn.addEventListener('click', () => handleInput(arrow));
+        row1.appendChild(btn);
+    });
+    keyboardDiv.appendChild(row1);
+    const row2 = document.createElement('div');
+    row2.className = 'keyboard-row';
+    controlRow.forEach(key => {
+        const btn = document.createElement('button');
+        btn.className = 'key';
+        if (key === 'Enter') btn.classList.add('enter');
+        if (key === 'Backspace') btn.classList.add('backspace');
+        btn.textContent = key === 'Backspace' ? '⌫' : key;
+        btn.dataset.key = key;
+        btn.addEventListener('click', () => handleInput(key));
+        row2.appendChild(btn);
+    });
+    keyboardDiv.appendChild(row2);
+}
+
+function loadData() {
+    const savedStats = localStorage.getItem('arrowle_stats');
+    if (savedStats) stats = JSON.parse(savedStats);
+    const savedHistory = localStorage.getItem('arrowle_history');
+    if (savedHistory) attemptsHistory = JSON.parse(savedHistory);
+    const savedMatrices = localStorage.getItem('arrowle_matrices');
+    if (savedMatrices) attemptMatrices = JSON.parse(savedMatrices);
+    updateStatsDisplay();
+}
+
+function loadTheme() {
+    const saved = localStorage.getItem('arrowle_theme');
+    const icon = document.querySelector('#themeToggle i');
+    if (saved === 'light') {
+        document.body.classList.add('light-mode');
+        icon.className = 'fas fa-moon text-lg';
+    } else {
+        document.body.classList.remove('light-mode');
+        icon.className = 'fas fa-sun text-lg';
+    }
+}
+
+function updateGridTileSize() {
+    const headerH = document.querySelector('header')?.offsetHeight || 60;
+    const keyboardH = document.getElementById('keyboard')?.offsetHeight || 180;
+    const msgH = 44, padding = 24, gridGaps = (MAX_ATTEMPTS - 1) * 5;
+    const availableH = window.innerHeight - headerH - keyboardH - msgH - padding - gridGaps;
+    const tileByHeight = Math.floor(availableH / MAX_ATTEMPTS);
+    const tileByWidth = Math.floor((Math.min(window.innerWidth, 480) - 60) / MAX_ARROWS);
+    const tileSize = Math.min(tileByHeight, tileByWidth, 75);
+    const finalSize = Math.max(tileSize, 32);
+    document.querySelectorAll('.tile').forEach(t => t.style.setProperty('--tile-size', finalSize + 'px'));
+}
+
+function setupEventListeners() {
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+        const key = e.key;
+        if (key === 'Enter') { e.preventDefault(); handleInput('Enter'); return; }
+        if (key === 'Backspace') { e.preventDefault(); handleInput('Backspace'); return; }
+        if (key === 'ArrowUp') { e.preventDefault(); handleInput('↑'); return; }
+        if (key === 'ArrowDown') { e.preventDefault(); handleInput('↓'); return; }
+        if (key === 'ArrowLeft') { e.preventDefault(); handleInput('←'); return; }
+        if (key === 'ArrowRight') { e.preventDefault(); handleInput('→'); return; }
+    });
+    window.addEventListener('resize', () => requestAnimationFrame(updateGridTileSize));
+    document.getElementById('statsBtn').addEventListener('click', () => { updateStatsDisplay(); document.getElementById('statsModal').classList.remove('hidden'); });
+    document.getElementById('newGameHeaderBtn').addEventListener('click', startNewGame);
+    document.getElementById('newGameFromStats').addEventListener('click', () => { startNewGame(); document.getElementById('statsModal').classList.add('hidden'); });
+    document.getElementById('startGameBtn').addEventListener('click', () => { document.getElementById('helpModal').classList.add('hidden'); startNewGame(); });
+    document.getElementById('closeHelp').addEventListener('click', () => document.getElementById('helpModal').classList.add('hidden'));
+    document.getElementById('closeStats').addEventListener('click', () => document.getElementById('statsModal').classList.add('hidden'));
+    document.getElementById('closeGameResult').addEventListener('click', () => document.getElementById('gameResultModal').classList.add('hidden'));
+    document.getElementById('playAgainBtn').addEventListener('click', () => { startNewGame(); document.getElementById('gameResultModal').classList.add('hidden'); });
+    document.getElementById('viewStatsBtn').addEventListener('click', () => { document.getElementById('gameResultModal').classList.add('hidden'); updateStatsDisplay(); document.getElementById('statsModal').classList.remove('hidden'); });
+    document.getElementById('themeToggle').addEventListener('click', () => {
+        const isLight = document.body.classList.toggle('light-mode');
+        const icon = document.querySelector('#themeToggle i');
+        icon.className = isLight ? 'fas fa-moon text-lg' : 'fas fa-sun text-lg';
+        localStorage.setItem('arrowle_theme', isLight ? 'light' : 'dark');
+    });
+}
+
+function init() {
+    loadData();
+    loadTheme();
+    createKeyboard();
+    const grid = document.getElementById('grid');
+    grid.innerHTML = '';
+    for (let r = 0; r < MAX_ATTEMPTS; r++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'grid-row';
+        rowDiv.id = `row-${r}`;
+        for (let c = 0; c < MAX_ARROWS; c++) {
+            const tile = document.createElement('div');
+            tile.className = 'tile';
+            tile.id = `tile-${r}-${c}`;
+            rowDiv.appendChild(tile);
+        }
+        grid.appendChild(rowDiv);
+    }
+    requestAnimationFrame(updateGridTileSize);
+    startNewGame();
+    setupEventListeners();
+    if (!localStorage.getItem('arrowle_help_seen')) {
+        setTimeout(() => document.getElementById('helpModal').classList.remove('hidden'), 500);
+        localStorage.setItem('arrowle_help_seen', 'true');
+    }
+}
+
+window.addEventListener('load', init);
+</script>
 </body>
 </html>
