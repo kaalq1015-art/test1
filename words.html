@@ -149,12 +149,12 @@ h1{
 }
 .back-btn:hover{opacity:0.88;transform:scale(1.05);}
 .stats-btn-header,#difficultyToggle,.theme-btn,#newGameHeaderBtn{
-    width:36px;height:36px;border-radius:10px;
     background:var(--surface-color);border:1px solid var(--border-color);
     color:var(--text-color) !important;
     display:flex;align-items:center;justify-content:center;
     cursor:pointer;transition:all 0.2s;
     backdrop-filter:blur(8px);
+    border-radius:10px;
 }
 /* تحسين زر الصعوبة ليكون متناسقًا */
 #difficultyToggle {
@@ -163,6 +163,7 @@ h1{
     gap: 4px;
     white-space: nowrap;
     font-size: 0.8rem;
+    height:36px;
 }
 #difficultyToggle span {
     font-size: 0.7rem;
@@ -243,7 +244,7 @@ h1{
 .result-buttons{display:flex;gap:8px;margin-top:16px;}
 .result-buttons button{flex:1;padding:13px;border-radius:12px;font-weight:800;font-size:0.95rem;transition:all 0.2s;cursor:pointer;}
 @media(max-width:480px){.result-buttons{flex-direction:column;gap:8px;}}
-/* DIFFICULTY DROPDOWN - تفتح ناحية اليسار */
+/* DIFFICULTY DROPDOWN */
 .difficulty-dropdown{position:relative;display:inline-block;}
 .difficulty-menu{
     position:absolute;top:100%;left:0;width:130px;
@@ -294,7 +295,7 @@ h1{
 
 <div id="helpModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">طريقة اللعب</h2><button id="closeHelp" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div class="mb-6"><p class="text-base mb-5 text-center" id="helpAttemptsText">خمّن الكلمة في 6 محاولات.</p><div class="color-example"><div class="color-box correct">ك</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأخضر</h3><p>الحرف صحيح وفي المكان الصحيح.</p></div></div><div class="color-example"><div class="color-box present">ل</div><div class="color-description"><h3 class="font-bold mb-1">اللون الأصفر</h3><p>الحرف صحيح ولكن في المكان الخطأ.</p></div></div><div class="color-example"><div class="color-box absent">م</div><div class="color-description"><h3 class="font-bold mb-1">اللون الرمادي</h3><p>الحرف غير موجود في الكلمة.</p></div></div></div><div class="text-center mt-5"><button id="startGameBtn" class="bg-[var(--correct-color)] text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 text-base">فهمت، ابدأ اللعب</button></div></div></div></div>
 
-<div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">الإحصائيات</h2><button id="closeStats" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div id="gameResultInfo" class="mb-4"></div><div id="attemptsTableContainer" class="attempts-table-container"><div class="attempts-title">سجل المحاولات</div><div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة. ابدأ اللعب الآن!</div><table class="attempts-table"><thead><th>#</th><th>المحاولة</th><th>النتيجة</th></thead><tbody id="attemptsTableBody"></tbody>} <table></div><div class="flex justify-around mb-6"><div class="text-center"><div id="playedCount" class="text-2xl font-bold">0</div><div class="text-xs">العب</div></div><div class="text-center"><div id="winPercent" class="text-2xl font-bold">0%</div><div class="text-xs">فوز</div></div><div class="text-center"><div id="currentStreak" class="text-2xl font-bold">0</div><div class="text-xs">تتابع</div></div><div class="text-center"><div id="maxStreak" class="text-2xl font-bold">0</div><div class="text-xs">أعلى تتابع</div></div></div><div class="space-y-2"><button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-2.5 rounded font-bold hover:bg-[var(--default-color)] text-sm">لعبة جديدة</button><button id="resetStatsBtn" class="w-full reset-stats-btn py-2.5 rounded font-bold text-sm">إعادة تعيين الإحصائيات</button></div></div></div></div>
+<div id="statsModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold">الإحصائيات</h2><button id="closeStats" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div id="gameResultInfo" class="mb-4"></div><div id="attemptsTableContainer" class="attempts-table-container"><div class="attempts-title">سجل المحاولات</div><div id="noAttemptsMessage" class="no-attempts-message hidden">لا توجد محاولات سابقة. ابدأ اللعب الآن!</div><table class="attempts-table"><thead><tr><th>#</th><th>المحاولة</th><th>النتيجة</th></tr></thead><tbody id="attemptsTableBody"></tbody></table></div><div class="flex justify-around mb-6"><div class="text-center"><div id="playedCount" class="text-2xl font-bold">0</div><div class="text-xs">العب</div></div><div class="text-center"><div id="winPercent" class="text-2xl font-bold">0%</div><div class="text-xs">فوز</div></div><div class="text-center"><div id="currentStreak" class="text-2xl font-bold">0</div><div class="text-xs">تتابع</div></div><div class="text-center"><div id="maxStreak" class="text-2xl font-bold">0</div><div class="text-xs">أعلى تتابع</div></div></div><div class="space-y-2"><button id="newGameFromStats" class="w-full border border-[var(--border-color)] py-2.5 rounded font-bold hover:bg-[var(--default-color)] text-sm">لعبة جديدة</button><button id="resetStatsBtn" class="w-full reset-stats-btn py-2.5 rounded font-bold text-sm">إعادة تعيين الإحصائيات</button></div></div></div></div>
 
 <div id="gameResultModal" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center hidden p-4"><div class="bg-[var(--bg-color)] border border-[var(--border-color)] rounded-lg modal-content"><div class="p-5"><div class="flex justify-between items-center mb-5"><h2 class="text-xl font-bold" id="resultModalTitle">نتيجة اللعبة</h2><button id="closeGameResult" class="text-xl hover:text-[var(--absent-color)]">&times;</button></div><div id="gameResultDetails" class="text-center mb-4"></div><div id="attemptMatrixContainer" class="attempt-matrix-container"><h3 class="matrix-title">خريطة رحلتك في التفكير</h3><div id="matrixGrid" class="matrix-grid"></div><div class="matrix-legend"><div class="legend-item"><div class="legend-color correct"></div><span>صحيح</span></div><div class="legend-item"><div class="legend-color present"></div><span>موجود بموقع آخر</span></div><div class="legend-item"><div class="legend-color absent"></div><span>غير موجود</span></div></div></div><button id="reportHardBtn" class="hard-word-btn">الكلمة صعبة! بلّغ عنها</button><div class="result-buttons"><button id="playAgainBtn" class="bg-[var(--correct-color)] text-white hover:opacity-90"><i class="fas fa-redo-alt ml-2"></i>العب مرة أخرى</button><button id="viewStatsBtn" class="border border-[var(--border-color)] hover:bg-[var(--default-color)]"><i class="fas fa-chart-bar ml-2"></i>عرض الإحصائيات</button></div></div></div></div>
 
@@ -328,7 +329,7 @@ function resetAllStats(){
     saveStats();
     saveAttemptsHistory();
     saveAttemptMatrices();
-    if(document.getElementById('statsModal').classList.contains('hidden')===false){
+    if(!document.getElementById('statsModal').classList.contains('hidden')){
         updateStatsDisplay(false);
     }
     showTemporaryMessage("✅ تم إعادة تعيين الإحصائيات بنجاح", 2000);
