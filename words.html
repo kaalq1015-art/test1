@@ -1,13 +1,40 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-69VLD61YBK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-69VLD61YBK');
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<title>ووردلات - ووردل بالعربي في 6 محاولات</title>
+
+<meta name="keywords" content="ووردلات, ووردل بالعربي, ووردل أرقام, ووردل معادلات, ووردل محاولات, لعبة كلمة, ألغاز يومية">
+<meta name="description" content="منصة ووردلات: العب أفضل ووردل بالعربي. استمتع بتحدي ووردل أرقام، ووردل معادلات، ووردل محاولات يومية ممتعة. هل تستطيع حل اللغز اليوم؟">
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="words-encrypted.js"></script>
 <script src="dictionary-encrypted.js"></script>
-<script>document.addEventListener('contextmenu',e=>e.preventDefault());document.onkeydown=function(e){if(e.keyCode==123)return false;if(e.ctrlKey&&e.shiftKey&&(e.keyCode==73||e.keyCode==74||e.keyCode==67))return false;if(e.ctrlKey&&e.keyCode==85)return false;};setInterval(function(){var s=new Date().getTime();debugger;var e=new Date().getTime();if(e-s>100){document.body.innerHTML='';window.location.reload();}},100);</script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>كلمة</title>
+<script>
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.onkeydown=function(e){
+    if(e.keyCode==123)return false;
+    if(e.ctrlKey&&e.shiftKey&&(e.keyCode==73||e.keyCode==74||e.keyCode==67))return false;
+    if(e.ctrlKey&&e.keyCode==85)return false;
+};
+setInterval(function(){
+    var s=new Date().getTime();
+    debugger;
+    var e=new Date().getTime();
+    if(e-s>100){document.body.innerHTML='';window.location.reload();}
+},100);
+</script>
+
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -85,7 +112,7 @@ body{
     .key.enter{font-size:clamp(0.65rem,2.2vw,0.8rem);}
     .keyboard-row{gap:2px;margin-bottom:5px;}
 }
-.key:hover{background-color:var(--border-active);transform:translateY(-1px);}
+@media(hover:hover){.key:hover{background-color:var(--border-active);transform:translateY(-1px);}}
 .key:active{transform:translateY(0);}
 .key.wide{min-width:65px;}
 @media(max-width:640px){.key.wide{min-width:56px;}}
@@ -176,10 +203,9 @@ h1{
 /* MATRIX */
 .attempt-matrix-container{margin:16px 0;padding:14px;border:1px solid var(--border-color);border-radius:14px;background:rgba(255,255,255,0.03);}
 .matrix-title{font-size:0.8rem;font-weight:700;margin-bottom:10px;text-align:center;color:var(--text-color);opacity:0.45;letter-spacing:0.08em;text-transform:uppercase;}
-.matrix-grid{display:flex;flex-direction:column;align-items:center;gap:5px;margin-bottom:10px;}
-.matrix-row{display:flex;justify-content:center;gap:5px;}
-.matrix-tile{--mt-size:40px;width:var(--mt-size);height:var(--mt-size);border:none;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:calc(var(--mt-size)*0.46);color:white;user-select:none;}
-@media(max-width:400px){.matrix-tile{--mt-size:33px;}}
+.matrix-grid{display:flex;flex-direction:column;align-items:stretch;gap:5px;margin-bottom:10px;}
+.matrix-row{display:flex;justify-content:center;gap:5px;width:100%;}
+.matrix-tile{flex:1;max-width:52px;aspect-ratio:1;border:none;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(0.75rem,3.5vw,1.1rem);color:white;user-select:none;}
 .matrix-tile.correct{background:var(--correct-color);}
 .matrix-tile.present{background:var(--present-color);}
 .matrix-tile.absent{background:var(--absent-color);}
