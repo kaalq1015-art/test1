@@ -1,158 +1,220 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ووردلات - تحدي الأونلاين</title>
-
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-
-<!-- القواميس المشفرة -->
-<script src="dictionary-encrypted.js"></script>
-<script src="words-encrypted.js"></script>
-
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
-*{font-family:'Tajawal',sans-serif;box-sizing:border-box;}
-:root{
-    --correct-color:#538d4e;
-    --present-color:#b59f3b;
-    --absent-color:#3a3a3c;
-    --bg-color:#121213;
-    --bg-gradient:linear-gradient(180deg,#121213 0%,#050505 100%);
-    --surface-color:rgba(30,30,32,0.85);
-    --text-color:#ffffff;
-    --border-color:rgba(255,255,255,0.1);
-    --border-active:rgba(255,255,255,0.2);
-    --key-bg:rgba(255,255,255,0.08);
-    --key-text:#ffffff;
-    --correct-glow:rgba(83,141,78,0.5);
-    --present-glow:rgba(181,159,59,0.35);
-}
-body{
-    background:var(--bg-gradient); color:var(--text-color); margin:0; padding:0;
-    height:100dvh; display:flex; flex-direction:column; overflow:hidden;
-}
-.game-wrapper {
-    flex:1; display:flex; flex-direction:column; width:100%; max-width:600px; 
-    margin:0 auto; padding:10px; overflow:hidden; gap: 10px;
-}
-.opponent-area {
-    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);
-    border-radius: 16px; padding: 15px 10px; position: relative;
-}
-.opponent-badge {
-    position: absolute; top: -12px; background: #e74c3c; color: white;
-    font-size: 0.75rem; font-weight: 800; padding: 2px 12px; border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
-}
-.opponent-grid { display: flex; flex-direction: column; gap: 4px; }
-.opp-row { display: flex; gap: 4px; justify-content: center; }
-.opp-tile {
-    width: 28px; height: 28px; border-radius: 4px;
-    background: transparent; border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
-}
-@media (max-width: 480px) {
-    .opp-tile { width: 22px; height: 22px; }
-}
-.opp-tile.filled { border-color: rgba(255,255,255,0.3); }
-.opp-tile.correct { background: var(--correct-color); border-color: var(--correct-color); box-shadow: 0 0 8px var(--correct-glow); }
-.opp-tile.present { background: var(--present-color); border-color: var(--present-color); }
-.opp-tile.absent { background: var(--absent-color); border-color: var(--absent-color); }
-.vs-divider { display: flex; align-items: center; justify-content: center; width: 100%; height: 20px; }
-.vs-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); }
-.vs-text { margin: 0 10px; font-weight: 800; font-size: 0.8rem; color: rgba(255,255,255,0.5); }
-.player-area { flex: 2; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 5px; }
-.grid-row{display:flex; justify-content:center; gap:6px; margin-bottom:6px;}
-.tile{
-    width: clamp(45px, 12vw, 60px); height: clamp(45px, 12vw, 60px); 
-    border:2px solid var(--border-color); display:flex; align-items:center; 
-    justify-content:center; font-size: 1.8rem; font-weight:800; border-radius:8px;
-}
-.tile.correct{background-color:var(--correct-color);border-color:var(--correct-color);box-shadow:0 0 14px var(--correct-glow);}
-.tile.present{background-color:var(--present-color);border-color:var(--present-color);}
-.tile.absent{background-color:var(--absent-color);border-color:var(--absent-color);}
-#keyboard { padding-bottom: 10px; }
-.keyboard-row{display:flex;justify-content:center;gap:4px;margin-bottom:6px;width:100%;}
-.key{
-    height:clamp(42px,6vh,58px);min-width:clamp(28px,6vw,43px);
-    background-color:var(--key-bg);color:var(--key-text);border:1px solid var(--border-color);
-    border-radius:8px;font-weight:700;font-size:clamp(0.85rem,3vw,1.1rem);
-    display:flex;align-items:center;justify-content:center;flex:1; cursor:pointer;
-}
-.key.wide{min-width:65px;}
-.key.enter{background-color:var(--correct-color); font-size:0.8rem;}
-.key.backspace{background-color:#9b2335;}
-.key.correct{background-color:var(--correct-color);border-color:var(--correct-color);}
-.key.present{background-color:var(--present-color);border-color:var(--present-color);}
-.key.absent{background-color:var(--absent-color);opacity:0.4;}
-header {
-    padding:10px 16px; border-bottom:1px solid rgba(255,255,255,0.07);
-    display:flex; align-items:center; justify-content:space-between;
-}
-.score-badge {
-    background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px;
-    font-size: 0.85rem; font-weight: 700; display: flex; gap: 8px;
-}
-.score-badge span:first-child { color: var(--correct-color); }
-.modal {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
-    display: flex; align-items: center; justify-content: center; z-index: 1000;
-}
-.modal-content {
-    background: var(--surface-color); border-radius: 20px; padding: 20px; width: 90%; max-width: 400px;
-    border: 1px solid var(--border-color);
-}
-.word-choice-grid {
-    display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin: 15px 0;
-}
-.word-choice-btn {
-    background: rgba(255,255,255,0.1); border: 1px solid var(--border-color);
-    padding: 10px; border-radius: 12px; font-size: 1.2rem; font-weight: bold;
-    cursor: pointer; transition: 0.2s;
-}
-.word-choice-btn:hover { background: var(--correct-color); color: white; transform: scale(1.02); }
-.hidden { display: none; }
-button { cursor: pointer; }
-.custom-input {
-    width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid var(--border-color);
-    border-radius: 12px; color: white; font-size: 1rem; margin: 10px 0; text-align: center;
-}
-.custom-input:focus { outline: none; border-color: var(--correct-color); }
-.modal-buttons {
-    display: flex; gap: 10px; justify-content: center; margin-top: 15px;
-}
-.modal-buttons button {
-    padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer;
-}
-.btn-primary { background: var(--correct-color); color: white; border: none; }
-.btn-secondary { background: rgba(255,255,255,0.2); color: white; border: none; }
-.loader {
-    border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid var(--correct-color);
-    border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 10px auto;
-}
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ووردلات - ضد الكمبيوتر</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+        * { font-family: 'Tajawal', sans-serif; box-sizing: border-box; }
+        :root {
+            --correct-color: #538d4e;
+            --present-color: #b59f3b;
+            --absent-color: #3a3a3c;
+            --bg-color: #121213;
+            --bg-gradient: linear-gradient(180deg, #121213 0%, #050505 100%);
+            --surface-color: rgba(30,30,32,0.85);
+            --text-color: #ffffff;
+            --border-color: rgba(255,255,255,0.1);
+            --key-bg: rgba(255,255,255,0.08);
+            --correct-glow: rgba(83,141,78,0.5);
+        }
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .game-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+            overflow: hidden;
+            gap: 10px;
+        }
+        .opponent-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 15px 10px;
+            position: relative;
+        }
+        .opponent-badge {
+            position: absolute;
+            top: -12px;
+            background: #e74c3c;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 2px 12px;
+            border-radius: 12px;
+        }
+        .opponent-grid { display: flex; flex-direction: column; gap: 4px; }
+        .opp-row { display: flex; gap: 4px; justify-content: center; }
+        .opp-tile {
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+        }
+        @media (max-width: 480px) { .opp-tile { width: 22px; height: 22px; } }
+        .opp-tile.correct { background: var(--correct-color); border-color: var(--correct-color); }
+        .opp-tile.present { background: var(--present-color); border-color: var(--present-color); }
+        .opp-tile.absent { background: var(--absent-color); border-color: var(--absent-color); }
+        .vs-divider { display: flex; align-items: center; justify-content: center; width: 100%; height: 20px; }
+        .vs-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); }
+        .vs-text { margin: 0 10px; font-weight: 800; font-size: 0.8rem; color: rgba(255,255,255,0.5); }
+        .player-area { flex: 2; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 5px; }
+        .grid-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 6px; }
+        .tile {
+            width: clamp(45px, 12vw, 60px);
+            height: clamp(45px, 12vw, 60px);
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 800;
+            border-radius: 8px;
+        }
+        .tile.correct { background-color: var(--correct-color); border-color: var(--correct-color); }
+        .tile.present { background-color: var(--present-color); border-color: var(--present-color); }
+        .tile.absent { background-color: var(--absent-color); border-color: var(--absent-color); }
+        #keyboard { padding-bottom: 10px; }
+        .keyboard-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 6px; width: 100%; }
+        .key {
+            height: clamp(42px, 6vh, 58px);
+            min-width: clamp(28px, 6vw, 43px);
+            background-color: var(--key-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: clamp(0.85rem, 3vw, 1.1rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            cursor: pointer;
+        }
+        .key.wide { min-width: 65px; }
+        .key.enter { background-color: var(--correct-color); font-size: 0.8rem; }
+        .key.backspace { background-color: #9b2335; }
+        .key.correct { background-color: var(--correct-color); }
+        .key.present { background-color: var(--present-color); }
+        .key.absent { background-color: var(--absent-color); opacity: 0.4; }
+        header {
+            padding: 10px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .score-badge {
+            background: rgba(255,255,255,0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            gap: 8px;
+        }
+        .score-badge span:first-child { color: var(--correct-color); }
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: var(--surface-color);
+            border-radius: 20px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid var(--border-color);
+        }
+        .word-choice-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .word-choice-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .word-choice-btn:hover { background: var(--correct-color); transform: scale(1.02); }
+        .hidden { display: none; }
+        button { cursor: pointer; }
+        .custom-input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .btn-primary { background: var(--correct-color); color: white; border: none; padding: 8px 16px; border-radius: 8px; }
+        .btn-secondary { background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 16px; border-radius: 8px; }
+        .loader {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid var(--correct-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .round-buttons { display: flex; gap: 8px; justify-content: center; margin-top: 10px; }
+    </style>
 </head>
 <body>
 
 <header>
-    <div class="text-sm font-bold opacity-70"><i class="fas fa-flag-checkered mr-2"></i> سباق الوقت</div>
+    <div class="text-sm font-bold opacity-70"><i class="fas fa-robot ml-2"></i> ضد الكمبيوتر</div>
     <div class="score-badge">
-        <span id="myScore">أنت: 0</span> | <span id="oppScore" class="text-red-400">الخصم: 0</span>
+        <span id="myScore">أنت: 0</span> | <span id="oppScore" class="text-red-400">الكمبيوتر: 0</span>
     </div>
-    <button id="leaveBtn" class="bg-red-500/20 text-red-400 px-3 py-1 rounded-lg text-xs font-bold border border-red-500/30">انسحاب</button>
+    <div class="round-buttons">
+        <button id="resetRoundBtn" class="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded text-xs">جولة جديدة</button>
+        <button id="resetScoresBtn" class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">إعادة النقاط</button>
+    </div>
 </header>
 
 <div class="game-wrapper">
     <div class="opponent-area">
-        <div class="opponent-badge" id="opponentName">الخصم (غير متصل)</div>
+        <div class="opponent-badge">الكمبيوتر</div>
         <div id="opponentGrid" class="opponent-grid"></div>
     </div>
     <div class="vs-divider">
@@ -166,647 +228,397 @@ button { cursor: pointer; }
     <div id="keyboard"></div>
 </div>
 
-<!-- النوافذ المنبثقة -->
-<div id="nameModal" class="modal hidden">
-    <div class="modal-content">
-        <h2 class="text-xl font-bold text-center mb-4">مرحباً بك!</h2>
-        <input type="text" id="playerNameInput" class="custom-input" placeholder="أدخل اسمك" maxlength="20">
-        <div class="modal-buttons">
-            <button id="confirmNameBtn" class="btn-primary">دخول</button>
-        </div>
-    </div>
-</div>
-
-<div id="gameModeModal" class="modal hidden">
-    <div class="modal-content">
-        <h2 class="text-xl font-bold text-center mb-4">اختر طريقة اللعب</h2>
-        <div class="modal-buttons">
-            <button id="createGameBtn" class="btn-primary">إنشاء غرفة جديدة</button>
-            <button id="joinGameBtn" class="btn-secondary">انضمام إلى غرفة</button>
-        </div>
-    </div>
-</div>
-
-<div id="roomCodeModal" class="modal hidden">
-    <div class="modal-content">
-        <h2 class="text-xl font-bold text-center mb-4">أدخل رمز الغرفة</h2>
-        <input type="text" id="roomCodeInput" class="custom-input" placeholder="رمز الغرفة">
-        <div class="modal-buttons">
-            <button id="confirmRoomBtn" class="btn-primary">دخول</button>
-            <button id="cancelRoomBtn" class="btn-secondary">إلغاء</button>
-        </div>
-    </div>
-</div>
-
-<div id="infoModal" class="modal hidden">
-    <div class="modal-content">
-        <h2 class="text-xl font-bold text-center mb-4" id="infoTitle">معلومات</h2>
-        <p id="infoMessage" class="text-center mb-4"></p>
-        <div class="modal-buttons">
-            <button id="closeInfoBtn" class="btn-primary">حسناً</button>
-        </div>
-    </div>
-</div>
-
-<div id="waitingModal" class="modal hidden">
-    <div class="modal-content">
-        <h2 class="text-xl font-bold text-center mb-4">بانتظار الخصم...</h2>
-        <div class="loader"></div>
-        <p class="text-center text-sm opacity-70 mt-2">سيبدأ اللعب عند اتصال اللاعب الثاني</p>
-    </div>
-</div>
-
+<!-- نافذة اختيار الكلمة -->
 <div id="wordSelectModal" class="modal hidden">
     <div class="modal-content">
-        <h2 class="text-xl font-bold text-center mb-4">اختر كلمتك للخصم</h2>
+        <h2 class="text-xl font-bold text-center mb-4">اختر كلمتك للكمبيوتر</h2>
         <div id="wordOptions" class="word-choice-grid"></div>
         <button id="randomWordBtn" class="w-full bg-gray-600 py-2 rounded-lg mt-2">اختيار عشوائي</button>
     </div>
 </div>
 
+<!-- نافذة معلومات بسيطة (بدون تنبيه) -->
+<div id="infoModal" class="modal hidden">
+    <div class="modal-content">
+        <h2 class="text-xl font-bold text-center mb-4" id="infoTitle"></h2>
+        <p id="infoMessage" class="text-center mb-4"></p>
+        <div class="flex justify-center">
+            <button id="closeInfoBtn" class="btn-primary">حسناً</button>
+        </div>
+    </div>
+</div>
+
 <script>
-// ========== إعداد Firebase ==========
-const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+    // ========== قاموس الكلمات (احتياطي) ==========
+    const DEFAULT_DICTIONARY = [
+        "كلمة", "بيت", "ماء", "شمس", "قمر", "نجم", "ورد", "نهر", "جبل", "وادي",
+        "كتاب", "قلم", "ورق", "حاسوب", "هاتف", "شاشة", "طاولة", "كرسي", "باب", "نافذة",
+        "سيارة", "طريق", "جسر", "مدينة", "قرية", "مدرسة", "جامعة", "مستشفى", "مطعم", "فندق",
+        "طائر", "سمكة", "أسد", "نمر", "فيل", "زرافة", "ثعلب", "أرنب", "حصان", "بقرة",
+        "تفاح", "موز", "برتقال", "عنب", "فراولة", "مانجو", "بطيخ", "خوخ", "كرز", "ليمون"
+    ];
 
-// ========== تحميل القواميس من الملفات الخارجية ==========
-let VALID_GUESSES = [];
-let VALID_WORDS = [];
+    // محاولة استيراد القواميس الخارجية إن وجدت
+    let VALID_GUESSES = [];
+    let VALID_WORDS = [];
 
-if (typeof dictionary !== 'undefined') VALID_GUESSES = dictionary;
-if (typeof words !== 'undefined') VALID_WORDS = words;
+    const possibleGuessNames = ['dictionary', 'VALID_GUESSES', 'validGuesses', 'allowedWords', 'DICTIONARY'];
+    const possibleWordNames = ['words', 'VALID_WORDS', 'validWords', 'secretWords', 'WORDS'];
 
-// دوال مساعدة
-function getRandomWords(count = 10) {
-    if (!VALID_WORDS.length) return [];
-    const shuffled = [...VALID_WORDS];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled.slice(0, count);
-}
-
-function isValidWord(word) {
-    return VALID_GUESSES.includes(word);
-}
-
-// ========== متغيرات اللعبة ==========
-let roomId = null;
-let playerId = null;
-let myName = null;
-let opponentId = null;
-let gameState = {
-    status: 'waiting',
-    myWord: null,
-    opponentWord: null,
-    myGuesses: [],
-    opponentGuesses: [],
-    myScore: 0,
-    opponentScore: 0
-};
-let currentGuess = "";
-let currentRow = 0;
-let maxAttempts = 6;
-let unsubRoom = null;
-
-// ========== دوال الواجهة ==========
-function showModal(id) { document.getElementById(id).classList.remove('hidden'); }
-function hideModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-function showInfo(title, message, callback) {
-    document.getElementById('infoTitle').innerText = title;
-    document.getElementById('infoMessage').innerText = message;
-    showModal('infoModal');
-    const closeBtn = document.getElementById('closeInfoBtn');
-    const handler = () => {
-        hideModal('infoModal');
-        closeBtn.removeEventListener('click', handler);
-        if (callback) callback();
-    };
-    closeBtn.addEventListener('click', handler);
-}
-
-function renderPlayerGrid() {
-    const container = document.getElementById('playerGrid');
-    container.innerHTML = '';
-    for (let row = 0; row < maxAttempts; row++) {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'grid-row';
-        for (let col = 0; col < 5; col++) {
-            const tile = document.createElement('div');
-            tile.className = 'tile';
-            if (row < gameState.myGuesses.length) {
-                const guess = gameState.myGuesses[row];
-                if (guess && guess.word) {
-                    tile.textContent = guess.word[col] || '';
-                    const result = guess.result[col];
-                    tile.classList.add(result);
-                }
-            } else if (row === gameState.myGuesses.length && currentGuess && row === currentRow) {
-                tile.textContent = currentGuess[col] || '';
-                if (currentGuess[col]) tile.classList.add('filled');
-            }
-            rowDiv.appendChild(tile);
+    for (let name of possibleGuessNames) {
+        if (typeof window[name] !== 'undefined' && Array.isArray(window[name]) && window[name].length > 0) {
+            VALID_GUESSES = window[name];
+            break;
         }
-        container.appendChild(rowDiv);
     }
-}
+    for (let name of possibleWordNames) {
+        if (typeof window[name] !== 'undefined' && Array.isArray(window[name]) && window[name].length > 0) {
+            VALID_WORDS = window[name];
+            break;
+        }
+    }
 
-function renderOpponentGrid() {
-    const container = document.getElementById('opponentGrid');
-    container.innerHTML = '';
-    for (let row = 0; row < maxAttempts; row++) {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'opp-row';
-        for (let col = 0; col < 5; col++) {
-            const tile = document.createElement('div');
-            tile.className = 'opp-tile';
-            if (row < gameState.opponentGuesses.length) {
-                const guess = gameState.opponentGuesses[row];
-                if (guess && guess.result) {
-                    tile.classList.add(guess.result[col]);
-                } else {
+    if (VALID_GUESSES.length === 0) VALID_GUESSES = [...DEFAULT_DICTIONARY];
+    if (VALID_WORDS.length === 0) VALID_WORDS = [...DEFAULT_DICTIONARY];
+
+    // ========== دوال مساعدة ==========
+    function getRandomWords(count = 10) {
+        const shuffled = [...VALID_WORDS];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled.slice(0, count);
+    }
+
+    function isValidWord(word) {
+        return VALID_GUESSES.includes(word);
+    }
+
+    // ========== متغيرات اللعبة ==========
+    let currentGame = {
+        status: 'waiting', // waiting, playing, finished
+        mySecretWord: null,      // الكلمة التي اختارها اللاعب (سيحاول الكمبيوتر تخمينها)
+        computerSecretWord: null,// الكلمة التي اختارها الكمبيوتر (سيحاول اللاعب تخمينها)
+        myGuesses: [],           // تخمينات اللاعب (ضد كلمة الكمبيوتر)
+        computerGuesses: [],     // تخمينات الكمبيوتر (ضد كلمة اللاعب)
+        myScore: 0,
+        computerScore: 0,
+        roundActive: false,
+        turn: 'player'           // player أو computer
+    };
+
+    let currentGuess = "";
+    let currentRow = 0;
+    const maxAttempts = 6;
+
+    // ========== عناصر DOM ==========
+    const playerGridDiv = document.getElementById('playerGrid');
+    const opponentGridDiv = document.getElementById('opponentGrid');
+    const myScoreSpan = document.getElementById('myScore');
+    const oppScoreSpan = document.getElementById('oppScore');
+    const wordSelectModal = document.getElementById('wordSelectModal');
+    const wordOptionsDiv = document.getElementById('wordOptions');
+    const randomWordBtn = document.getElementById('randomWordBtn');
+    const infoModal = document.getElementById('infoModal');
+    const infoTitle = document.getElementById('infoTitle');
+    const infoMessage = document.getElementById('infoMessage');
+    const closeInfoBtn = document.getElementById('closeInfoBtn');
+    const resetRoundBtn = document.getElementById('resetRoundBtn');
+    const resetScoresBtn = document.getElementById('resetScoresBtn');
+
+    // ========== دوال الواجهة ==========
+    function showModal(modal) { modal.classList.remove('hidden'); }
+    function hideModal(modal) { modal.classList.add('hidden'); }
+
+    function showInfo(title, msg, callback) {
+        infoTitle.innerText = title;
+        infoMessage.innerText = msg;
+        showModal(infoModal);
+        const handler = () => {
+            hideModal(infoModal);
+            closeInfoBtn.removeEventListener('click', handler);
+            if (callback) callback();
+        };
+        closeInfoBtn.addEventListener('click', handler);
+    }
+
+    function renderPlayerGrid() {
+        playerGridDiv.innerHTML = '';
+        for (let row = 0; row < maxAttempts; row++) {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'grid-row';
+            for (let col = 0; col < 5; col++) {
+                const tile = document.createElement('div');
+                tile.className = 'tile';
+                if (row < currentGame.myGuesses.length) {
+                    const guess = currentGame.myGuesses[row];
+                    if (guess && guess.word) {
+                        tile.textContent = guess.word[col] || '';
+                        tile.classList.add(guess.result[col]);
+                    }
+                } else if (row === currentGame.myGuesses.length && currentGuess && row === currentRow && currentGame.turn === 'player') {
+                    tile.textContent = currentGuess[col] || '';
+                }
+                rowDiv.appendChild(tile);
+            }
+            playerGridDiv.appendChild(rowDiv);
+        }
+    }
+
+    function renderOpponentGrid() {
+        opponentGridDiv.innerHTML = '';
+        for (let row = 0; row < maxAttempts; row++) {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'opp-row';
+            for (let col = 0; col < 5; col++) {
+                const tile = document.createElement('div');
+                tile.className = 'opp-tile';
+                if (row < currentGame.computerGuesses.length) {
+                    const guess = currentGame.computerGuesses[row];
+                    if (guess && guess.result) {
+                        tile.classList.add(guess.result[col]);
+                    } else {
+                        tile.classList.add('filled');
+                    }
+                } else if (row === currentGame.computerGuesses.length && currentGame.computerGuesses.length < maxAttempts) {
                     tile.classList.add('filled');
                 }
-            } else if (row === gameState.opponentGuesses.length && gameState.opponentGuesses.length < maxAttempts) {
-                tile.classList.add('filled');
+                rowDiv.appendChild(tile);
             }
-            rowDiv.appendChild(tile);
-        }
-        container.appendChild(rowDiv);
-    }
-}
-
-function updateKeyboardColors() {
-    document.querySelectorAll('.key').forEach(k => {
-        if (!k.classList.contains('enter') && !k.classList.contains('backspace'))
-            k.classList.remove('correct', 'present', 'absent');
-    });
-    gameState.myGuesses.forEach(guess => {
-        if (!guess || !guess.result) return;
-        for (let i = 0; i < 5; i++) {
-            const letter = guess.word[i];
-            const status = guess.result[i];
-            const key = document.querySelector(`.key[data-key="${letter}"]`);
-            if (key) {
-                if (status === 'correct') key.classList.add('correct');
-                else if (status === 'present' && !key.classList.contains('correct')) key.classList.add('present');
-                else if (status === 'absent' && !key.classList.contains('correct') && !key.classList.contains('present')) key.classList.add('absent');
-            }
-        }
-    });
-}
-
-function calculateResult(guess, target) {
-    const result = Array(5).fill('absent');
-    const targetCount = {};
-    for (let ch of target) targetCount[ch] = (targetCount[ch] || 0) + 1;
-    for (let i = 0; i < 5; i++) {
-        if (guess[i] === target[i]) {
-            result[i] = 'correct';
-            targetCount[guess[i]]--;
+            opponentGridDiv.appendChild(rowDiv);
         }
     }
-    for (let i = 0; i < 5; i++) {
-        if (result[i] !== 'correct' && targetCount[guess[i]] > 0) {
-            result[i] = 'present';
-            targetCount[guess[i]]--;
-        }
-    }
-    return result;
-}
 
-async function submitGuess() {
-    if (gameState.status !== 'playing') {
-        showInfo('تنبيه', 'اللعبة لم تبدأ بعد أو انتهت.');
-        return;
-    }
-    if (currentGuess.length !== 5) {
-        showInfo('تنبيه', 'يجب إدخال 5 أحرف');
-        return;
-    }
-    if (!isValidWord(currentGuess)) {
-        showInfo('تنبيه', 'الكلمة غير موجودة في القاموس');
-        return;
-    }
-    if (gameState.myGuesses.some(g => g.word === currentGuess)) {
-        showInfo('تنبيه', 'لقد جربت هذه الكلمة من قبل');
-        return;
-    }
-
-    const result = calculateResult(currentGuess, gameState.opponentWord);
-    const newGuess = { word: currentGuess, result: result };
-    const newGuesses = [...gameState.myGuesses, newGuess];
-    const win = currentGuess === gameState.opponentWord;
-
-    gameState.myGuesses = newGuesses;
-    currentGuess = '';
-    currentRow = newGuesses.length;
-    renderPlayerGrid();
-    updateKeyboardColors();
-
-    const roomRef = db.collection('rooms').doc(roomId);
-    await roomRef.update({
-        [`players.${playerId}.guesses`]: newGuesses,
-        [`players.${playerId}.currentGuess`]: ''
-    });
-
-    if (win) {
-        await roomRef.update({
-            winner: playerId,
-            status: 'finished'
+    function updateKeyboardColors() {
+        document.querySelectorAll('.key').forEach(k => {
+            if (!k.classList.contains('enter') && !k.classList.contains('backspace'))
+                k.classList.remove('correct', 'present', 'absent');
         });
-        showInfo('مبروك!', 'لقد فزت!');
-        gameState.myScore++;
-        document.getElementById('myScore').innerText = `أنت: ${gameState.myScore}`;
-        await roomRef.update({ scores: { [playerId]: gameState.myScore, [opponentId]: gameState.opponentScore } });
-    } else if (newGuesses.length === maxAttempts) {
-        showInfo('انتهت المحاولات', 'الخصم فاز!');
-        gameState.opponentScore++;
-        document.getElementById('oppScore').innerText = `الخصم: ${gameState.opponentScore}`;
-        await roomRef.update({ winner: opponentId, status: 'finished', scores: { [playerId]: gameState.myScore, [opponentId]: gameState.opponentScore } });
-    }
-}
-
-function handleKey(key) {
-    if (gameState.status !== 'playing') return;
-    if (key === 'Enter') {
-        submitGuess();
-    } else if (key === 'Backspace') {
-        currentGuess = currentGuess.slice(0, -1);
-        renderPlayerGrid();
-    } else if (/^[\u0600-\u06FF]$/.test(key) && currentGuess.length < 5) {
-        currentGuess += key;
-        renderPlayerGrid();
-    }
-}
-
-function buildKeyboard() {
-    const layout = [
-        ["ج","ح","خ","ه","ع","غ","ف","ق","ث","ص"],
-        ["ة","ك","م","ن","ت","ا","ل","ب","ي","س","ش"],
-        ["ض","و","ر","ز","د","ذ","ط","ظ"]
-    ];
-    const keyboardDiv = document.getElementById('keyboard');
-    keyboardDiv.innerHTML = '';
-    layout.forEach((row, idx) => {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'keyboard-row';
-        if (idx === 2) {
-            const enterKey = document.createElement('div');
-            enterKey.className = 'key wide enter';
-            enterKey.textContent = 'Enter';
-            enterKey.dataset.key = 'Enter';
-            enterKey.addEventListener('click', () => handleKey('Enter'));
-            rowDiv.appendChild(enterKey);
-        }
-        row.forEach(letter => {
-            const key = document.createElement('div');
-            key.className = 'key';
-            key.textContent = letter;
-            key.dataset.key = letter;
-            key.addEventListener('click', () => handleKey(letter));
-            rowDiv.appendChild(key);
-        });
-        if (idx === 2) {
-            const backspace = document.createElement('div');
-            backspace.className = 'key wide backspace';
-            backspace.innerHTML = '<i class="fas fa-backspace"></i>';
-            backspace.dataset.key = 'Backspace';
-            backspace.addEventListener('click', () => handleKey('Backspace'));
-            rowDiv.appendChild(backspace);
-        }
-        keyboardDiv.appendChild(rowDiv);
-    });
-}
-
-// ========== إدارة الغرف ==========
-function generatePlayerId() {
-    return 'player_' + Math.random().toString(36).substr(2, 9);
-}
-
-async function showNameModal() {
-    return new Promise((resolve) => {
-        showModal('nameModal');
-        const input = document.getElementById('playerNameInput');
-        input.value = '';
-        const confirmBtn = document.getElementById('confirmNameBtn');
-        const handler = () => {
-            const name = input.value.trim();
-            if (name === '') {
-                showInfo('تنبيه', 'الرجاء إدخال اسم صحيح');
-                return;
-            }
-            myName = name;
-            hideModal('nameModal');
-            confirmBtn.removeEventListener('click', handler);
-            resolve();
-        };
-        confirmBtn.addEventListener('click', handler);
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handler();
-        });
-    });
-}
-
-async function showGameModeModal() {
-    return new Promise((resolve) => {
-        showModal('gameModeModal');
-        const createBtn = document.getElementById('createGameBtn');
-        const joinBtn = document.getElementById('joinGameBtn');
-        const createHandler = () => {
-            hideModal('gameModeModal');
-            createBtn.removeEventListener('click', createHandler);
-            joinBtn.removeEventListener('click', joinHandler);
-            resolve('create');
-        };
-        const joinHandler = () => {
-            hideModal('gameModeModal');
-            createBtn.removeEventListener('click', createHandler);
-            joinBtn.removeEventListener('click', joinHandler);
-            resolve('join');
-        };
-        createBtn.addEventListener('click', createHandler);
-        joinBtn.addEventListener('click', joinHandler);
-    });
-}
-
-async function showRoomCodeModal() {
-    return new Promise((resolve) => {
-        showModal('roomCodeModal');
-        const input = document.getElementById('roomCodeInput');
-        input.value = '';
-        const confirmBtn = document.getElementById('confirmRoomBtn');
-        const cancelBtn = document.getElementById('cancelRoomBtn');
-        const confirmHandler = () => {
-            const code = input.value.trim();
-            if (code === '') {
-                showInfo('تنبيه', 'الرجاء إدخال رمز الغرفة');
-                return;
-            }
-            hideModal('roomCodeModal');
-            confirmBtn.removeEventListener('click', confirmHandler);
-            cancelBtn.removeEventListener('click', cancelHandler);
-            resolve(code);
-        };
-        const cancelHandler = () => {
-            hideModal('roomCodeModal');
-            confirmBtn.removeEventListener('click', confirmHandler);
-            cancelBtn.removeEventListener('click', cancelHandler);
-            resolve(null);
-        };
-        confirmBtn.addEventListener('click', confirmHandler);
-        cancelBtn.addEventListener('click', cancelHandler);
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') confirmHandler();
-        });
-    });
-}
-
-function waitForOpponent(roomRef) {
-    return new Promise((resolve) => {
-        const unsub = roomRef.onSnapshot((snap) => {
-            const data = snap.data();
-            const players = data.players;
-            const playerIds = Object.keys(players);
-            if (playerIds.length === 2) {
-                unsub();
-                opponentId = playerIds.find(id => id !== playerId);
-                resolve();
-            }
-        });
-    });
-}
-
-async function createRoom() {
-    playerId = generatePlayerId();
-    const roomRef = db.collection('rooms').doc();
-    roomId = roomRef.id;
-    const roomData = {
-        players: {
-            [playerId]: {
-                name: myName,
-                word: null,
-                wordSelected: false,
-                guesses: [],
-                currentGuess: ''
-            }
-        },
-        status: 'waiting',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        scores: { [playerId]: 0 }
-    };
-    await roomRef.set(roomData);
-    showInfo('تم إنشاء الغرفة', `رمز الغرفة: ${roomId}\nأرسله لصديقك للانضمام.`, async () => {
-        showModal('waitingModal');
-        await waitForOpponent(roomRef);
-        hideModal('waitingModal');
-        listenToRoom();
-    });
-}
-
-async function joinRoom() {
-    const code = await showRoomCodeModal();
-    if (!code) {
-        startGameFlow();
-        return;
-    }
-    roomId = code;
-    const roomRef = db.collection('rooms').doc(roomId);
-    const doc = await roomRef.get();
-    if (!doc.exists) {
-        showInfo('خطأ', 'الغرفة غير موجودة', () => joinRoom());
-        return;
-    }
-    playerId = generatePlayerId();
-    await roomRef.update({
-        [`players.${playerId}`]: {
-            name: myName,
-            word: null,
-            wordSelected: false,
-            guesses: [],
-            currentGuess: ''
-        },
-        [`scores.${playerId}`]: 0
-    });
-    const data = doc.data();
-    const otherPlayer = Object.keys(data.players).find(id => id !== playerId);
-    if (otherPlayer) {
-        opponentId = otherPlayer;
-        await roomRef.update({ status: 'selecting' });
-        listenToRoom();
-    } else {
-        showModal('waitingModal');
-        await waitForOpponent(roomRef);
-        hideModal('waitingModal');
-        listenToRoom();
-    }
-}
-
-async function showWordSelection() {
-    const words = getRandomWords(10);
-    const container = document.getElementById('wordOptions');
-    container.innerHTML = '';
-    words.forEach(word => {
-        const btn = document.createElement('button');
-        btn.className = 'word-choice-btn';
-        btn.textContent = word;
-        btn.onclick = async () => {
-            await db.collection('rooms').doc(roomId).update({
-                [`players.${playerId}.word`]: word,
-                [`players.${playerId}.wordSelected`]: true
-            });
-            hideModal('wordSelectModal');
-            checkBothSelected();
-        };
-        container.appendChild(btn);
-    });
-    document.getElementById('randomWordBtn').onclick = () => {
-        const randomWord = words[Math.floor(Math.random() * words.length)];
-        const btn = Array.from(document.querySelectorAll('.word-choice-btn')).find(b => b.textContent === randomWord);
-        if (btn) btn.click();
-    };
-    showModal('wordSelectModal');
-}
-
-async function checkBothSelected() {
-    const roomSnap = await db.collection('rooms').doc(roomId).get();
-    const roomData = roomSnap.data();
-    const players = roomData.players;
-    const allSelected = Object.values(players).every(p => p.wordSelected);
-    if (allSelected) {
-        const myWord = players[playerId].word;
-        const oppWord = players[opponentId].word;
-        await db.collection('rooms').doc(roomId).update({
-            status: 'playing',
-            words: { [playerId]: myWord, [opponentId]: oppWord }
-        });
-        gameState.opponentWord = oppWord;
-        gameState.myWord = myWord;
-        gameState.status = 'playing';
-        gameState.myGuesses = [];
-        gameState.opponentGuesses = [];
-        currentGuess = "";
-        currentRow = 0;
-        renderPlayerGrid();
-        renderOpponentGrid();
-    }
-}
-
-function listenToRoom() {
-    if (unsubRoom) unsubRoom();
-    unsubRoom = db.collection('rooms').doc(roomId).onSnapshot(async (docSnap) => {
-        if (!docSnap.exists) return;
-        const data = docSnap.data();
-        gameState.status = data.status;
-        if (data.status === 'selecting') {
-            if (!data.players[playerId]?.wordSelected) {
-                showWordSelection();
-            }
-        } else if (data.status === 'playing') {
-            gameState.opponentWord = data.words[opponentId];
-            gameState.myWord = data.words[playerId];
-            if (data.players[opponentId]?.guesses) {
-                gameState.opponentGuesses = data.players[opponentId].guesses;
-            } else {
-                gameState.opponentGuesses = [];
-            }
-            if (data.players[playerId]?.guesses) {
-                gameState.myGuesses = data.players[playerId].guesses;
-                currentRow = gameState.myGuesses.length;
-                if (currentRow < maxAttempts && gameState.myGuesses.length > 0) {
-                    currentGuess = "";
+        currentGame.myGuesses.forEach(guess => {
+            for (let i = 0; i < 5; i++) {
+                const letter = guess.word[i];
+                const status = guess.result[i];
+                const key = document.querySelector(`.key[data-key="${letter}"]`);
+                if (key) {
+                    if (status === 'correct') key.classList.add('correct');
+                    else if (status === 'present' && !key.classList.contains('correct')) key.classList.add('present');
+                    else if (status === 'absent' && !key.classList.contains('correct') && !key.classList.contains('present')) key.classList.add('absent');
                 }
-            } else {
-                gameState.myGuesses = [];
-                currentRow = 0;
             }
-            renderPlayerGrid();
-            renderOpponentGrid();
-            updateKeyboardColors();
-        } else if (data.status === 'finished') {
-            const winner = data.winner;
-            if (winner === playerId) {
-                showInfo('فزت أنت!', 'تم إضافة نقطة');
-                gameState.myScore = (data.scores?.[playerId] || 0) + 1;
-                gameState.opponentScore = data.scores?.[opponentId] || 0;
-            } else {
-                showInfo('الخصم فاز!', 'تم إضافة نقطة للخصم');
-                gameState.opponentScore = (data.scores?.[opponentId] || 0) + 1;
-                gameState.myScore = data.scores?.[playerId] || 0;
-            }
-            document.getElementById('myScore').innerText = `أنت: ${gameState.myScore}`;
-            document.getElementById('oppScore').innerText = `الخصم: ${gameState.opponentScore}`;
-            startNewRound();
-        }
-        if (data.players[opponentId] && data.players[opponentId].name) {
-            document.getElementById('opponentName').innerText = data.players[opponentId].name;
-        }
-    });
-}
-
-async function startNewRound() {
-    await db.collection('rooms').doc(roomId).update({
-        status: 'selecting',
-        winner: null,
-        [`players.${playerId}.wordSelected`]: false,
-        [`players.${opponentId}.wordSelected`]: false,
-        [`players.${playerId}.word`]: null,
-        [`players.${opponentId}.word`]: null,
-        [`players.${playerId}.guesses`]: [],
-        [`players.${opponentId}.guesses`]: [],
-        words: {}
-    });
-    gameState.status = 'selecting';
-    gameState.myGuesses = [];
-    gameState.opponentGuesses = [];
-    currentGuess = "";
-    currentRow = 0;
-    renderPlayerGrid();
-    renderOpponentGrid();
-    showWordSelection();
-}
-
-async function startGameFlow() {
-    await showNameModal();
-    const mode = await showGameModeModal();
-    if (mode === 'create') {
-        await createRoom();
-    } else {
-        await joinRoom();
-    }
-}
-
-// ========== بدء التشغيل ==========
-document.getElementById('leaveBtn').onclick = () => {
-    if (roomId && playerId) {
-        db.collection('rooms').doc(roomId).update({
-            [`players.${playerId}`]: firebase.firestore.FieldValue.delete()
-        }).then(() => {
-            showInfo('تم الانسحاب', 'سيتم إعادة تحميل الصفحة', () => window.location.reload());
         });
-    } else {
-        window.location.reload();
     }
-};
 
-buildKeyboard();
+    function calculateResult(guess, target) {
+        const result = Array(5).fill('absent');
+        const targetCount = {};
+        for (let ch of target) targetCount[ch] = (targetCount[ch] || 0) + 1;
+        for (let i = 0; i < 5; i++) {
+            if (guess[i] === target[i]) {
+                result[i] = 'correct';
+                targetCount[guess[i]]--;
+            }
+        }
+        for (let i = 0; i < 5; i++) {
+            if (result[i] !== 'correct' && targetCount[guess[i]] > 0) {
+                result[i] = 'present';
+                targetCount[guess[i]]--;
+            }
+        }
+        return result;
+    }
 
-if (VALID_WORDS.length && VALID_GUESSES.length) {
-    startGameFlow();
-} else {
-    console.error("القواميس لم يتم تحميلها");
-    alert("حدث خطأ في تحميل القواميس. تأكد من وجود الملفات dictionary-encrypted.js و words-encrypted.js.");
-}
+    // ========== منطق اللعبة ==========
+    function endRound(winner) {
+        currentGame.status = 'finished';
+        currentGame.roundActive = false;
+        if (winner === 'player') {
+            currentGame.myScore++;
+            showInfo('فزت!', 'أحسنت! +1 نقطة', () => {});
+        } else {
+            currentGame.computerScore++;
+            showInfo('خسرت', 'الكمبيوتر فاز! +1 نقطة له', () => {});
+        }
+        myScoreSpan.innerText = `أنت: ${currentGame.myScore}`;
+        oppScoreSpan.innerText = `الكمبيوتر: ${currentGame.computerScore}`;
+        // بدأ جولة جديدة تلقائياً بعد ثانية
+        setTimeout(() => startNewRound(), 2000);
+    }
+
+    async function playerGuess(guessWord) {
+        if (!currentGame.roundActive || currentGame.turn !== 'player') return false;
+        if (guessWord.length !== 5) { showInfo('تنبيه', 'يجب أن تكون الكلمة 5 أحرف'); return false; }
+        if (!isValidWord(guessWord)) { showInfo('تنبيه', 'الكلمة غير موجودة في القاموس'); return false; }
+        if (currentGame.myGuesses.some(g => g.word === guessWord)) { showInfo('تنبيه', 'لقد جربت هذه الكلمة من قبل'); return false; }
+
+        const result = calculateResult(guessWord, currentGame.computerSecretWord);
+        const isWin = guessWord === currentGame.computerSecretWord;
+        currentGame.myGuesses.push({ word: guessWord, result: result });
+        currentGuess = "";
+        currentRow = currentGame.myGuesses.length;
+        renderPlayerGrid();
+        updateKeyboardColors();
+
+        if (isWin) {
+            endRound('player');
+            return true;
+        } else if (currentGame.myGuesses.length === maxAttempts) {
+            endRound('computer');
+            return true;
+        }
+
+        // دور الكمبيوتر
+        currentGame.turn = 'computer';
+        renderPlayerGrid(); // لتحديث حالة الإدخال
+        setTimeout(() => computerGuess(), 500);
+        return true;
+    }
+
+    async function computerGuess() {
+        if (!currentGame.roundActive || currentGame.turn !== 'computer') return;
+
+        // اختيار كلمة عشوائية لم يجربها الكمبيوتر بعد
+        const triedWords = currentGame.computerGuesses.map(g => g.word);
+        const availableGuesses = VALID_GUESSES.filter(w => !triedWords.includes(w));
+        if (availableGuesses.length === 0) {
+            // لا توجد كلمات متاحة، انتهى
+            endRound('player');
+            return;
+        }
+        const guessWord = availableGuesses[Math.floor(Math.random() * availableGuesses.length)];
+        const result = calculateResult(guessWord, currentGame.mySecretWord);
+        const isWin = guessWord === currentGame.mySecretWord;
+        currentGame.computerGuesses.push({ word: guessWord, result: result });
+        renderOpponentGrid();
+
+        if (isWin) {
+            endRound('computer');
+            return;
+        } else if (currentGame.computerGuesses.length === maxAttempts) {
+            endRound('player');
+            return;
+        }
+
+        // عودة الدور للاعب
+        currentGame.turn = 'player';
+        renderPlayerGrid(); // لتفعيل الإدخال
+        // تنظيف أي كلمة حالية للاعب
+        currentGuess = "";
+        currentRow = currentGame.myGuesses.length;
+        renderPlayerGrid();
+    }
+
+    // ========== إدارة الجولات ==========
+    function startNewRound() {
+        // اختيار الكلمات
+        const playerWords = getRandomWords(10);
+        const computerWords = getRandomWords(10);
+
+        // نافذة اختيار كلمة اللاعب
+        wordOptionsDiv.innerHTML = '';
+        playerWords.forEach(word => {
+            const btn = document.createElement('button');
+            btn.className = 'word-choice-btn';
+            btn.textContent = word;
+            btn.onclick = () => {
+                currentGame.mySecretWord = word;
+                // الكمبيوتر يختار عشوائياً من قائمته
+                currentGame.computerSecretWord = computerWords[Math.floor(Math.random() * computerWords.length)];
+                hideModal(wordSelectModal);
+                // بدء الجولة
+                currentGame.status = 'playing';
+                currentGame.roundActive = true;
+                currentGame.turn = 'player';
+                currentGame.myGuesses = [];
+                currentGame.computerGuesses = [];
+                currentGuess = "";
+                currentRow = 0;
+                renderPlayerGrid();
+                renderOpponentGrid();
+                updateKeyboardColors();
+            };
+            wordOptionsDiv.appendChild(btn);
+        });
+        randomWordBtn.onclick = () => {
+            const randomIndex = Math.floor(Math.random() * playerWords.length);
+            const btn = wordOptionsDiv.children[randomIndex];
+            if (btn) btn.click();
+        };
+        showModal(wordSelectModal);
+    }
+
+    function resetRound() {
+        if (currentGame.roundActive) {
+            showInfo('إعادة الجولة', 'تم إلغاء الجولة الحالية', () => {});
+        }
+        startNewRound();
+    }
+
+    function resetScores() {
+        currentGame.myScore = 0;
+        currentGame.computerScore = 0;
+        myScoreSpan.innerText = `أنت: 0`;
+        oppScoreSpan.innerText = `الكمبيوتر: 0`;
+        resetRound();
+    }
+
+    // ========== لوحة المفاتيح ==========
+    function handleKey(key) {
+        if (currentGame.turn !== 'player' || !currentGame.roundActive) return;
+        if (key === 'Enter') {
+            if (currentGuess.length === 5) playerGuess(currentGuess);
+            else showInfo('تنبيه', 'أدخل 5 أحرف');
+        } else if (key === 'Backspace') {
+            currentGuess = currentGuess.slice(0, -1);
+            renderPlayerGrid();
+        } else if (/^[\u0600-\u06FF]$/.test(key) && currentGuess.length < 5) {
+            currentGuess += key;
+            renderPlayerGrid();
+        }
+    }
+
+    function buildKeyboard() {
+        const layout = [
+            ["ج","ح","خ","ه","ع","غ","ف","ق","ث","ص"],
+            ["ة","ك","م","ن","ت","ا","ل","ب","ي","س","ش"],
+            ["ض","و","ر","ز","د","ذ","ط","ظ"]
+        ];
+        const keyboardDiv = document.getElementById('keyboard');
+        keyboardDiv.innerHTML = '';
+        layout.forEach((row, idx) => {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'keyboard-row';
+            if (idx === 2) {
+                const enterKey = document.createElement('div');
+                enterKey.className = 'key wide enter';
+                enterKey.textContent = 'Enter';
+                enterKey.addEventListener('click', () => handleKey('Enter'));
+                rowDiv.appendChild(enterKey);
+            }
+            row.forEach(letter => {
+                const key = document.createElement('div');
+                key.className = 'key';
+                key.textContent = letter;
+                key.dataset.key = letter;
+                key.addEventListener('click', () => handleKey(letter));
+                rowDiv.appendChild(key);
+            });
+            if (idx === 2) {
+                const backspace = document.createElement('div');
+                backspace.className = 'key wide backspace';
+                backspace.innerHTML = '<i class="fas fa-backspace"></i>';
+                backspace.addEventListener('click', () => handleKey('Backspace'));
+                rowDiv.appendChild(backspace);
+            }
+            keyboardDiv.appendChild(rowDiv);
+        });
+    }
+
+    // ========== بدء اللعبة ==========
+    resetRoundBtn.onclick = resetRound;
+    resetScoresBtn.onclick = resetScores;
+    buildKeyboard();
+    startNewRound(); // تبدأ بأول جولة
 </script>
 </body>
 </html>
