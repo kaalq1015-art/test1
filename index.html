@@ -22,6 +22,7 @@
     --correct-color:#538d4e;
     --present-color:#b59f3b;
     --absent-color:#3a3a3c;
+    --default-color:#565758;
     --bg-color:#121213;
     --bg-gradient:linear-gradient(180deg,#121213 0%,#050505 100%);
     --surface-color:rgba(30,30,32,0.85);
@@ -30,12 +31,32 @@
     --border-active:rgba(255,255,255,0.2);
     --key-bg:rgba(255,255,255,0.08);
     --key-text:#ffffff;
+    --enter-color:#538d4e;
+    --backspace-color:#9b2335;
     --correct-glow:rgba(83,141,78,0.5);
     --present-glow:rgba(181,159,59,0.35);
+    --header-border:rgba(255,255,255,0.07);
+}
+.light-mode{
+    --bg-color:#f8f9fa;
+    --bg-gradient:linear-gradient(180deg,#f8f9fa 0%,#e9ecef 100%);
+    --surface-color:rgba(255,255,255,0.85);
+    --text-color:#121213;
+    --border-color:rgba(0,0,0,0.1);
+    --border-active:rgba(0,0,0,0.2);
+    --key-bg:rgba(0,0,0,0.07);
+    --key-text:#121213;
+    --default-color:#d3d6da;
+    --header-border:rgba(0,0,0,0.08);
 }
 body{
-    background:var(--bg-gradient); color:var(--text-color); margin:0; padding:0;
-    height:100dvh; display:flex; flex-direction:column; overflow:hidden;
+    background:var(--bg-gradient);
+    color:var(--text-color);
+    transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+    margin:0;padding:0;
+    height:100dvh;max-height:100dvh;
+    display:flex;flex-direction:column;
+    overflow:hidden;touch-action:manipulation;
 }
 .game-wrapper {
     flex:1; display:flex; flex-direction:column; width:100%; max-width:600px; 
@@ -88,20 +109,29 @@ body{
     display:flex;align-items:center;justify-content:center;flex:1; cursor:pointer;
 }
 .key.wide{min-width:65px;}
-.key.enter{background-color:var(--correct-color); font-size:0.8rem;}
-.key.backspace{background-color:#9b2335;}
+.key.enter{background-color:var(--enter-color); font-size:0.8rem;}
+.key.backspace{background-color:var(--backspace-color);}
 .key.correct{background-color:var(--correct-color);border-color:var(--correct-color);}
 .key.present{background-color:var(--present-color);border-color:var(--present-color);}
 .key.absent{background-color:var(--absent-color);opacity:0.4;}
 header {
-    padding:10px 16px; border-bottom:1px solid rgba(255,255,255,0.07);
+    padding:10px 16px; border-bottom:1px solid var(--header-border);
+    background:rgba(18,18,19,0.8);
+    backdrop-filter:blur(16px);
     display:flex; align-items:center; justify-content:space-between;
 }
+.light-mode header{background:rgba(248,249,250,0.85);}
 .score-badge {
     background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px;
     font-size: 0.85rem; font-weight: 700; display: flex; gap: 8px;
 }
 .score-badge span:first-child { color: var(--correct-color); }
+.room-code-badge {
+    background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px;
+    font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 6px;
+    cursor: pointer; transition: 0.2s;
+}
+.room-code-badge:hover { background: var(--correct-color); color: white; }
 .modal {
     position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
     display: flex; align-items: center; justify-content: center; z-index: 1000;
@@ -141,11 +171,19 @@ button { cursor: pointer; }
 <body>
 
 <header>
-    <div class="text-sm font-bold opacity-70"><i class="fas fa-flag-checkered mr-2"></i> سباق الوقت</div>
-    <div class="score-badge">
-        <span id="myScore">أنت: 0</span> | <span id="oppScore" class="text-red-400">الخصم: 0</span>
+    <div class="flex items-center gap-2">
+        <button id="statsBtn" class="stats-btn-header"><i class="fas fa-chart-bar text-sm"></i></button>
+        <a href="index.html" class="back-btn" title="تغيير اللعبة"><i class="fas fa-th-large text-sm"></i></a>
     </div>
-    <button id="leaveBtn" class="bg-red-500/20 text-red-400 px-3 py-1 rounded-lg text-xs font-bold border border-red-500/30">انسحاب</button>
+    <h1>تحدي مباشر</h1>
+    <div class="flex items-center gap-2">
+        <div id="roomCodeDisplay" class="room-code-badge hidden">
+            <i class="fas fa-hashtag"></i> <span id="roomCodeValue">---</span>
+            <i class="fas fa-copy text-xs"></i>
+        </div>
+        <button id="newGameBtn" class="stats-btn-header"><i class="fas fa-redo-alt text-sm"></i></button>
+        <button id="themeToggle" class="theme-btn"><i class="fas fa-sun text-sm text-yellow-400"></i></button>
+    </div>
 </header>
 
 <div class="game-wrapper">
@@ -222,8 +260,33 @@ button { cursor: pointer; }
     </div>
 </div>
 
+<div id="statsModal" class="modal hidden">
+    <div class="modal-content">
+        <div class="flex justify-between items-center mb-5">
+            <h2 class="text-xl font-bold">الإحصائيات</h2>
+            <button id="closeStatsBtn" class="text-xl hover:text-[var(--absent-color)]">&times;</button>
+        </div>
+        <div id="statsContent">
+            <div class="flex justify-around mb-6">
+                <div class="text-center"><div id="playedCount" class="text-2xl font-bold">0</div><div class="text-xs">العب</div></div>
+                <div class="text-center"><div id="winPercent" class="text-2xl font-bold">0%</div><div class="text-xs">فوز</div></div>
+                <div class="text-center"><div id="currentStreak" class="text-2xl font-bold">0</div><div class="text-xs">تتابع</div></div>
+                <div class="text-center"><div id="maxStreak" class="text-2xl font-bold">0</div><div class="text-xs">أعلى تتابع</div></div>
+            </div>
+            <div class="attempts-table-container max-h-60 overflow-y-auto">
+                <div class="attempts-title">سجل المحاولات</div>
+                <div id="noAttemptsMessage" class="text-center p-4 opacity-50">لا توجد محاولات سابقة</div>
+                <table class="attempts-table w-full hidden">
+                    <thead><tr><th>#</th><th>المحاولة</th><th>النتيجة</th></tr></thead>
+                    <tbody id="attemptsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-// ====================== إعداد Firebase ======================
+// ====================== Firebase Config ======================
 const firebaseConfig = {
     apiKey: "YOUR_API_KEY",
     authDomain: "YOUR_AUTH_DOMAIN",
@@ -232,35 +295,17 @@ const firebaseConfig = {
     messagingSenderId: "YOUR_SENDER_ID",
     appId: "YOUR_APP_ID"
 };
-// تهيئة Firebase (يجب استبدال القيم أعلاه بقيم مشروعك)
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// ====================== التحقق من تحميل القواميس ======================
+// ====================== التحقق من القواميس ======================
 if (typeof WORD_LIST === 'undefined' || typeof DICTIONARY === 'undefined') {
-    alert("خطأ: لم يتم تحميل ملفات القاموس (words.js و dictionary.js). تأكد من وجودهما.");
+    alert("خطأ: لم يتم تحميل ملفات القاموس (words.js و dictionary.js).");
     throw new Error("Missing word lists");
 }
 
-// ====================== دوال اختيار الكلمات ======================
-function getRandomWordsFromTargetList(count = 10) {
-    const shuffled = [...WORD_LIST];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled.slice(0, count);
-}
-
-function isValidWord(word) {
-    return DICTIONARY.includes(word);
-}
-
 // ====================== متغيرات اللعبة ======================
-let roomId = null;
-let playerId = null;
-let myName = null;
-let opponentId = null;
+let roomId = null, playerId = null, myName = null, opponentId = null;
 let gameState = {
     status: 'waiting',
     myWord: null,
@@ -270,16 +315,15 @@ let gameState = {
     myScore: 0,
     opponentScore: 0
 };
-let currentGuess = "";
-let currentRow = 0;
-const maxAttempts = 6;
-const wordLength = 5;
+let currentGuess = "", currentRow = 0;
+const maxAttempts = 6, wordLength = 5;
 let unsubRoom = null;
+let stats = { played: 0, wins: 0, currentStreak: 0, maxStreak: 0 };
+let attemptsHistory = [];
 
-// ====================== دوال النوافذ المخصصة ======================
+// ====================== دوال المساعدة ======================
 function showModal(id) { document.getElementById(id).classList.remove('hidden'); }
 function hideModal(id) { document.getElementById(id).classList.add('hidden'); }
-
 function showInfo(title, message, callback) {
     document.getElementById('infoTitle').innerText = title;
     document.getElementById('infoMessage').innerText = message;
@@ -293,22 +337,30 @@ function showInfo(title, message, callback) {
     closeBtn.addEventListener('click', handler);
 }
 
-// ====================== دوال اللعبة الأساسية ======================
+function getRandomWordsFromTargetList(count = 10) {
+    const shuffled = [...WORD_LIST];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, count);
+}
+function isValidWord(word) { return DICTIONARY.includes(word); }
+function generatePlayerId() { return 'player_' + Math.random().toString(36).substr(2, 9); }
+
+// ====================== دوال العرض ======================
 function renderPlayerGrid() {
     const container = document.getElementById('playerGrid');
     container.innerHTML = '';
     for (let row = 0; row < maxAttempts; row++) {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'grid-row';
+        const rowDiv = document.createElement('div'); rowDiv.className = 'grid-row';
         for (let col = 0; col < wordLength; col++) {
-            const tile = document.createElement('div');
-            tile.className = 'tile';
+            const tile = document.createElement('div'); tile.className = 'tile';
             if (row < gameState.myGuesses.length) {
                 const guess = gameState.myGuesses[row];
                 if (guess && guess.word) {
                     tile.textContent = guess.word[col] || '';
-                    const result = guess.result[col];
-                    tile.classList.add(result);
+                    tile.classList.add(guess.result[col]);
                 }
             } else if (row === gameState.myGuesses.length && currentGuess && row === currentRow) {
                 tile.textContent = currentGuess[col] || '';
@@ -324,18 +376,13 @@ function renderOpponentGrid() {
     const container = document.getElementById('opponentGrid');
     container.innerHTML = '';
     for (let row = 0; row < maxAttempts; row++) {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'opp-row';
+        const rowDiv = document.createElement('div'); rowDiv.className = 'opp-row';
         for (let col = 0; col < wordLength; col++) {
-            const tile = document.createElement('div');
-            tile.className = 'opp-tile';
+            const tile = document.createElement('div'); tile.className = 'opp-tile';
             if (row < gameState.opponentGuesses.length) {
                 const guess = gameState.opponentGuesses[row];
-                if (guess && guess.result) {
-                    tile.classList.add(guess.result[col]);
-                } else {
-                    tile.classList.add('filled');
-                }
+                if (guess && guess.result) tile.classList.add(guess.result[col]);
+                else tile.classList.add('filled');
             } else if (row === gameState.opponentGuesses.length && gameState.opponentGuesses.length < maxAttempts) {
                 tile.classList.add('filled');
             }
@@ -385,22 +432,10 @@ function calculateResult(guess, target) {
 }
 
 async function submitGuess() {
-    if (gameState.status !== 'playing') {
-        showInfo('تنبيه', 'اللعبة لم تبدأ بعد أو انتهت.');
-        return;
-    }
-    if (currentGuess.length !== wordLength) {
-        showInfo('تنبيه', `يجب إدخال ${wordLength} أحرف`);
-        return;
-    }
-    if (!isValidWord(currentGuess)) {
-        showInfo('تنبيه', 'الكلمة غير موجودة في القاموس');
-        return;
-    }
-    if (gameState.myGuesses.some(g => g.word === currentGuess)) {
-        showInfo('تنبيه', 'لقد جربت هذه الكلمة من قبل');
-        return;
-    }
+    if (gameState.status !== 'playing') { showInfo('تنبيه', 'اللعبة لم تبدأ بعد.'); return; }
+    if (currentGuess.length !== wordLength) { showInfo('تنبيه', `يجب إدخال ${wordLength} أحرف`); return; }
+    if (!isValidWord(currentGuess)) { showInfo('تنبيه', 'الكلمة غير موجودة في القاموس'); return; }
+    if (gameState.myGuesses.some(g => g.word === currentGuess)) { showInfo('تنبيه', 'لقد جربت هذه الكلمة من قبل'); return; }
 
     const result = calculateResult(currentGuess, gameState.opponentWord);
     const newGuess = { word: currentGuess, result: result };
@@ -414,10 +449,7 @@ async function submitGuess() {
     updateKeyboardColors();
 
     const roomRef = db.collection('rooms').doc(roomId);
-    await roomRef.update({
-        [`players.${playerId}.guesses`]: newGuesses,
-        [`players.${playerId}.currentGuess`]: ''
-    });
+    await roomRef.update({ [`players.${playerId}.guesses`]: newGuesses });
 
     if (win) {
         await roomRef.update({ winner: playerId, status: 'finished' });
@@ -425,19 +457,30 @@ async function submitGuess() {
         gameState.myScore++;
         document.getElementById('myScore').innerText = `أنت: ${gameState.myScore}`;
         await roomRef.update({ scores: { [playerId]: gameState.myScore, [opponentId]: gameState.opponentScore } });
+        // تحديث الإحصائيات المحلية
+        stats.played++; stats.wins++; stats.currentStreak++;
+        if (stats.currentStreak > stats.maxStreak) stats.maxStreak = stats.currentStreak;
+        localStorage.setItem('wordle_online_stats', JSON.stringify(stats));
+        attemptsHistory.unshift({ number: attemptsHistory.length+1, attempts: currentRow, result: 'win' });
+        localStorage.setItem('wordle_online_history', JSON.stringify(attemptsHistory));
+        updateStatsDisplay();
     } else if (newGuesses.length === maxAttempts) {
         showInfo('انتهت المحاولات', 'الخصم فاز!');
         gameState.opponentScore++;
         document.getElementById('oppScore').innerText = `الخصم: ${gameState.opponentScore}`;
         await roomRef.update({ winner: opponentId, status: 'finished', scores: { [playerId]: gameState.myScore, [opponentId]: gameState.opponentScore } });
+        stats.played++; stats.currentStreak = 0;
+        localStorage.setItem('wordle_online_stats', JSON.stringify(stats));
+        attemptsHistory.unshift({ number: attemptsHistory.length+1, attempts: maxAttempts, result: 'loss' });
+        localStorage.setItem('wordle_online_history', JSON.stringify(attemptsHistory));
+        updateStatsDisplay();
     }
 }
 
 function handleKey(key) {
     if (gameState.status !== 'playing') return;
-    if (key === 'Enter') {
-        submitGuess();
-    } else if (key === 'Backspace') {
+    if (key === 'Enter') submitGuess();
+    else if (key === 'Backspace') {
         currentGuess = currentGuess.slice(0, -1);
         renderPlayerGrid();
     } else if (/^[\u0600-\u06FF]$/.test(key) && currentGuess.length < wordLength) {
@@ -455,21 +498,16 @@ function buildKeyboard() {
     const keyboardDiv = document.getElementById('keyboard');
     keyboardDiv.innerHTML = '';
     layout.forEach((row, idx) => {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'keyboard-row';
+        const rowDiv = document.createElement('div'); rowDiv.className = 'keyboard-row';
         if (idx === 2) {
             const enterKey = document.createElement('div');
-            enterKey.className = 'key wide enter';
-            enterKey.textContent = 'Enter';
-            enterKey.dataset.key = 'Enter';
-            enterKey.addEventListener('click', () => handleKey('Enter'));
+            enterKey.className = 'key wide enter'; enterKey.textContent = 'Enter';
+            enterKey.dataset.key = 'Enter'; enterKey.addEventListener('click', () => handleKey('Enter'));
             rowDiv.appendChild(enterKey);
         }
         row.forEach(letter => {
             const key = document.createElement('div');
-            key.className = 'key';
-            key.textContent = letter;
-            key.dataset.key = letter;
+            key.className = 'key'; key.textContent = letter; key.dataset.key = letter;
             key.addEventListener('click', () => handleKey(letter));
             rowDiv.appendChild(key);
         });
@@ -477,8 +515,7 @@ function buildKeyboard() {
             const backspace = document.createElement('div');
             backspace.className = 'key wide backspace';
             backspace.innerHTML = '<i class="fas fa-backspace"></i>';
-            backspace.dataset.key = 'Backspace';
-            backspace.addEventListener('click', () => handleKey('Backspace'));
+            backspace.dataset.key = 'Backspace'; backspace.addEventListener('click', () => handleKey('Backspace'));
             rowDiv.appendChild(backspace);
         }
         keyboardDiv.appendChild(rowDiv);
@@ -529,14 +566,12 @@ async function checkBothSelected() {
         gameState.status = 'playing';
         gameState.myGuesses = [];
         gameState.opponentGuesses = [];
-        currentGuess = "";
-        currentRow = 0;
-        renderPlayerGrid();
-        renderOpponentGrid();
+        currentGuess = ""; currentRow = 0;
+        renderPlayerGrid(); renderOpponentGrid();
     }
 }
 
-// ====================== الاستماع لتغييرات الغرفة ======================
+// ====================== الاستماع للغرفة ======================
 function listenToRoom() {
     if (unsubRoom) unsubRoom();
     unsubRoom = db.collection('rooms').doc(roomId).onSnapshot(async (docSnap) => {
@@ -544,30 +579,15 @@ function listenToRoom() {
         const data = docSnap.data();
         gameState.status = data.status;
         if (data.status === 'selecting') {
-            if (!data.players[playerId]?.wordSelected) {
-                showWordSelection();
-            }
+            if (!data.players[playerId]?.wordSelected) showWordSelection();
         } else if (data.status === 'playing') {
             gameState.opponentWord = data.words[opponentId];
             gameState.myWord = data.words[playerId];
-            if (data.players[opponentId]?.guesses) {
-                gameState.opponentGuesses = data.players[opponentId].guesses;
-            } else {
-                gameState.opponentGuesses = [];
-            }
-            if (data.players[playerId]?.guesses) {
-                gameState.myGuesses = data.players[playerId].guesses;
-                currentRow = gameState.myGuesses.length;
-                if (currentRow < maxAttempts && gameState.myGuesses.length > 0) {
-                    currentGuess = "";
-                }
-            } else {
-                gameState.myGuesses = [];
-                currentRow = 0;
-            }
-            renderPlayerGrid();
-            renderOpponentGrid();
-            updateKeyboardColors();
+            gameState.opponentGuesses = data.players[opponentId]?.guesses || [];
+            gameState.myGuesses = data.players[playerId]?.guesses || [];
+            currentRow = gameState.myGuesses.length;
+            if (currentRow < maxAttempts && gameState.myGuesses.length > 0) currentGuess = "";
+            renderPlayerGrid(); renderOpponentGrid(); updateKeyboardColors();
         } else if (data.status === 'finished') {
             const winner = data.winner;
             if (winner === playerId) {
@@ -583,9 +603,8 @@ function listenToRoom() {
             document.getElementById('oppScore').innerText = `الخصم: ${gameState.opponentScore}`;
             startNewRound();
         }
-        if (data.players[opponentId] && data.players[opponentId].name) {
+        if (data.players[opponentId] && data.players[opponentId].name)
             document.getElementById('opponentName').innerText = data.players[opponentId].name;
-        }
     });
 }
 
@@ -602,20 +621,13 @@ async function startNewRound() {
         words: {}
     });
     gameState.status = 'selecting';
-    gameState.myGuesses = [];
-    gameState.opponentGuesses = [];
-    currentGuess = "";
-    currentRow = 0;
-    renderPlayerGrid();
-    renderOpponentGrid();
+    gameState.myGuesses = []; gameState.opponentGuesses = [];
+    currentGuess = ""; currentRow = 0;
+    renderPlayerGrid(); renderOpponentGrid();
     showWordSelection();
 }
 
-// ====================== إنشاء أو الانضمام إلى غرفة ======================
-function generatePlayerId() {
-    return 'player_' + Math.random().toString(36).substr(2, 9);
-}
-
+// ====================== إنشاء / انضمام ======================
 async function showNameModal() {
     return new Promise((resolve) => {
         showModal('nameModal');
@@ -624,19 +636,14 @@ async function showNameModal() {
         const confirmBtn = document.getElementById('confirmNameBtn');
         const handler = () => {
             const name = input.value.trim();
-            if (name === '') {
-                showInfo('تنبيه', 'الرجاء إدخال اسم صحيح');
-                return;
-            }
+            if (name === '') { showInfo('تنبيه', 'الرجاء إدخال اسم صحيح'); return; }
             myName = name;
             hideModal('nameModal');
             confirmBtn.removeEventListener('click', handler);
             resolve();
         };
         confirmBtn.addEventListener('click', handler);
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handler();
-        });
+        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') handler(); });
     });
 }
 
@@ -645,18 +652,8 @@ async function showGameModeModal() {
         showModal('gameModeModal');
         const createBtn = document.getElementById('createGameBtn');
         const joinBtn = document.getElementById('joinGameBtn');
-        const createHandler = () => {
-            hideModal('gameModeModal');
-            createBtn.removeEventListener('click', createHandler);
-            joinBtn.removeEventListener('click', joinHandler);
-            resolve('create');
-        };
-        const joinHandler = () => {
-            hideModal('gameModeModal');
-            createBtn.removeEventListener('click', createHandler);
-            joinBtn.removeEventListener('click', joinHandler);
-            resolve('join');
-        };
+        const createHandler = () => { hideModal('gameModeModal'); createBtn.removeEventListener('click', createHandler); joinBtn.removeEventListener('click', joinHandler); resolve('create'); };
+        const joinHandler = () => { hideModal('gameModeModal'); createBtn.removeEventListener('click', createHandler); joinBtn.removeEventListener('click', joinHandler); resolve('join'); };
         createBtn.addEventListener('click', createHandler);
         joinBtn.addEventListener('click', joinHandler);
     });
@@ -671,10 +668,7 @@ async function showRoomCodeModal() {
         const cancelBtn = document.getElementById('cancelRoomBtn');
         const confirmHandler = () => {
             const code = input.value.trim();
-            if (code === '') {
-                showInfo('تنبيه', 'الرجاء إدخال رمز الغرفة');
-                return;
-            }
+            if (code === '') { showInfo('تنبيه', 'الرجاء إدخال رمز الغرفة'); return; }
             hideModal('roomCodeModal');
             confirmBtn.removeEventListener('click', confirmHandler);
             cancelBtn.removeEventListener('click', cancelHandler);
@@ -688,9 +682,7 @@ async function showRoomCodeModal() {
         };
         confirmBtn.addEventListener('click', confirmHandler);
         cancelBtn.addEventListener('click', cancelHandler);
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') confirmHandler();
-        });
+        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') confirmHandler(); });
     });
 }
 
@@ -699,20 +691,19 @@ async function createRoom() {
     const roomRef = db.collection('rooms').doc();
     roomId = roomRef.id;
     const roomData = {
-        players: {
-            [playerId]: {
-                name: myName,
-                word: null,
-                wordSelected: false,
-                guesses: [],
-                currentGuess: ''
-            }
-        },
+        players: { [playerId]: { name: myName, word: null, wordSelected: false, guesses: [] } },
         status: 'waiting',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         scores: { [playerId]: 0 }
     };
     await roomRef.set(roomData);
+    // عرض رمز الغرفة في الهيدر
+    const roomCodeElem = document.getElementById('roomCodeDisplay');
+    document.getElementById('roomCodeValue').innerText = roomId;
+    roomCodeElem.classList.remove('hidden');
+    roomCodeElem.onclick = () => {
+        navigator.clipboard.writeText(roomId);
+        showInfo('تم النسخ', 'تم نسخ رمز الغرفة إلى الحافظة');
+    };
     showInfo('تم إنشاء الغرفة', `رمز الغرفة: ${roomId}\nأرسله لصديقك للانضمام.`, async () => {
         showModal('waitingModal');
         await waitForOpponent(roomRef);
@@ -723,26 +714,14 @@ async function createRoom() {
 
 async function joinRoom() {
     const code = await showRoomCodeModal();
-    if (!code) {
-        startGameFlow();
-        return;
-    }
+    if (!code) { startGameFlow(); return; }
     roomId = code;
     const roomRef = db.collection('rooms').doc(roomId);
     const doc = await roomRef.get();
-    if (!doc.exists) {
-        showInfo('خطأ', 'الغرفة غير موجودة', () => joinRoom());
-        return;
-    }
+    if (!doc.exists) { showInfo('خطأ', 'الغرفة غير موجودة', () => joinRoom()); return; }
     playerId = generatePlayerId();
     await roomRef.update({
-        [`players.${playerId}`]: {
-            name: myName,
-            word: null,
-            wordSelected: false,
-            guesses: [],
-            currentGuess: ''
-        },
+        [`players.${playerId}`]: { name: myName, word: null, wordSelected: false, guesses: [] },
         [`scores.${playerId}`]: 0
     });
     const data = doc.data();
@@ -762,8 +741,7 @@ async function joinRoom() {
 function waitForOpponent(roomRef) {
     return new Promise((resolve) => {
         const unsub = roomRef.onSnapshot((snap) => {
-            const data = snap.data();
-            const players = data.players;
+            const players = snap.data().players;
             const playerIds = Object.keys(players);
             if (playerIds.length === 2) {
                 unsub();
@@ -774,30 +752,66 @@ function waitForOpponent(roomRef) {
     });
 }
 
-// ====================== بدء سير اللعبة ======================
-async function startGameFlow() {
-    await showNameModal();
-    const mode = await showGameModeModal();
-    if (mode === 'create') {
-        await createRoom();
+// ====================== إحصائيات ======================
+function loadStats() {
+    const savedStats = localStorage.getItem('wordle_online_stats');
+    if (savedStats) stats = JSON.parse(savedStats);
+    const savedHistory = localStorage.getItem('wordle_online_history');
+    if (savedHistory) attemptsHistory = JSON.parse(savedHistory);
+    updateStatsDisplay();
+}
+function updateStatsDisplay() {
+    document.getElementById('playedCount').innerText = stats.played;
+    const winPercent = stats.played ? Math.round((stats.wins / stats.played) * 100) : 0;
+    document.getElementById('winPercent').innerText = winPercent + '%';
+    document.getElementById('currentStreak').innerText = stats.currentStreak;
+    document.getElementById('maxStreak').innerText = stats.maxStreak;
+    const body = document.getElementById('attemptsTableBody');
+    const noMsg = document.getElementById('noAttemptsMessage');
+    const table = document.querySelector('.attempts-table');
+    if (attemptsHistory.length > 0) {
+        noMsg.classList.add('hidden');
+        table.classList.remove('hidden');
+        body.innerHTML = '';
+        [...attemptsHistory].reverse().forEach(a => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td class="attempt-number">${a.number}</td><td>${a.attempts}</td><td class="attempt-result ${a.result}">${a.result === 'win' ? 'فوز ✓' : 'خسارة ✗'}</td>`;
+            body.appendChild(tr);
+        });
     } else {
-        await joinRoom();
+        noMsg.classList.remove('hidden');
+        table.classList.add('hidden');
     }
 }
 
-document.getElementById('leaveBtn').onclick = () => {
-    if (roomId && playerId) {
-        db.collection('rooms').doc(roomId).update({
-            [`players.${playerId}`]: firebase.firestore.FieldValue.delete()
-        }).then(() => {
-            showInfo('تم الانسحاب', 'سيتم إعادة تحميل الصفحة', () => window.location.reload());
-        });
-    } else {
-        window.location.reload();
-    }
-};
+// ====================== بدء اللعبة ======================
+async function startGameFlow() {
+    await showNameModal();
+    const mode = await showGameModeModal();
+    if (mode === 'create') await createRoom();
+    else await joinRoom();
+}
 
+// ====================== أزرار وتحكم ======================
+document.getElementById('newGameBtn').addEventListener('click', () => {
+    if (roomId && playerId) {
+        db.collection('rooms').doc(roomId).delete().then(() => window.location.reload());
+    } else window.location.reload();
+});
+document.getElementById('themeToggle').addEventListener('click', () => {
+    const isLight = document.body.classList.toggle('light-mode');
+    const icon = document.querySelector('#themeToggle i');
+    icon.className = isLight ? 'fas fa-moon text-lg' : 'fas fa-sun text-lg';
+    localStorage.setItem('wordle_online_theme', isLight ? 'light' : 'dark');
+});
+document.getElementById('statsBtn').addEventListener('click', () => { updateStatsDisplay(); showModal('statsModal'); });
+document.getElementById('closeStatsBtn').addEventListener('click', () => hideModal('statsModal'));
+
+// تحميل الثيم المحفوظ
+const savedTheme = localStorage.getItem('wordle_online_theme');
+if (savedTheme === 'light') document.body.classList.add('light-mode');
 buildKeyboard();
+loadStats();
 startGameFlow();
 </script>
 </body>
