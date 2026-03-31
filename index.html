@@ -9,9 +9,9 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
-<!-- قاموس الكلمات المستخدم في ووردل الحروف -->
-<script src="words-encrypted.js"></script>
-<script src="dictionary-encrypted.js"></script>
+<!-- قواميس الكلمات (بدون تشفير) -->
+<script src="words.js"></script>
+<script src="dictionary.js"></script>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -236,21 +236,15 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// ====================== قاموس الكلمات ======================
-// نستخدم القاموس المحمّل من dictionary-encrypted.js
-if (typeof DICTIONARY === 'undefined') {
-    console.error("الرجاء التأكد من وجود ملف dictionary-encrypted.js");
+// ====================== التحقق من تحميل القواميس ======================
+if (typeof WORD_LIST === 'undefined' || typeof DICTIONARY === 'undefined') {
+    alert("خطأ: لم يتم تحميل ملفات القاموس (words.js و dictionary.js). تأكد من وجودهما.");
+    throw new Error("Missing word lists");
 }
-const VALID_WORDS = typeof DICTIONARY !== 'undefined' ? DICTIONARY : [
-    "كلمة", "بيت", "ماء", "شمس", "قمر", "نجم", "ورد", "نهر", "جبل", "وادي",
-    "كتاب", "قلم", "ورق", "حاسوب", "هاتف", "شاشة", "طاولة", "كرسي", "باب", "نافذة",
-    "سيارة", "طريق", "جسر", "مدينة", "قرية", "مدرسة", "جامعة", "مستشفى", "مطعم", "فندق",
-    "طائر", "سمكة", "أسد", "نمر", "فيل", "زرافة", "ثعلب", "أرنب", "حصان", "بقرة",
-    "تفاح", "موز", "برتقال", "عنب", "فراولة", "مانجو", "بطيخ", "خوخ", "كرز", "ليمون"
-];
 
-function getRandomWords(count = 10) {
-    const shuffled = [...VALID_WORDS];
+// ====================== دوال اختيار الكلمات ======================
+function getRandomWordsFromTargetList(count = 10) {
+    const shuffled = [...WORD_LIST];
     for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -259,7 +253,7 @@ function getRandomWords(count = 10) {
 }
 
 function isValidWord(word) {
-    return VALID_WORDS.includes(word);
+    return DICTIONARY.includes(word);
 }
 
 // ====================== متغيرات اللعبة ======================
@@ -493,7 +487,7 @@ function buildKeyboard() {
 
 // ====================== اختيار الكلمة ======================
 async function showWordSelection() {
-    const words = getRandomWords(10);
+    const words = getRandomWordsFromTargetList(10);
     const container = document.getElementById('wordOptions');
     container.innerHTML = '';
     words.forEach(word => {
